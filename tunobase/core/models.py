@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.conf import settings
 
-from polymorphic import PolymorphicModel
+from polymorphic import PolymorphicModel, PolymorphicManager
 
 from photologue.models import ImageModel
 
@@ -35,6 +35,9 @@ class StateManager(SiteObjectsManager):
         if not getattr(settings, 'STAGING', False):
             queryset = queryset.exclude(state=constants.STATE_STAGED)
         return queryset
+    
+class PolyManager(StateManager, PolymorphicManager):
+    pass
 
 class StateModel(models.Model):
     state = models.PositiveSmallIntegerField(
@@ -60,7 +63,7 @@ class StateModel(models.Model):
         
 class SlugModel(models.Model):
     title = models.CharField(max_length=255, db_index=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(editable=False, unique=True)
     
     class Meta:
         abstract = True
@@ -99,9 +102,10 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
     
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
-    default_image_category = None
+    default_image_category = 'content'
     
     objects = SiteObjectsManager()
+    poly_objects = PolyManager()
     
     def __unicode__(self):
         return u'%s' % self.title
@@ -134,7 +138,7 @@ class DefaultImage(ImageModel, StateModel):
     permitted = DefaultImageManager()
     
     def __unicode__(self):
-        return u'%s' % self.category
+        return u'%s' % self.get_category_display()
     
 class Banner(StateModel):
     title = models.CharField(max_length=255)

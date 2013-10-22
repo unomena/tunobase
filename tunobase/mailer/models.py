@@ -6,6 +6,8 @@ Created on 22 Oct 2013
 from django.db import models
 from django.conf import settings
 
+from ckeditor.fields import RichTextField
+
 class OutboundEmail(models.Model):
     '''
     Tracks emails sent to Users by the system.
@@ -17,7 +19,7 @@ class OutboundEmail(models.Model):
         null=True
     )
     subject = models.CharField(max_length=250)
-    message = models.TextField()
+    message = RichTextField()
     sent_timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
