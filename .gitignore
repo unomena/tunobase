@@ -18,5 +18,4 @@ settings_local.py
 /media/
 .DS_Store
 *.swp
-*.sh~
-migrations/
+*.sh~d
