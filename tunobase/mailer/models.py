@@ -18,6 +18,8 @@ class OutboundEmail(models.Model):
         blank=True, 
         null=True
     )
+    to_addresses = models.TextField()
+    bcc_addresses = models.TextField(blank=True, null=True)
     subject = models.CharField(max_length=250)
     message = RichTextField()
     sent_timestamp = models.DateTimeField(auto_now_add=True)

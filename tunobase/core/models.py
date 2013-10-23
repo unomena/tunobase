@@ -81,6 +81,13 @@ class SlugModel(models.Model):
             super(SlugModel, self).save(*args, **kwargs)
 
 class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
+    image_name = models.CharField(
+        max_length=255, 
+        blank=True, 
+        null=True, 
+        unique=True
+    )
+    
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
     

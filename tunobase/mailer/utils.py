@@ -26,9 +26,13 @@ def send_mail(subject, text_content, to_addresses,
         # Update context with site and STATIC_URL
         if not 'site' in context:
             context['site'] = Site.objects.get_current()
+            
+        if not 'user' in context:
+            context['user'] = user
         
         context.update({
             'STATIC_URL': settings.STATIC_URL,
+            'app_name': settings.APP_NAME
         })
         
         # Check if the content is actual content or a location to a file
@@ -66,4 +70,10 @@ def send_mail(subject, text_content, to_addresses,
         connection.send_messages([msg, ])
         
         # Create an entry in the email tracker to track sent emails by the system
-        models.OutboundEmail.objects.create(user=user, subject=subject, message=html_content)
+        models.OutboundEmail.objects.create(
+            user=user, 
+            to_addresses='\n'.join(to_addresses),
+            bcc_addresses='\n'.join(bcc_addresses),
+            subject=subject, 
+            message=html_content
+        )

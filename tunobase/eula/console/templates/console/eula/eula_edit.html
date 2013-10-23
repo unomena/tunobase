@@ -44,3 +44,13 @@
     <div class="clear"></div>
 </div>
 {% endblock %}
+
+{% block bottom_js %}
+	<script>
+		$(function() {
+		    $('.inline.{{ formset.prefix }}').formset({
+		        prefix: '{{ formset.prefix }}',
+		    });
+		});
+	</script>
+{% endblock %}

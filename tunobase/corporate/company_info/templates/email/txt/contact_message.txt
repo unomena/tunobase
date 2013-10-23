@@ -1,0 +1,11 @@
+{% extends 'email/base.txt' %}
+
+{% block content %}
+You have received a contact message from {{ contact_message.name }}
+
+Email: {{ contact_message.email }}
+{% if contact_message.mobile_number %}Contact number: {{ contact_message.mobile_number }}{% endif %}
+Their message was:
+{{ contact_message.message }}
+
+{% endblock %}
