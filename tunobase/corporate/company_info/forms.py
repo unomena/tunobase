@@ -17,6 +17,7 @@ class ContactMessageForm(forms.ModelForm):
         super(ContactMessageForm, self).__init__(*args, **kwargs)
         
         if self.user is not None:
+            self.fields['user'].initial = self.user
             if self.user.first_name and self.user.last_name:
                 self.fields['name'].initial = '%s %s' % (self.user.first_name, self.user.last_name)
                 
@@ -25,6 +26,8 @@ class ContactMessageForm(forms.ModelForm):
                 
             self.fields['email'].initial = self.user.email
         
+        self.fields['user'].required = False
+        self.fields['user'].widget = forms.HiddenInput()
         self.fields['name'].widget.attrs.update({'class':'required'})
         self.fields['email'].widget.attrs.update({'class':'required email'})
         self.fields['message'].widget.attrs.update({'class':'required'})

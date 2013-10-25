@@ -40,9 +40,9 @@ class Service(models.Model):
         return self.get_type_display()
     
 class Request(models.Model):
-    """
+    '''
     The API request data being sent.
-    """
+    '''
     uuid = core_fields.UUIDField(editable=False)
     service = models.ForeignKey(Service)
     request_data = models.TextField()

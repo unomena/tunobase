@@ -5,6 +5,7 @@ Created on 23 Oct 2013
 '''
 from django.db import models
 from django.contrib.sites.models import Site
+from django.conf import settings
 
 from tunobase.core import models as core_models
 
@@ -12,6 +13,7 @@ class ContactMessage(models.Model):
     '''
     Contact message sent from the Site
     '''
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     name = models.CharField(max_length=255)
     email = models.EmailField()
     mobile_number = models.CharField(max_length=16, blank=True, null=True)
@@ -31,8 +33,12 @@ class Vacancy(core_models.ContentModel):
     
     class Meta:
         ordering = ['order']
+        verbose_name_plural = 'Vacancies'
     
 class CompanyMemberPosition(core_models.StateModel, core_models.SlugModel):
+    '''
+    Member positions within the Company
+    '''
     sites = models.ManyToManyField(Site, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
     

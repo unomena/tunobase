@@ -8,8 +8,8 @@ from django.contrib import admin
 from tunobase.corporate.company_info import models
 
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'site', 'timestamp')
-    list_filter = ('name', 'email', 'site', 'timestamp')
+    list_display = ('name', 'email', 'user', 'site', 'timestamp')
+    list_filter = ('name', 'email', 'user', 'site', 'timestamp')
     search_fields = ('name', 'email','timestamp')
 
 admin.site.register(models.ContactMessage, ContactMessageAdmin)

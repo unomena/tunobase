@@ -8,7 +8,10 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from tunobase.age_gate import utils
 
 class AgeGateMixin(object):
-    age_gate_url = None
+    '''
+    Mixin to check if the User is old enough to view the content
+    '''
+    age_gate_url = 'age-gate'
     raise_exception = False  # Default whether to raise an exception to none
 
     def dispatch(self, request, *args, **kwargs):
@@ -27,5 +30,4 @@ class AgeGateMixin(object):
             else:
                 return utils.redirect_to_age_gate(request.get_full_path(), self.age_gate_url)
 
-        return super(AgeGateMixin, self).dispatch(request,
-            *args, **kwargs)
+        return super(AgeGateMixin, self).dispatch(request, *args, **kwargs)

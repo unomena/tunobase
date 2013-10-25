@@ -8,8 +8,8 @@ from django.contrib import admin
 from tunobase.core import models
 
 class ContentModelAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'created_at', 'site_list')
-    list_filter = ('title', 'created_at')
+    list_display = ('title', 'state', 'slug', 'created_at', 'publish_at', 'site_list')
+    list_filter = ('title', 'state', 'created_at', 'publish_at')
     search_fields = ('title',)
     
     def site_list(self, model):
