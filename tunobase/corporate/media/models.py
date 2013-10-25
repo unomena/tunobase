@@ -8,8 +8,8 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-from tunobase.core import models as core_models
-from tunobase.corporate.media import constants
+from tunobase.core import models as core_models, managers as core_managers
+from tunobase.corporate.media import constants, managers
 
 class PressRelease(core_models.ContentModel):
     '''
@@ -18,6 +18,8 @@ class PressRelease(core_models.ContentModel):
     default_image_category = 'press_release'
     
     pdf = models.FileField(upload_to='press_releases', blank=True, null=True)
+    
+    default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
         ordering = ['-publish_at']
@@ -30,6 +32,8 @@ class MediaCoverage(core_models.ContentModel):
 
     pdf = models.FileField(upload_to='media_coverage', blank=True, null=True)
     external_link = models.URLField(blank=True, null=True)
+    
+    default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
         ordering = ['-publish_at']
@@ -50,12 +54,10 @@ class Event(core_models.ContentModel):
         default=constants.EVENT_REPEAT_CHOICE_DOES_NOT_REPEAT,
     )
     repeat_until = models.DateField(blank=True, null=True)
-    external_link = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="The url of the event's external webpage, if there is one."
-    )
+    external_link = models.CharField(max_length=255, blank=True, null=True)
+    
+    objects = managers.EventManager()
+    permitted = managers.PermittedEventManager()
     
     class Meta:
         ordering = ['-start']

@@ -10,11 +10,11 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponse, HttpResponseRedirect
 
 from tunobase.core import mixins as core_mixins
-
 from tunobase.eula import models as eula_models
 from tunobase.eula.console import forms
+from tunobase.console import mixins as console_mixins
 
-class AdminMixin(core_mixins.ConsoleUserRequiredMixin, core_mixins.PermissionRequiredMixin):
+class AdminMixin(console_mixins.ConsoleUserRequiredMixin, core_mixins.PermissionRequiredMixin):
     raise_exception = False
 
 class EULAVersionFormSetMixin(object):

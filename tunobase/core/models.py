@@ -9,35 +9,16 @@ from django.db import models, IntegrityError
 from django.contrib.sites.models import Site
 from django.utils import timezone
 from django.template.defaultfilters import slugify
+from django.db.models import signals
 from django.conf import settings
 
-from polymorphic import PolymorphicModel, PolymorphicManager
+from polymorphic import PolymorphicModel
 
 from photologue.models import ImageModel
 
 from ckeditor.fields import RichTextField
 
-from tunobase.core import constants
-
-class SiteObjectsManager(models.Manager):
-
-    def for_current_site(self):
-        return self.filter(sites__id__exact=Site.objects.get_current().id)
-
-class StateManager(SiteObjectsManager):
-
-    def get_query_set(self):
-        queryset = super(StateManager, self).get_query_set().filter(
-            state__in=[constants.STATE_PUBLISHED, constants.STATE_STAGED]
-        )
-            
-        # exclude objects in staging state if not in staging mode (settings.STAGING = False)
-        if not getattr(settings, 'STAGING', False):
-            queryset = queryset.exclude(state=constants.STATE_STAGED)
-        return queryset
-    
-class PolyManager(StateManager, PolymorphicManager):
-    pass
+from tunobase.core import constants, managers
 
 class StateModel(models.Model):
     state = models.PositiveSmallIntegerField(
@@ -48,8 +29,8 @@ class StateModel(models.Model):
     publish_at = models.DateTimeField(blank=True, null=True, db_index=True)
     retract_at = models.DateTimeField(blank=True, null=True)
     
-    objects = SiteObjectsManager()
-    permitted = StateManager()
+    objects = models.Manager()
+    permitted = managers.StateManager()
     
     class Meta:
         ordering = ['-publish_at']
@@ -82,7 +63,7 @@ class SlugModel(models.Model):
 
 class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
     image_name = models.CharField(
-        max_length=255, 
+        max_length=512, 
         blank=True, 
         null=True, 
         unique=True
@@ -111,8 +92,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
     
     default_image_category = 'content'
     
-    objects = SiteObjectsManager()
-    poly_objects = PolyManager()
+    objects = managers.SiteObjectsManager()
     
     def __unicode__(self):
         return u'%s' % self.title
@@ -120,17 +100,11 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = DefaultImage.permitted.get_random(self.default_image_category)
+        
+        if not self.image_name:
+            self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
 
         super(ContentModel, self).save(*args, **kwargs)
-    
-class DefaultImageManager(StateManager):
-
-    def get_random(self, category=None):
-        pre_def_images = self.filter(category=category)
-        if pre_def_images:
-            return random.choice(pre_def_images).image
-        else:
-            return None
 
 class DefaultImage(ImageModel, StateModel):
     """
@@ -142,7 +116,7 @@ class DefaultImage(ImageModel, StateModel):
     )
     
     objects = models.Manager()
-    permitted = DefaultImageManager()
+    permitted = managers.DefaultImageManager()
     
     def __unicode__(self):
         return u'%s' % self.get_category_display()
@@ -166,8 +140,9 @@ class HTMLBanner(Banner):
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
     
-class BannerSet(models.Model):
+class BannerSet(StateModel):
     slug = models.SlugField()
+    sites = models.ManyToManyField(Site, blank=True, null=True)
     
     class Meta:
         abstract = True
