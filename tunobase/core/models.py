@@ -21,6 +21,9 @@ from ckeditor.fields import RichTextField
 from tunobase.core import constants, managers
 
 class StateModel(models.Model):
+    '''
+    A mixin Model for providing published State
+    '''
     state = models.PositiveSmallIntegerField(
         choices=constants.STATE_CHOICES,
         default=constants.STATE_PUBLISHED
@@ -43,6 +46,9 @@ class StateModel(models.Model):
         super(StateModel, self).save(*args, **kwargs)
         
 class SlugModel(models.Model):
+    '''
+    A mixin Model for creating unique Slugs
+    '''
     title = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(editable=False, unique=True)
     
@@ -62,6 +68,9 @@ class SlugModel(models.Model):
             super(SlugModel, self).save(*args, **kwargs)
 
 class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
+    '''
+    All Content on the Site must derive from this Model
+    '''
     image_name = models.CharField(
         max_length=512, 
         blank=True, 
@@ -107,9 +116,9 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
         super(ContentModel, self).save(*args, **kwargs)
 
 class DefaultImage(ImageModel, StateModel):
-    """
+    '''
     A model to store default images for content types.
-    """
+    '''
     category = models.CharField(
         max_length=16,
         choices=settings.DEFAULT_IMAGE_CATEGORY_CHOICES
@@ -122,6 +131,9 @@ class DefaultImage(ImageModel, StateModel):
         return u'%s' % self.get_category_display()
     
 class Banner(StateModel):
+    '''
+    Abstract Banner for Site sliders
+    '''
     title = models.CharField(max_length=255)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     order = models.PositiveSmallIntegerField(default=0)
@@ -134,13 +146,22 @@ class Banner(StateModel):
         return u'%s' % self.title
 
 class ImageBanner(Banner, ImageModel):
+    '''
+    Image Banner for Site sliders
+    '''
     pass
 
 class HTMLBanner(Banner):
+    '''
+    HTML Banner for Site sliders
+    '''
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
     
 class BannerSet(StateModel):
+    '''
+    Abstract Containing Model for Banners
+    '''
     slug = models.SlugField()
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
@@ -155,7 +176,13 @@ class BannerSet(StateModel):
         return self.banners.filter(sites__id__exact=Site.objects.get_current().id)
     
 class ImageBannerSet(BannerSet):
+    '''
+    Containing Model for Image Banners
+    '''
     banners = models.ManyToManyField(ImageBanner, related_name='banner_sets')
     
 class HTMLBannerSet(BannerSet):
+    '''
+    Containing Model for HTML Banners
+    '''
     banners = models.ManyToManyField(HTMLBanner, related_name='banner_sets')

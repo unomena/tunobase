@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulk Import | {% endblock %}
+
+{% block content %}
+    <form id="frmBulkImport" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+        {% include 'core/includes/message_error_header.html' %}
+        <h2>Bulk Import</h2>
+        
+        {% if csv_errors %}
+            <label for="id_create">CSV Errors</label>
+            <br />
+            {% for key, error in csv_errors.items %}
+            <label for="id_create">{{ key }}</label>
+            <div>
+                Value of "{{ error.0 }}" is invalid. {{ error.1.0 }}
+            </div>
+            <br />
+            {% endfor %}
+        {% endif %}
+        {{ form.duplicate_file_reimport }}
+        <label for="id_create">Create</label>
+        {{ form.create }}{{ form.create.errors }}
+        <label for="id_update">Update</label>
+        {{ form.update }}{{ form.update.errors }}
+        <label for="id_upload_file">File to Upload</label>
+        {{ form.upload_file }}{{ form.upload_file.errors }}
+        
+        <input type="submit" id="submit" value="Upload Data" />
+    </form>
+{% endblock %}

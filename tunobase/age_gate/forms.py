@@ -30,5 +30,9 @@ class AgeGateForm(forms.Form):
         return self.cleaned_data['terms_accept']
     
     def save(self, request):
-        request.session['user_location'] = self.cleaned_data['location']
-        request.session['user_date_of_birth'] = self.cleaned_data['date_of_birth']
+        age = settings.AGE_GATE_COUNTRY_LEGAL_AGES[self.cleaned_data['location']]
+        country_date_of_birth_required = \
+            datetime.date.today() - datetime.timedelta(days=age*365)
+        
+        request.session['age_gate_passed'] = \
+            self.cleaned_data['date_of_birth'] <= country_date_of_birth_required
