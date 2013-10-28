@@ -66,8 +66,31 @@ class SlugModel(models.Model):
                 self.slug = '%s-%s' % (slugify(self.title), random.randint(1, 100))
                                        
             super(SlugModel, self).save(*args, **kwargs)
-
-class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
+            
+class AuditModel(models.Model):
+    '''
+    A mixin Model for auditting creations/modifications
+    '''
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        related_name='%(class)s_created_content', 
+        blank=True, 
+        null=True
+    )
+    
+    modified_at = models.DateTimeField(auto_now_add=True)
+    modified_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        related_name='%(class)s_modified_content',  
+        blank=True, 
+        null=True
+    )
+    
+    class Meta:
+        abstract = True
+    
+class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditModel):
     '''
     All Content on the Site must derive from this Model
     '''
@@ -80,22 +103,6 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel):
     
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        related_name='created_content', 
-        blank=True, 
-        null=True
-    )
-    
-    modified_at = models.DateTimeField(auto_now_add=True)
-    modified_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        related_name='modified_content',  
-        blank=True, 
-        null=True
-    )
     
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
