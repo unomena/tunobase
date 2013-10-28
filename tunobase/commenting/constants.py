@@ -11,7 +11,7 @@ FLAG_MODERATOR_APPROVAL = "moderator approval"
 
 FLAG_CHOICES = (
     (FLAG_LIKE, "Liked by User"),
-    (FLAG_DISLIKE, "Disliekd by User"),
+    (FLAG_DISLIKE, "Disliked by User"),
     (FLAG_SUGGEST_REMOVAL, "Removal Suggestion"),
     (FLAG_MODERATOR_DELETION, "Moderator Deletion"),
     (FLAG_MODERATOR_APPROVAL, "Moderator Approval"),

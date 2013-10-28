@@ -14,7 +14,7 @@ from tunobase.commenting import managers, constants
 
 class CommentModel(core_models.StateModel, core_models.AuditModel, comment_models.BaseCommentAbstractModel):
     '''
-    Comments to be used throghout the Site
+    Comments to be used throughout the Site
     '''
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="comments")
     user_name = models.CharField(max_length=255, blank=True, null=True)
@@ -38,7 +38,7 @@ class CommentModel(core_models.StateModel, core_models.AuditModel, comment_model
     class Meta:
         permissions = [("can_moderate", "Can moderate comments"),
                        ("view_comment", "View comment")]
-        ordering = ('-order', '-submit_date',)
+        ordering = ('-order', '-created_at',)
         
     def save(self, *args, **kwargs):
         if self.site is None:
@@ -49,9 +49,9 @@ class CommentFlag(core_models.AuditModel):
     '''
     Records a flag on a comment.
     '''
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="comment_flags")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="commentmodel_flags")
     comment = models.ForeignKey(CommentModel, related_name="flags")
-    flag = models.CharField(choices=constants.FLAG_TYPES, max_length=30, db_index=True)
+    flag = models.CharField(choices=constants.FLAG_CHOICES, max_length=30, db_index=True)
 
     class Meta:
         unique_together = [('user', 'comment', 'flag')]

@@ -6,6 +6,7 @@ Created on 23 Oct 2013
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.sites.models import Site
 
 from tunobase.api.core import constants
 from tunobase.core import fields as core_fields
@@ -54,6 +55,7 @@ class Request(models.Model):
     created_timestamp = models.DateTimeField(auto_now_add=True)
     completed_timestamp = models.DateTimeField(blank=True, null=True)
     retry_count = models.PositiveSmallIntegerField(default=0)
+    site = models.ForeignKey(Site, blank=True, null=True)
     
     @property
     def send_count(self):
@@ -73,3 +75,8 @@ class Request(models.Model):
                     self.status = constants.REQUEST_STATUS_RETRY
     
         self.save()
+        
+    def save(self, *args, **kwargs):
+        if self.site is None:
+            self.site = Site.objects.get_current()
+        super(Request, self).save(*args, **kwargs)

@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.sites.models import Site
 from django.conf import settings
 
-from tunobase.core import models as core_models
+from tunobase.core import models as core_models, managers as core_managers
 
 class ContactMessage(models.Model):
     '''
@@ -30,6 +30,8 @@ class Vacancy(core_models.ContentModel):
     '''
     external_link = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
+    
+    default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
         ordering = ['order']
@@ -57,6 +59,8 @@ class CompanyMember(core_models.ContentModel):
     positions = models.ManyToManyField(CompanyMemberPosition, related_name='company_members')
     job_title = models.CharField(max_length=255, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
+    
+    default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
         ordering = ['order']

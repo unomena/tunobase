@@ -75,5 +75,6 @@ def send_mail(subject, text_content, to_addresses,
             to_addresses='\n'.join(to_addresses),
             bcc_addresses='\n'.join(bcc_addresses),
             subject=subject, 
-            message=html_content
+            message=html_content,
+            site=context['site']
         )

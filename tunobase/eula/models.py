@@ -4,6 +4,7 @@ Created on 06 Mar 2013
 @author: michael
 '''
 from django.db import models
+from django.contrib.sites.models import Site
 
 from ckeditor.fields import RichTextField
 
@@ -12,6 +13,9 @@ from tunobase.eula import managers
 
 class EULA(models.Model):
     title = models.CharField(max_length=255, default='')
+    sites = models.ManyToManyField(Site, blank=True, null=True)
+    
+    objects = managers.EULAManager()
     
     def latest_version(self):
         try:

@@ -4,6 +4,7 @@ Created on 22 Oct 2013
 @author: michael
 '''
 from django.db import models
+from django.contrib.sites.models import Site
 from django.conf import settings
 
 from ckeditor.fields import RichTextField
@@ -23,6 +24,7 @@ class OutboundEmail(models.Model):
     subject = models.CharField(max_length=250)
     message = RichTextField()
     sent_timestamp = models.DateTimeField(auto_now_add=True)
+    site = models.ForeignKey(Site)
 
     class Meta:
         ordering = ['-sent_timestamp']

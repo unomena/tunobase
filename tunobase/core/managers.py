@@ -19,7 +19,11 @@ from tunobase.core import constants
 class SiteObjectsManagerMixin(models.Manager):
     
     def for_current_site(self):
-        return self.filter(sites__id__exact=Site.objects.get_current().id)
+        key = '%s__id__exact' % 'sites' if hasattr(self, 'sites') else 'site'
+        params = {
+            key: Site.objects.get_current().id
+        }
+        return self.filter(**params)
 
 class SiteObjectsManager(PolymorphicManager, SiteObjectsManagerMixin):
     pass
