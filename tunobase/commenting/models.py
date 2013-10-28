@@ -40,6 +40,9 @@ class CommentModel(core_models.StateModel, core_models.AuditModel, comment_model
                        ("view_comment", "View comment")]
         ordering = ('-order', '-created_at',)
         
+    def __unicode__(self):
+        return u'%s' % self.comment
+        
     def save(self, *args, **kwargs):
         if self.site is None:
             self.site = Site.objects.get_current()

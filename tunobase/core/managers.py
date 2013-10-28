@@ -23,7 +23,7 @@ class SiteObjectsManagerMixin(models.Manager):
         params = {
             key: Site.objects.get_current().id
         }
-        return self.filter(**params)
+        return super(SiteObjectsManagerMixin, self).get_query_set().filter(**params)
 
 class SiteObjectsManager(PolymorphicManager, SiteObjectsManagerMixin):
     pass

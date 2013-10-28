@@ -22,7 +22,7 @@ class BaseTagAbstractModel(models.Model):
         ContentType,
         related_name="content_type_set_for_%(class)s"
     )
-    object_pk = models.TextField()
+    object_pk = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
     # Metadata about the comment
@@ -60,8 +60,10 @@ class Tag(core_models.StateModel):
 class ContentObjectTag(BaseTagAbstractModel):
     tag = models.ForeignKey(Tag, related_name='content_object_tags')
     
+    objects = managers.ContentObjectTagManager()
+    
     def __unicode__(self):
-        return u'%s %s' % (self.content_object, self.tag)
+        return u'%s - %s' % (self.content_object, self.tag.title)
     
     def save(self, *args, **kwargs):
         if self.site is None:
