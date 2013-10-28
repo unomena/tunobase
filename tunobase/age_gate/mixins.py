@@ -3,7 +3,10 @@ Created on 23 Oct 2013
 
 @author: michael
 '''
+import datetime
+
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.conf import settings
 
 from tunobase.age_gate import utils
 
@@ -15,8 +18,12 @@ class AgeGateMixin(object):
     raise_exception = False  # Default whether to raise an exception to none
 
     def dispatch(self, request, *args, **kwargs):
+        location = request.session.get('user_location')
         user_date_of_birth = request.session.get('user_date_of_birth')
-        country_date_of_birth_required = request.session.get('country_date_of_birth_required')
+        
+        if location is not None:
+            age = settings.AGE_GATE_COUNTRY_LEGAL_AGES[location]
+            country_date_of_birth_required = datetime.date.today() - datetime.timedelta(days=age*365)
         
         if user_date_of_birth is not None and country_date_of_birth_required is not None:
             if  user_date_of_birth > country_date_of_birth_required:  # If the user is a standard user,

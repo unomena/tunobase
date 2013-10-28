@@ -7,7 +7,6 @@ import datetime
 
 from django.views import generic as generic_views
 from django.http import HttpResponseRedirect
-from django.conf import settings
 
 class AgeGate(generic_views.FormView):
     
@@ -20,4 +19,4 @@ class AgeGate(generic_views.FormView):
     def form_valid(self, form):
         form.save(self.request)
         
-        return super(AgeGate, self).form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())

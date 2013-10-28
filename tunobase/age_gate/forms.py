@@ -20,7 +20,7 @@ class AgeGateForm(forms.Form):
         )
     )
     terms_accept = forms.BooleanField(required=False)
-    next = forms.CharField(widget=forms.HiddenInput)
+    next = forms.CharField(widget=forms.HiddenInput, required=False)
         
     
     def clean_terms_accept(self):
@@ -30,12 +30,5 @@ class AgeGateForm(forms.Form):
         return self.cleaned_data['terms_accept']
     
     def save(self, request):
-        request.session['user_date_of_birth'] = datetime.datetime(
-            int(self.cleaned_data['birth_year']), 
-            int(self.cleaned_data['birth_month']), 
-            int(self.cleaned_data['birth_day'])
-        )
-        
-        age = settings.AGE_GATE_COUNTRY_LEGAL_AGES[self.cleaned_data['location']]
-        request.session['country_date_of_birth_required'] = \
-            datetime.datetime.now() - datetime.timedelta(days=age*365)
+        request.session['user_location'] = self.cleaned_data['location']
+        request.session['user_date_of_birth'] = self.cleaned_data['date_of_birth']
