@@ -23,6 +23,11 @@ class ContactMessage(models.Model):
     
     def __unicode__(self):
         return u'%s'  % self.name
+    
+    def save(self, *args, **kwargs):
+        if self.site is None:
+            self.site = Site.objects.get_current()
+        super(ContactMessage, self).save(*args, **kwargs)
 
 class Vacancy(core_models.ContentModel):
     '''

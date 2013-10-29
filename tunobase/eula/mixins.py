@@ -13,7 +13,7 @@ class EULAAcceptedMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            if request.user.eula_accepted.version != models.EULA.objects.latest_eula().version:  # If the user is a standard user,
+            if request.user.eula_accepted.version != models.EULA.permitted.latest_eula().version:  # If the user is a standard user,
                 if self.raise_exception:  # *and* if an exception was desired
                     raise PermissionDenied  # return a forbidden response.
                 else:

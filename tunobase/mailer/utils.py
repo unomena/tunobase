@@ -3,8 +3,6 @@ Created on 22 Oct 2013
 
 @author: michael
 '''
-import os
-
 from django.conf import settings
 from django.core.mail import get_connection, EmailMultiAlternatives
 from django.contrib.sites.models import Site

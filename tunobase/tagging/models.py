@@ -25,7 +25,7 @@ class BaseTagAbstractModel(models.Model):
     object_pk = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
-    # Metadata about the comment
+    # Metadata about the tag
     site = models.ForeignKey(Site)
 
     class Meta:

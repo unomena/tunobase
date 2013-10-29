@@ -12,11 +12,17 @@ from django.conf import settings
 from tunobase.core import models as core_models
 from tunobase.commenting import managers, constants
 
-class CommentModel(core_models.StateModel, core_models.AuditModel, comment_models.BaseCommentAbstractModel):
+class CommentModel(core_models.StateModel, core_models.AuditModel, 
+                   comment_models.BaseCommentAbstractModel):
     '''
     Comments to be used throughout the Site
     '''
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="comments")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        blank=True, 
+        null=True, 
+        related_name="comments"
+    )
     user_name = models.CharField(max_length=255, blank=True, null=True)
     user_email = models.EmailField(blank=True, null=True)
     user_url = models.URLField(blank=True, null=True)
@@ -27,18 +33,30 @@ class CommentModel(core_models.StateModel, core_models.AuditModel, comment_model
     ip_address = models.IPAddressField(blank=True, null=True)
     is_removed = models.BooleanField(default=False)
     
-    in_reply_to = models.ForeignKey('self', null=True, blank=True, related_name='replies')
-    moderated_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comments_moderated', null=True, blank=True)
+    in_reply_to = models.ForeignKey(
+        'self', 
+        null=True, 
+        blank=True, 
+        related_name='replies'
+    )
+    moderated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        related_name='comments_moderated', 
+        null=True, 
+        blank=True
+    )
     moderated_at = models.DateTimeField(null=True, blank=True)
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=0, db_index=True)
     
     objects = comment_managers.CommentManager()
     permitted = managers.CommentManager()
 
     class Meta:
-        permissions = [("can_moderate", "Can moderate comments"),
-                       ("view_comment", "View comment")]
-        ordering = ('-order', '-created_at',)
+        permissions = [
+            ("can_moderate", "Can moderate comments"),
+            ("view_comment", "View comment")
+        ]
+        ordering = ('-order', '-publish_at',)
         
     def __unicode__(self):
         return u'%s' % self.comment
@@ -52,9 +70,18 @@ class CommentFlag(core_models.AuditModel):
     '''
     Records a flag on a comment.
     '''
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="commentmodel_flags")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        blank=True, 
+        null=True, 
+        related_name="commentmodel_flags"
+    )
     comment = models.ForeignKey(CommentModel, related_name="flags")
-    flag = models.CharField(choices=constants.FLAG_CHOICES, max_length=30, db_index=True)
+    flag = models.CharField(
+        choices=constants.FLAG_CHOICES, 
+        max_length=30, 
+        db_index=True
+    )
 
     class Meta:
         unique_together = [('user', 'comment', 'flag')]

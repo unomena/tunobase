@@ -104,9 +104,7 @@ class BulkUploadForm(forms.Form):
     def clean_upload_file(self):
         self._check_file_previously_uploaded()
         
-        valid_rows = self._process_uploaded_file()
-        
-        return valid_rows
+        return self._process_uploaded_file()
 
     @transaction.commit_on_success
     def save(self, request, get_obj_callback, create_obj_callback, 
@@ -127,7 +125,7 @@ class BulkUploadForm(forms.Form):
 
             if created or self.cleaned_data['update']:
                 # Set simple fields.
-                update_obj_callback(data)
+                update_obj_callback(obj, data)
 
                 if not created:
                     update_count += 1
