@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load tagging_tags commenting_tags %}
+
+{% block title %}{{ object.title }} | {{ object.blog.title }}{% endblock %}
+
+{% block content %}
+	<h1>{{ object.blog.title }}</h1>
+	{% comment %}{% tag_cloud object.pk %}{% endcomment %}
+	<h3>{{ object.title }}</h3>
+	<h3>{% for author_user in object.authors.users %}{{ author_user }}{% endfor %}</h3>
+	<img src="{{ object.get_98x98_url }}" class="image_thumb" />
+	<p>{{ object.rich_content|safe }}</p>
+	{% commenting_widget object %}
+{% endblock %}
+
+{% block bottom_js %}
+	{% include 'commenting/includes/commenting_widget_js.html' %}
+{% endblock %}

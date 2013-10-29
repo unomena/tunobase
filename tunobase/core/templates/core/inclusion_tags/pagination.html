@@ -1,0 +1,33 @@
+{% load core_tags %}
+
+{% if object_list %}
+    <div class="pagination">
+        <p>Displaying {{page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }}</p>
+        {% if page_obj.has_other_pages %}
+            <ul>
+                {% if paginator.page_range|length > 15 %}
+                	<label for="pagionation_options">Select page</label>
+                	<select id="pagination_options" onchange="option_check()">
+                		{% for page in paginator.page_range %}
+		                    <option {% if page_obj.number == page %}selected="selected"{% endif %} value="{% smart_query_string 'page' page %}">{{ page }}</option>
+		                {% endfor %}
+                	</select>
+                {% else %}
+                	{% if page_obj.has_previous %}<li><a href="{% smart_query_string 'page' page_obj.previous_page_number %}" class="prev">Previous</a></li>{% endif %}
+	                {% for page in paginator.page_range %}
+	                    <li><a href="{% smart_query_string 'page' page %}"{% if page_obj.number == page %} class="on"{% endif %}>{{ page }}</a></li>
+	                {% endfor %}
+	                {% if page_obj.has_next %}<li><a href="{% smart_query_string 'page' page_obj.next_page_number %}" class="next">Next</a></li>{% endif %}
+	            {% endif %}
+            </ul>
+        {% endif %}
+    </div><!--/pagination-->
+    
+    <script>
+    	function option_check(){
+	    	var option = document.getElementById("pagination_options").value;
+	    	
+	    	window.location.href = window.location.href.split('?')[0] += option;
+    	}
+    </script>
+{% endif %}

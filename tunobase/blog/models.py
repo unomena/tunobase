@@ -20,8 +20,17 @@ class BlogEntry(core_models.ContentModel):
     Entries per Blog
     '''
     blog = models.ForeignKey(Blog)
-    author_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='blog_entries_authored', null=True, blank=True)
-    authors_alternate = models.CharField(max_length=512, blank=True, null=True)
+    author_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, 
+        related_name='blog_entries_authored', 
+        null=True, 
+        blank=True
+    )
+    authors_alternate = models.CharField(
+        max_length=512, 
+        blank=True, 
+        null=True
+    )
     
     default_manager = core_managers.SiteObjectsManager()
 
@@ -43,14 +52,12 @@ class BlogEntry(core_models.ContentModel):
         auth_users = self.author_users.all()
         if auth_users:
             authors_dict.update({
-                'type': 'users',
-                'list': auth_users
+                'users': auth_users
             })
             
         if self.authors_alternate:
             authors_dict.update({
-                'type': 'alternate',
-                'list': self.authors_alternate.split(',')
+                'alternate': self.authors_alternate.split(',')
             })
         
         return authors_dict

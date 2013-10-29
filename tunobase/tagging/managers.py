@@ -11,18 +11,18 @@ from tunobase.core import managers as core_managers
 
 class ContentObjectTagManager(models.Manager):
     
-    def get_tags_for_object(self, model, pk, site=None):
+    def get_tags_for_object(self, obj, site=None):
         return super(ContentObjectTagManager, self).get_query_set().filter(
-            content_type=ContentType.objects.get_for_model(model),
-            object_pk=pk,
+            content_type=ContentType.objects.get_for_model(obj),
+            object_pk=obj.pk,
             site=site
         )
         
-    def get_unique_tags_for_object(self, model, pk, site=None):
-        return self.get_tags_for_object(model, pk, site).distinct()
+    def get_unique_tags_for_object(self, obj, site=None):
+        return self.get_tags_for_object(obj, site).distinct()
     
-    def get_tag_counts_for_object(self, model, pk, site=None):
-        content_object_tags = self.get_tags_for_object(model, pk, site)
+    def get_tag_counts_for_object(self, obj, site=None):
+        content_object_tags = self.get_tags_for_object(obj, site)
         tag_counter_dict = {}
         
         for content_object_tag in content_object_tags:

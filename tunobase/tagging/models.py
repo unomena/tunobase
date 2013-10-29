@@ -63,7 +63,7 @@ class ContentObjectTag(BaseTagAbstractModel):
     objects = managers.ContentObjectTagManager()
     
     def __unicode__(self):
-        return u'%s - %s' % (self.content_object, self.tag.title)
+        return u'%s %s - %s' % (self.content_type, self.object_pk, self.tag.title)
     
     def save(self, *args, **kwargs):
         if self.site is None:

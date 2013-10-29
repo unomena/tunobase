@@ -1,0 +1,15 @@
+<form id="frmComment" action="{% url 'post_comment' %}" method="POST">{% csrf_token %}
+	<input type="hidden" id="id_comment_content_type_id" name="comment_content_type_id" value="{{ content_type_id }}" />
+	<input type="hidden" id="id_comment_object_pk" name="comment_object_pk" value="{{ object.pk }}" />
+	<textarea id="id_comment_box" name="comment_box" class="required" maxlength="50"></textarea>
+	<input type="submit" value="Comment" />
+</form>
+
+<p><span id="comment_widget_comment_count">{{ comments|length }}</span> <span id="comment_widget_comment_description">Comment{{ comments|length|pluralize }}</span></p>
+<div id="comment_widget_container">
+	{% for comment in comments %}
+		{% include 'commenting/includes/comment.html' %}
+	{% empty %}
+		<p>There are no comments yet</p>
+	{% endfor %}
+</div>

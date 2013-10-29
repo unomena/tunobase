@@ -63,3 +63,15 @@ def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
     
 def is_path(path):
     return len(path.split('/')) > 1
+
+def create_crumb(title, url=None):
+    '''
+    Helper function
+    '''
+    crumb = '<img src="/static/breadcrumbs/img/crumb.png" />'
+    if url:
+        crumb = "%s<a href='%s'>%s</a>" % (crumb, url, title)
+    else:
+        crumb = "%s&nbsp;%s" % (crumb, title)
+
+    return crumb

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load core_tags tagging_tags %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+	<h1>{{ object.title }}</h1>
+	{% comment %}{% tag_cloud_widget object.slug %}{% endcomment %}
+	{% for object in object_list %}
+        <div class="listing">
+            <h3><a href="{% url 'blog_entry_detail' object.slug %}">{{ object.title }}</a></h3>
+            <h3>{% for author_user in object.authors.users %}{{ author_user }}{% endfor %}</h3>
+            <img src="{{ object.get_98x98_url }}" class="image_thumb" />
+            <p>{{ object.rich_content|safe|truncatewords_html:40 }}<a href="{% url 'blog_entry_detail' object.slug %}" class="link">Read More</a></p>
+            {% tags_widget object %}
+        </div>
+    {% empty %}
+        <p>There are no blog entries to display.</p>
+    {% endfor %}
+	{% pagination page_obj %}
+{% endblock %}

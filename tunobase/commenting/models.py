@@ -60,11 +60,13 @@ class CommentModel(core_models.StateModel, core_models.AuditModel,
         
     def __unicode__(self):
         return u'%s' % self.comment
+    
+    @property
+    def author(self):
+        if self.user is None:
+            return self.user_name
         
-    def save(self, *args, **kwargs):
-        if self.site is None:
-            self.site = Site.objects.get_current()
-        super(CommentModel, self).save(*args, **kwargs)
+        return self.user.display_name
         
 class CommentFlag(core_models.AuditModel):
     '''
