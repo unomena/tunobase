@@ -21,7 +21,6 @@ class PostComment(generic_views.FormView):
     
     def form_valid(self, form):
         comment = form.save()
-        
         num_comments = models.CommentModel.permitted.count()
         
         return core_utils.respond_with_json({
