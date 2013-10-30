@@ -1,14 +1,12 @@
-{% for tag in tags %}
+<form class="new_tag_form" method="post" action="{% url 'update_tags' %}">{% csrf_token %}
+	<ul class="tag_widget_tags {% if user.is_admin %}admin{% endif %}">
+	    {% for tag in tags %}
+	        <li>{{ tag.title }}</li>
+	    {% endfor %}
+	</ul>
 	{% if user.is_admin %}
-        <a href="javascript: void(0);" class="tag tag_open"><span class="tag_l"></span><span>{{ tag.title }}</span><span class="tag_r"></span></a>
-        
-        <form id="frmNewTag_{{ forloop.counter }}" class="new_tag_form" method="post" action="#">{% csrf_token %}
-	        <label for="tag_input">Tag</label>
-	        <input type="hidden" name="tag_id" value="{% if tag.id %}{{ tag.id }}{% endif %}" />
-	        <input type="text" id="tag_input" name="tag" value="{% if tag.id %}{{ tag.title }}{% else %}Create New Tag{% endif %}" onfocus="if (this.value == 'Create New Tag') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Create New Tag';}" maxlength="32" class="required" />
-	        <a href="javascript: void(0);" class="tag_action" id="tag_save_{{ forloop.counter }}">Save</a> or <a href="javascript: void(0);" class="tag_close">Close</a> or <a href="javascript: void(0);" class="tag_action" id="delete">Delete</a>
-	    </form>
-    {% else %}
-        <span class="tag">{{ tag.title }}</span>
+	   <input type="hidden" name="tag_content_type_id" value="{{ content_type_id }}" />
+	   <input type="hidden" name="tag_object_pk" value="{{ object.pk }}" />
+	   <a href="javascript: void(0);" class="tag_save" id="tag_save_{{ forloop.counter }}">Save</a> or <a href="javascript: void(0);" class="tag_clear">Clear</a>
     {% endif %}
-{% endfor %}
+</form>

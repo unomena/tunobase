@@ -9,7 +9,6 @@ from django.contrib.contenttypes import generic
 from django.contrib.sites.models import Site
 from django.core import urlresolvers
 
-from tunobase.core import models as core_models
 from tunobase.tagging import managers
 
 class BaseTagAbstractModel(models.Model):
@@ -40,7 +39,7 @@ class BaseTagAbstractModel(models.Model):
             args=(self.content_type_id, self.object_pk)
         )
 
-class Tag(core_models.StateModel):
+class Tag(models.Model):
     '''
     Unique tags on the Site
     '''
@@ -48,8 +47,7 @@ class Tag(core_models.StateModel):
     description = models.TextField(null=True, blank=True)
     site = models.ForeignKey(Site, blank=True, null=True)
     
-    objects = models.Manager()
-    permitted = managers.TagManager()
+    objects = managers.TagManager()
     
     class Meta:
         unique_together = [('title', 'site')]

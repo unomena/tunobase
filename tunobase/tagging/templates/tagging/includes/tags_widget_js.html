@@ -1,25 +1,33 @@
 {% if user.is_admin %}
-	<script>
-	    $('.new_tag_form').each(function(index, new_tag_form){
-		    $(new_tag_form).validate({
-		        submitHandler: function(form){
-		            $(form).ajaxSubmit({
-		                success: function(data){
-		                    data = JSON.parse(data);
-		                    if(data.success){
-		                        $('#comment_widget_comment_count').html(data.num_comments);
-		                        $('#comment_widget_container').prepend(data.comment);
-		                        
-		                        if(data.num_comments == 0 || data.num_comments > 1){
-		                            $('#comment_widget_comment_description').html('Comments');
-		                        }else{
-		                            $('#comment_widget_comment_description').html('Comment');
-		                        }
-		                    }
-		                }
-		            });
-		        }
-		    });
-	    });
-	</script>
+<script>
+    $('.tag_widget_tags.admin').tagit({
+    	autocomplete: {
+    		delay: 0,
+    		minLength: 2,
+    		source: "{% url 'retrieve_tags' %}"
+    	}
+    });
+    
+    $('.tag_save').click(function(e){
+    	var self = this;
+        $(self).parent().ajaxSubmit({
+        	beforeSubmit: function(){
+        		$(self).html('Saving...');
+        	},
+            success: function(data){
+                data = JSON.parse(data);
+                if(data.success){
+                	$(self).html('Saved!');
+                	setTimeout(function(){
+                		$(self).html('Save');
+                	}, 3000);
+                }
+            }
+        });
+     });
+    
+    $('.tag_clear').click(function(e){
+        $(this).parent().find('.tag_widget_tags.admin').tagit('removeAll');
+     });
+</script>
 {% endif %}

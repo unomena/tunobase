@@ -19,3 +19,7 @@
     {% endfor %}
 	{% pagination page_obj %}
 {% endblock %}
+
+{% block bottom_js %}
+    {% include 'tagging/includes/tags_widget_js.html' %}
+{% endblock %}
