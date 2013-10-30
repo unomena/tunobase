@@ -28,11 +28,11 @@ class BulkUploadForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         self.validator_form = kwargs.pop('validator_form', None)
-        self.unique_field_names = kwargs.pop('unique_field_name', None)
+        self.unique_field_names = kwargs.pop('unique_field_names', [])
         
-        if self.validator_form is None or self.unique_field_names is None:
+        if self.validator_form is None:
             raise ImproperlyConfigured(
-                "kwargs `validator_form` and `unique_field_names` are required"
+                "kwargs `validator_form` is required"
             )
         super(BulkUploadForm, self).__init__(*args, **kwargs)
         
@@ -125,7 +125,7 @@ class BulkUploadForm(forms.Form):
 
             if created or self.cleaned_data['update']:
                 # Set simple fields.
-                update_obj_callback(obj, data)
+                update_obj_callback(obj, data, created)
 
                 if not created:
                     update_count += 1

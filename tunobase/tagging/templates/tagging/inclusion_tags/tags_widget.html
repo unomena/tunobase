@@ -2,11 +2,11 @@
 	{% if user.is_admin %}
         <a href="javascript: void(0);" class="tag tag_open"><span class="tag_l"></span><span>{{ tag.title }}</span><span class="tag_r"></span></a>
         
-        <form id="frmTag" method="post" action="#">{% csrf_token %}
+        <form id="frmNewTag_{{ forloop.counter }}" class="new_tag_form" method="post" action="#">{% csrf_token %}
 	        <label for="tag_input">Tag</label>
 	        <input type="hidden" name="tag_id" value="{% if tag.id %}{{ tag.id }}{% endif %}" />
-	        <input type="text" id="tag_input" name="tag" value="{% if tag.id %}{{ tag.title }}{% else %}Create New Tag{% endif %}" onfocus="if (this.value == 'Create New Tag') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Create New Tag';}" maxlength="32"/>
-	        <a href="javascript: void(0);" class="tag_action" id="save">Save</a> or <a href="javascript: void(0);" class="close">Close</a> or <a href="javascript: void(0);" class="tag_action" id="delete">Delete</a>
+	        <input type="text" id="tag_input" name="tag" value="{% if tag.id %}{{ tag.title }}{% else %}Create New Tag{% endif %}" onfocus="if (this.value == 'Create New Tag') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Create New Tag';}" maxlength="32" class="required" />
+	        <a href="javascript: void(0);" class="tag_action" id="tag_save_{{ forloop.counter }}">Save</a> or <a href="javascript: void(0);" class="tag_close">Close</a> or <a href="javascript: void(0);" class="tag_action" id="delete">Delete</a>
 	    </form>
     {% else %}
         <span class="tag">{{ tag.title }}</span>
