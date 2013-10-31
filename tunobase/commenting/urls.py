@@ -14,4 +14,11 @@ urlpatterns = patterns('',
         ),
         name='post_comment'
     ),
+                       
+    url(r'^load-more-comments/$',
+        views.LoadMoreComments.as_view(
+            form_class=forms.LoadCommentsForm
+        ),
+        name='load_more_comments'
+    ),
 )

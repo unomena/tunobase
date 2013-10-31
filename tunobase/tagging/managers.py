@@ -19,15 +19,26 @@ class ContentObjectTagManager(models.Manager):
                 site=site
             )
         
-    def get_unique_tags_for_object(self, obj, site=None):
-        return self.get_tags_for_object(obj, site).distinct()
+    def get_unique_tags_for_object_type(self, app_label, model, site=None):
+        tags = set()
+        content_object_tags = super(ContentObjectTagManager, self).get_query_set()\
+            .select_related('tag')\
+            .filter(
+                content_type=ContentType.objects.get_by_natural_key(app_label, model),
+                site=site
+            )
+            
+        for content_object_tag in content_object_tags:
+            tags.add(content_object_tag.tag.title)
+            
+        return tags
     
-    def get_tag_counts_for_object(self, obj, site=None):
-        content_object_tags = self.get_tags_for_object(obj, site)
+    def get_tag_counts_for_object_type(self, app_label, model, site=None):
+        tags = self.get_unique_tags_for_object_type(app_label, model, site)
         tag_counter_dict = {}
         
-        for content_object_tag in content_object_tags:
-            title = content_object_tag.tag.title
+        for tag in tags:
+            title = tag.title
             if title in tag_counter_dict:
                 tag_counter_dict[title] += 1
             else:

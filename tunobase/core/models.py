@@ -33,7 +33,7 @@ class StateModel(models.Model):
     retract_at = models.DateTimeField(blank=True, null=True)
     
     objects = models.Manager()
-    permitted = managers.StateManager()
+    permitted = managers.StateManagerMixin()
     
     class Meta:
         ordering = ['-publish_at']
@@ -109,6 +109,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     default_image_category = 'content'
     
     objects = managers.SiteObjectsManager()
+    permitted = managers.StateManager()
     
     def __unicode__(self):
         return u'%s' % self.title
@@ -121,6 +122,12 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
             self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
 
         super(ContentModel, self).save(*args, **kwargs)
+        
+class ContentBlock(ContentModel):
+    '''
+    Used for portlets placed throughout the Site where
+    just a block on content is needed.
+    '''
 
 class DefaultImage(ImageModel, StateModel):
     '''

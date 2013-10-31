@@ -14,6 +14,8 @@ class TagUpdateForm(forms.Form):
     tag_object_pk = forms.CharField()
     
     def save(self, tags):
+        # coerce tags to a set to avoid duplicates
+        tags = set(tags)
         site = Site.objects.get_current()
         content_object_tags = []
         

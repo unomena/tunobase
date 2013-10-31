@@ -2,8 +2,8 @@
 <script>
     $('.tag_widget_tags.admin').tagit({
     	autocomplete: {
-    		delay: 0,
-    		minLength: 2,
+    		delay: 2,
+    		minLength: 1,
     		source: "{% url 'retrieve_tags' %}"
     	}
     });

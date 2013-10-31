@@ -11,6 +11,17 @@ from django.utils import timezone
 from tunobase.core import models as core_models, managers as core_managers
 from tunobase.corporate.media import constants, managers
 
+class Article(core_models.ContentModel):
+    '''
+    Company's articles
+    '''
+    default_image_category = 'article'
+    
+    default_manager = core_managers.SiteObjectsManager()
+    
+    class Meta:
+        ordering = ['-publish_at']
+
 class PressRelease(core_models.ContentModel):
     '''
     Company's press releases

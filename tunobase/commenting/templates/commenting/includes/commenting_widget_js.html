@@ -1,21 +1,51 @@
 <script>
-	$('new_tag_form').validate({
+	$('#frmComment').validate({
 		submitHandler: function(form){
 			$(form).ajaxSubmit({
 				success: function(data){
 					data = JSON.parse(data);
 					if(data.success){
+						$('#id_comment_box').val('');
 						$('#comment_widget_comment_count').html(data.num_comments);
-						$('#comment_widget_container').prepend(data.comment);
+						
+						if($('.commenting_comment').length > 0){
+							$('#comment_widget_container').prepend(data.comment);
+						} else{
+							$('#comment_widget_container').html(data.comment);
+						}
+						
 						
 						if(data.num_comments == 0 || data.num_comments > 1){
 							$('#comment_widget_comment_description').html('Comments');
 						}else{
 							$('#comment_widget_comment_description').html('Comment');
 						}
+					} else{
+						alert(data.reason);
 					}
 				}
 			});
 		}
+	});
+	
+	$('#comment_widget_container').on('click', '#comment_widget_load_more', function(e){
+		var self = this;
+		
+		$.get(
+			"{% url 'load_more_comments' %}", 
+			{
+				'page': $(self).attr('data-next-page'),
+				'comment_content_type_id': $(self).attr('data-content-type-id'),
+				'comment_object_pk': $(self).attr('data-content-object-pk'),
+				'paginate_by': $(self).attr('data-paginate-by')
+			}, 
+			function(data){
+				data = JSON.parse(data);
+				if(data.success){
+					$(self).remove();
+				    $('#comment_widget_container').append(data.comments);
+				}
+		    }
+		);
 	});
 </script>

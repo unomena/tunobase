@@ -10,9 +10,9 @@ from tunobase.core import managers as core_managers
 
 class CommentManager(core_managers.StateManagerMixin, comment_managers.CommentManager):
     
-    def get_comments_for_object(self, obj, site=None):
+    def get_comments_for_object(self, content_type_id, object_pk, site=None):
         return super(CommentManager, self).get_query_set().filter(
-            content_type=ContentType.objects.get_for_model(obj),
-            object_pk=obj.pk,
+            content_type_id=content_type_id,
+            object_pk=object_pk,
             site=site
         )

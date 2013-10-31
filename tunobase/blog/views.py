@@ -6,6 +6,8 @@ Created on 29 Oct 2013
 from django.http import Http404
 from django.views import generic as generic_views
 from django.contrib.syndication.views import Feed
+from django.contrib.sites.models import Site
+from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.utils.html import strip_tags
 
@@ -24,14 +26,22 @@ class BlogDetail(core_views.ListWithDetailView):
 
     def get_queryset(self):
         if 'tag' in self.request.GET:
-            return tagging_models.ContentObjectTag.objects.filter(
-                tag__title__iexact=self.request.GET['tag'],
-                content_object__state__in=[
-                    core_constants.STATE_STAGED, 
-                    core_constants.STATE_PUBLISHED
-                ],
-                content_object__blog=self.object
-            )
+            site = Site.objects.get_current()
+            content_object_tags = tagging_models.ContentObjectTag.objects\
+                .select_related('content_object').filter(
+                    tag__title__iexact=self.request.GET['tag'],
+                    content_type=ContentType.objects.get_for_model(models.BlogEntry),
+                    site=site
+                )
+            
+            blog_entries = []
+            for content_object_tag in content_object_tags:
+                if content_object_tag.content_object.state in [
+                    core_constants.STATE_PUBLISHED, core_constants.STATE_STAGED
+                   ]:
+                    blog_entries.append(content_object_tag.content_object)
+                    
+            return blog_entries
         
         return models.BlogEntry.permitted.filter(blog=self.object)
 

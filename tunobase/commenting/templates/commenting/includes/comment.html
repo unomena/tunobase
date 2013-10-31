@@ -1,7 +1,9 @@
-<p>{{ comment.publish_at }}</p>
-<strong>{{ comment.author }} commented:</strong>
-{% if not comment.is_removed %}
-	<p>{{ comment.comment }}</p>
-{% else %}
-	<p><strong><i>This comment has been removed.</i></strong></p>
-{% endif %}
+<div class="commenting_comment">
+	<p>{{ comment.publish_at }}</p>
+	<strong>{{ comment.author }} commented:</strong>
+	{% if not comment.is_removed %}
+		<p>{{ comment.comment }}</p>
+	{% else %}
+		<p><strong><i>This comment has been removed.</i></strong></p>
+	{% endif %}
+</div>

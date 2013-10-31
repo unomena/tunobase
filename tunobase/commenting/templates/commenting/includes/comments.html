@@ -1,0 +1,9 @@
+{% for comment in comments %}
+    {% include 'commenting/includes/comment.html' %}
+{% empty %}
+    <p>There are no comments yet</p>
+{% endfor %}
+
+{% if comments.has_next %}
+   <a id="comment_widget_load_more" data-next-page="{{ comments.next_page_number }}" data-content-type-id="{{ content_type_id }}" data-content-object-pk="{{ object_pk }}" data-paginate-by="{{ paginate_by }}" href="javascript: void(0);">Load More</a>
+{% endif %}
