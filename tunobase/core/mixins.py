@@ -10,6 +10,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
+from django.template import RequestContext
 from django.conf import settings
 
 from tunobase.core import utils as core_utils
@@ -32,18 +33,17 @@ class AjaxMorePaginationMixin(object):
         if page is not None:
             if hasattr(self, 'get_object'):
                 self.object = self.get_object()
-                
             self.queryset = self.get_queryset()
-            
-            paginator = Paginator(self.queryset, self.paginate_by)
+            paginate_by = request.GET.get('paginate_by', self.paginate_by)
+            paginator = Paginator(self.queryset, paginate_by)
             object_list= paginator.page(page)
             has_next = object_list.has_next()
             
             return core_utils.respond_with_json({
                 'success': True,
-                'content': render_to_string(self.partial_template_name, {
+                'content': render_to_string(self.partial_template_name, RequestContext(request, {
                     'object_list': object_list
-                }),
+                })),
                 'has_next': has_next,
                 'next_page_number': object_list.next_page_number() if has_next else 0
             })

@@ -1,14 +1,16 @@
 {% if user.is_admin %}
 <script>
-    $('.tag_widget_tags.admin:not(.ui-widget)').tagit({
-    	autocomplete: {
-    		delay: 2,
-    		minLength: 1,
-    		source: "{% url 'retrieve_tags' %}"
-    	}
-    });
+	function tagify(){
+		$('.tag_widget_tags.admin:not(.ui-widget)').tagit({
+	    	autocomplete: {
+	    		delay: 2,
+	    		minLength: 1,
+	    		source: "{% url 'retrieve_tags' %}"
+	    	}
+	    });	
+	}
     
-    $('.tag_save').click(function(e){
+    $('body').on('click', '.tag_save', function(e){
     	var self = this;
         $(self).parent().ajaxSubmit({
         	beforeSubmit: function(){
@@ -26,8 +28,10 @@
         });
      });
     
-    $('.tag_clear').click(function(e){
+    $('body').on('click', '.tag_clear', function(e){
         $(this).parent().find('.tag_widget_tags.admin').tagit('removeAll');
-     });
+    });
+    
+    tagify();
 </script>
 {% endif %}

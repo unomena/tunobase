@@ -4,37 +4,40 @@ Created on 29 Oct 2013
 @author: michael
 '''
 from copy import copy
+import urllib
 
 from django import template
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator
+from django.core.urlresolvers import reverse_lazy
 
-from tunobase.commenting import models, forms
+from tunobase.commenting import models
 
 register = template.Library()
 
-@register.inclusion_tag('commenting/inclusion_tags/commenting_widget.html', takes_context=True)
-def commenting_widget(context, obj, paginate_by=1):
+@register.inclusion_tag('commenting/inclusion_tags/commenting_widget.html', 
+                        takes_context=True)
+def commenting_widget(context, obj, paginate_by=2):
     context = copy(context)
     content_type_id= ContentType.objects.get_for_model(obj).id
-    comments_form = forms.LoadCommentsForm({
-        'paginate_by': paginate_by,
-        'page': 1,
-        'comment_content_type_id': content_type_id,
-        'comment_object_pk': obj.pk,
+    comments = models.CommentModel.permitted.get_comments_for_object(
+        content_type_id, 
+        obj.pk
+    )
+    paginator = Paginator(comments, paginate_by)
+    page = paginator.page(1)
+    params = urllib.urlencode({
+        'content_type_id': content_type_id, 
+        'object_pk': obj.pk,
+        'paginate_by': paginate_by
     })
-    
-    if comments_form.is_valid():
-        comments, total_comments = comments_form.retrieve()
-    else:
-        comments, total_comments = None, 0
         
     context.update({
-        'paginate_by': paginate_by,
-        'object': obj,
-        'object_pk': obj.pk,
         'content_type_id': content_type_id,
-        'comments': comments,
-        'total_comments': total_comments
+        'object': obj,
+        'object_list': page,
+        'page_obj': page,
+        'load_more_url': '%s?%s' % (reverse_lazy('load_more_comments'), params)
     })
     
     return context

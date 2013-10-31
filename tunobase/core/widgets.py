@@ -6,19 +6,33 @@ Created on 25 Oct 2013
 import datetime
 
 from django.forms import widgets
+from django.utils.translation import ugettext as _
 
 class DateSelectorWidget(widgets.MultiWidget):
+    month_mapping = {
+        1: _('Jan'),
+        2: _('Feb'),
+        3: _('Mar'),
+        4: _('Apr'),
+        5: _('May'),
+        6: _('Jun'),
+        7: _('Jul'),
+        8: _('Aug'),
+        9: _('Sep'),
+        10: _('Oct'),
+        11: _('Nov'),
+        12: _('Dec')
+    }
+    
     def __init__(self, attrs=None, min_num_years_back=10, max_num_years_back=-1, 
                  reverse_years=False):
         # create choices for days, months, years
         # example below, the rest snipped for brevity.
-        if max_num_years_back > 0:
+        if max_num_years_back >= 0:
             max_num_years_back -= 1
-        else:
-            max_num_years_back = -1
         
         days = [(year, year) for year in range(1, 32)]
-        months = [(year, year) for year in range(1, 13)]
+        months = [(year, self.month_mapping[year]) for year in range(1, 13)]
         
         if reverse_years:
             years = [(year, year) for year in reversed(range(

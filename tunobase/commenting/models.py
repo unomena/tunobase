@@ -5,6 +5,7 @@ Created on 28 Oct 2013
 '''
 from django.db import models
 from django.contrib.comments import models as comment_models, managers as comment_managers
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site
 from django.conf import settings

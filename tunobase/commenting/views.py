@@ -4,9 +4,10 @@ Created on 29 Oct 2013
 @author: michael
 '''
 from django.views import generic as generic_views
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
-from tunobase.core import utils as core_utils
+from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.commenting import models, exceptions
 
 class PostComment(generic_views.FormView):
@@ -20,7 +21,7 @@ class PostComment(generic_views.FormView):
                 'success': True,
                 'comment': render_to_string(
                     'commenting/includes/comment.html', 
-                    {'comment': comment}
+                    RequestContext(self.request, {'comment': comment})
                 ),
                 'num_comments': num_comments
             })
@@ -32,51 +33,14 @@ class PostComment(generic_views.FormView):
         
     def form_invalid(self, form):
         return core_utils.respond_with_json({
-            'success': False
+            'success': False,
+            'reason': str(form.errors)
         })
         
-class LoadMoreComments(generic_views.FormView):
+class LoadMoreComments(core_mixins.AjaxMorePaginationMixin, generic_views.ListView):
     
-    def get_form_kwargs(self):
-        '''
-        Returns the keyword arguments for instantiating the form.
-        '''
-        kwargs = {'initial': self.get_initial()}
-        if self.request.method == 'GET':
-            kwargs.update({
-                'data': self.request.GET
-            })
-            
-        return kwargs
-    
-    def get(self, request, *args, **kwargs):
-        '''
-        Handles GET requests.
-        '''
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-        
-    
-    def form_valid(self, form):
-        comments, _ = form.retrieve()
-        
-        return core_utils.respond_with_json({
-            'success': True,
-            'comments': render_to_string(
-                'commenting/includes/comments.html', {
-                   'comments': comments,
-                   'content_type_id': form.cleaned_data['comment_content_type_id'],
-                   'object_pk': form.cleaned_data['comment_object_pk'],
-                   'paginate_by': form.cleaned_data['paginate_by']
-                }
-            )
-        })
-        
-    def form_invalid(self, form):
-        return core_utils.respond_with_json({
-            'success': False
-        })
+    def get_queryset(self):
+        return models.CommentModel.permitted.get_comments_for_object(
+            self.request.GET['content_type_id'],
+            self.request.GET['object_pk'],
+        )

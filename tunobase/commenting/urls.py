@@ -17,7 +17,7 @@ urlpatterns = patterns('',
                        
     url(r'^load-more-comments/$',
         views.LoadMoreComments.as_view(
-            form_class=forms.LoadCommentsForm
+            partial_template_name='commenting/includes/comments.html'
         ),
         name='load_more_comments'
     ),

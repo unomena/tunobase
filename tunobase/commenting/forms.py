@@ -6,7 +6,6 @@ Created on 29 Oct 2013
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
-from django.core.paginator import Paginator
 from django.utils import timezone
 from django.conf import settings
 
@@ -22,22 +21,24 @@ class CommentForm(forms.Form):
     
     def save(self, request):
         ip_address = core_utils.get_client_ip(request)
-        comment_delay_minutes = getattr(settings, 'COMMENT_DELAY_MINUTES', 0)
-        comment_delay_seconds = getattr(settings, 'COMMENT_DELAY_SECONDS', 0)
+        comment_period_minutes = getattr(settings, 'COMMENT_PERIOD_MINUTES', 0)
+        comment_period_seconds = getattr(settings, 'COMMENT_PERIOD_SECONDS', 0)
+        num_comments_allowed_in_period = \
+            getattr(settings, 'NUM_COMMENTS_ALLOWED_IN_PERIOD', 5)
         
-        if comment_delay_minutes or comment_delay_seconds:
+        if comment_period_minutes or comment_period_seconds:
             latest_comment_list = list(
                 models.CommentModel.objects.filter(
-                    ip_address=ip_address).order_by('-publish_at'
-                )[:5]
+                    ip_address=ip_address
+                ).order_by('-publish_at')[:num_comments_allowed_in_period]
             )
-            if len(latest_comment_list) == 5:
-                latest_comment = latest_comment_list[-1]
-                if latest_comment.publish_at > timezone.now() - \
+            if len(latest_comment_list) == num_comments_allowed_in_period:
+                oldest_comment = latest_comment_list[-1]
+                if oldest_comment.publish_at > timezone.now() - \
                    timezone.timedelta(
-                       minutes=comment_delay_minutes, 
-                       seconds=comment_delay_seconds
-                    ):
+                       minutes=comment_period_minutes, 
+                       seconds=comment_period_seconds
+                   ):
                     raise exceptions.RapidCommentingError(
                         "You are commenting too quickly. "
                         "Please wait before commenting again"
@@ -61,22 +62,5 @@ class CommentForm(forms.Form):
         )
         
         return comment
-    
-class LoadCommentsForm(forms.Form):
-    comment_content_type_id = forms.IntegerField()
-    comment_object_pk = forms.CharField()
-    page = forms.IntegerField()
-    paginate_by = forms.IntegerField()
-    
-    def retrieve(self):
-        comments = models.CommentModel.permitted.get_comments_for_object(
-            self.cleaned_data['comment_content_type_id'],
-            self.cleaned_data['comment_object_pk'],
-            site=Site.objects.get_current()
-        )
-        
-        paginator = Paginator(comments, self.cleaned_data['paginate_by'])
-            
-        return paginator.page(self.cleaned_data['page']), paginator.count
         
         
