@@ -8,7 +8,47 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
+from django.core.paginator import Paginator
+from django.template.loader import render_to_string
 from django.conf import settings
+
+from tunobase.core import utils as core_utils
+
+class AjaxMorePaginationMixin(object):
+    '''
+    View mixin that returns JSON paginated data
+    '''
+    partial_template_name = None
+    
+    def dispatch(self, request, *args, **kwargs):
+        if self.partial_template_name is None:
+            raise ImproperlyConfigured(
+                "'AjaxMorePaginationMixin' requires "
+                "'partial_template_name' attribute to be set."
+            )
+        
+        page = request.GET.get('page', None)
+        
+        if page is not None:
+            if hasattr(self, 'get_object'):
+                self.object = self.get_object()
+                
+            self.queryset = self.get_queryset()
+            
+            paginator = Paginator(self.queryset, self.paginate_by)
+            object_list= paginator.page(page)
+            has_next = object_list.has_next()
+            
+            return core_utils.respond_with_json({
+                'success': True,
+                'content': render_to_string(self.partial_template_name, {
+                    'object_list': object_list
+                }),
+                'has_next': has_next,
+                'next_page_number': object_list.next_page_number() if has_next else 0
+            })
+            
+        return super(AjaxMorePaginationMixin, self).dispatch(request, *args, **kwargs)
 
 class LoginRequiredMixin(object):
     '''
@@ -62,8 +102,6 @@ class PermissionRequiredMixin(object):
 
         # Check to see if the request's user has the required permission.
         has_permission = request.user.has_perm(self.permission_required)
-        
-        print has_permission
 
         if not has_permission:  # If the user lacks the permission
             if self.raise_exception:  # *and* if an exception was desired

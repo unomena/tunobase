@@ -1,0 +1,25 @@
+<script>
+	$('body').on('click', '#pagination_load_more', function(e){
+	    var self = this;
+	    
+	    $.get(
+	        $(self).attr('href'),
+	        {'page': $(self).attr('data-page')},
+	        function(data){
+	            data = JSON.parse(data);
+	            if(data.success){
+	                $(self).before(data.content);
+	                
+	                if(data.has_next){
+	                	$(self).attr('data-page', data.next_page_number);
+	                }
+	                else{
+	                	$(self).remove();
+	                }
+	            }
+	        }
+	    );
+	    
+	    return false;
+	});
+</script>

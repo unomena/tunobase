@@ -1,6 +1,6 @@
 {% if user.is_admin %}
 <script>
-    $('.tag_widget_tags.admin').tagit({
+    $('.tag_widget_tags.admin:not(.ui-widget)').tagit({
     	autocomplete: {
     		delay: 2,
     		minLength: 1,

@@ -24,8 +24,9 @@ urlpatterns = patterns('',
 
     url(r'^(?P<slug>[\w-]+)/$',
         views.BlogDetail.as_view(
-            paginate_by=6, 
-            template_name='blog/blog_detail.html'
+            paginate_by=1, 
+            template_name='blog/blog_detail.html',
+            partial_template_name='blog/includes/blog_entries.html'
         ),
         name='blog_detail'
     ),

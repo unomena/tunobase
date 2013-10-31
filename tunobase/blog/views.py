@@ -12,11 +12,11 @@ from django.conf import settings
 from django.utils.html import strip_tags
 
 from tunobase.core import views as core_views, utils as core_utils, \
-    constants as core_constants
+    constants as core_constants, mixins as core_mixins
 from tunobase.tagging import models as tagging_models
 from tunobase.blog import models
 
-class BlogDetail(core_views.ListWithDetailView):
+class BlogDetail(core_mixins.AjaxMorePaginationMixin, core_views.ListWithDetailView):
 
     def get_object(self):
         return core_utils.get_permitted_object_or_404(

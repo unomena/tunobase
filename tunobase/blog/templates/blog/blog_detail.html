@@ -1,25 +1,17 @@
 {% extends 'base.html' %}
-{% load core_tags tagging_widgets %}
+{% load core_widgets tagging_widgets %}
 
 {% block title %}Blog{% endblock %}
 
 {% block content %}
 	<h1>{{ object.title }}</h1>
 	{% tag_cloud_widget 'blog' 'blogentry' %}
-	{% for object in object_list %}
-        <div class="listing">
-            <h3><a href="{% url 'blog_entry_detail' object.slug %}">{{ object.title }}</a></h3>
-            <h3>{% for author_user in object.authors.users %}{{ author_user }}{% endfor %}</h3>
-            <img src="{{ object.get_98x98_url }}" class="image_thumb" />
-            <p>{{ object.rich_content|safe|truncatewords_html:40 }}<a href="{% url 'blog_entry_detail' object.slug %}" class="link">Read More</a></p>
-            {% tags_widget object %}
-        </div>
-    {% empty %}
-        <p>There are no blog entries to display.</p>
-    {% endfor %}
-	{% pagination page_obj %}
+	{% include 'blog/includes/blog_entries.html' %}
+	{% comment %}{% pagination page_obj %}{% endcomment %}
+	{% ajax_more_pagination_widget page_obj request.path %}
 {% endblock %}
 
 {% block bottom_js %}
     {% include 'tagging/includes/tags_widget_js.html' %}
+    {% include 'core/includes/ajax_more_pagination_js.html' %}
 {% endblock %}

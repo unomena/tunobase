@@ -49,7 +49,7 @@ class UrlBreadcrumbNode(Node):
     def render(self, context):
         title = self.title.var
 
-        if title.find("'")==-1 and title.find('"')==-1:
+        if title.find("'") == -1 and title.find('"') == -1:
             try:
                 val = self.title
                 title = val.resolve(context)
