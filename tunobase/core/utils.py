@@ -60,9 +60,6 @@ def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
         return queryset.for_current_site().get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         raise http.Http404('No %s matches the given query.' % queryset.model._meta.object_name)
-    
-def is_path(path):
-    return len(path.split('/')) > 1
 
 def create_crumb(title, url=None):
     '''

@@ -7,72 +7,148 @@ from django.conf import settings
 from django.core.mail import get_connection, EmailMultiAlternatives
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
+from django.template.base import TemplateDoesNotExist
 
 from tunobase.core import utils as core_utils
 from tunobase.mailer import models
 
-def send_mail(subject, text_content, to_addresses, 
-              from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
-              html_content=None, context={}, attachments=None, user=None):
+def send_messages(messages):
     '''
-    Sends an email containing both text(provided) and html(produced from
-    povided template name and context) content as well as provided
-    attachments to provided to_addresses from provided from_address.
+    Bulk send the message(s)
     '''
     # Donot send any emails if they are disabled in the settings
     if settings.EMAIL_ENABLED:
-        # Update context with site and STATIC_URL
-        if not 'site' in context:
-            context['site'] = Site.objects.get_current()
-            
-        if not 'user' in context:
-            context['user'] = user
-        
-        context.update({
-            'STATIC_URL': settings.STATIC_URL,
-            'app_name': settings.APP_NAME
-        })
-        
-        # Check if the content is actual content or a location to a file
-        # containing the content and render the content from that file
-        # if it is
-        if core_utils.is_path(subject):
-            subject = render_to_string(subject, context)
-            
-        if core_utils.is_path(text_content):
-            text_content = render_to_string(text_content, context)
-        
-        if html_content is not None and core_utils.is_path(html_content):
-            html_content = render_to_string(html_content, context)
-        
-        # Build message with text_message as default content
-        msg = EmailMultiAlternatives(
-            subject,
-            text_content,
-            from_address,
-            to_addresses,
-            bcc_addresses
-        )
-    
-        if html_content is not None:
-            msg.attach_alternative(html_content, "text/html")
-    
-        # Add attachments.
-        if attachments is not None:
-            for attachment in attachments:
-                if attachment:
-                    msg.attach(attachment.name, attachment.read())
-    
-        # Send message.
         connection = get_connection()
-        connection.send_messages([msg, ])
+        connection.send_messages(messages)
+    
+def create_message(subject, text_content, to_addresses, 
+                   from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
+                   html_content=None, context=None, attachments=None, user=None):
+    '''
+    Create and return the Email message to be sent
+    '''
+    # Update context with site and STATIC_URL
+    if context is None:
+        context = {}
+    if not 'site' in context:
+        context['site'] = Site.objects.get_current()
+    if not 'user' in context:
+        context['user'] = user
+    
+    context.update({
+        'STATIC_URL': settings.STATIC_URL,
+        'app_name': settings.APP_NAME
+    })
+    
+    # Check if the content is actual content or a location to a file
+    # containing the content and render the content from that file
+    # if it is
+    try:
+        subject = render_to_string(subject, context)
+    except TemplateDoesNotExist:
+        pass
         
-        # Create an entry in the email tracker to track sent emails by the system
-        models.OutboundEmail.objects.create(
-            user=user, 
-            to_addresses='\n'.join(to_addresses),
-            bcc_addresses='\n'.join(bcc_addresses),
-            subject=subject, 
-            message=html_content,
-            site=context['site']
+    try:
+        text_content = render_to_string(text_content, context)
+    except TemplateDoesNotExist:
+        pass
+    
+    if html_content is not None:
+        try:
+            html_content = render_to_string(html_content, context)
+        except TemplateDoesNotExist:
+            pass
+    
+    # Build message with text_message as default content
+    msg = EmailMultiAlternatives(
+        subject,
+        text_content,
+        from_address,
+        to_addresses,
+        bcc_addresses
+    )
+
+    # Attach HTML content
+    if html_content is not None:
+        msg.attach_alternative(html_content, "text/html")
+
+    # Add attachments.
+    if attachments is not None:
+        for attachment in attachments:
+            if attachment:
+                msg.attach(attachment.name, attachment.read())
+    
+    return msg, context
+
+def save_outbound_emails(outbound_emails):
+    '''
+    Bulk create Outbound Email tracking objects
+    '''
+    if settings.EMAIL_ENABLED:
+        models.OutboundEmail.objects.bulk_create(outbound_emails)
+
+def create_outbound_email(subject, to_addresses, html_content, 
+                          bcc_addresses=None, site=None, user=None):
+    '''
+    Create Outbound Email tracking object
+    '''
+    return models.OutboundEmail(
+        user=user, 
+        to_addresses='\n'.join(to_addresses),
+        bcc_addresses='\n'.join(bcc_addresses),
+        subject=subject, 
+        message=html_content,
+        site=site
+    )
+    
+
+def track_mail(subject, to_addresses, html_content, 
+               bcc_addresses=None, site=None, user=None):
+    '''
+    Track mails sent to the User by the Site
+    '''
+    if settings.EMAIL_ENABLED:
+        outbound_email = create_outbound_email(
+            subject,
+            to_addresses,
+            html_content,
+            bcc_addresses,
+            site,
+            user
         )
+        outbound_email.save()
+
+def send_mail(subject, text_content, to_addresses, 
+              from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
+              html_content=None, context=None, attachments=None, user=None):
+    '''
+    Sends an email containing both text(provided) and html(produced from
+    povided template name and context) content as well as provided
+    attachments to provided to_addresses from provided from_address
+    '''
+    # Create the message
+    message, _ = create_message(
+        subject, 
+        text_content, 
+        to_addresses, 
+        from_address,
+        bcc_addresses,
+        html_content,
+        context,
+        attachments,
+        user
+    )
+
+    # Send the message
+    send_messages([message])
+    
+    # Create an entry in the email tracker to
+    # track sent emails by the system
+    track_mail(
+        subject, 
+        to_addresses, 
+        html_content, 
+        bcc_addresses, 
+        context['site'],
+        user
+    )

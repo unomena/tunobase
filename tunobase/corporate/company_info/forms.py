@@ -31,20 +31,3 @@ class ContactMessageForm(forms.ModelForm):
         self.fields['name'].widget.attrs.update({'class':'required'})
         self.fields['email'].widget.attrs.update({'class':'required email'})
         self.fields['message'].widget.attrs.update({'class':'required'})
-        
-    def save(self, *args, **kwargs):
-        obj = super(ContactMessageForm, self).save(*args, **kwargs)
-        
-        if self.user is not None:
-            user_id = self.user.id
-        else:
-            user_id = None
-        
-        # Fire off signal to be received by handlers
-        signals.contact_message_saved.send(
-            sender=self.__class__,
-            user_id=user_id,
-            contact_message_id=obj.id
-        )
-        
-        return obj
