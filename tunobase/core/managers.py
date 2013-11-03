@@ -19,7 +19,7 @@ from tunobase.core import constants
 class SiteObjectsManagerMixin(models.Manager):
     
     def for_current_site(self):
-        key = '%s__id__exact' % 'sites' if hasattr(self, 'sites') else 'site'
+        key = '%s__id__exact' % 'sites' if hasattr(self.model, 'sites') else 'site'
         params = {
             key: Site.objects.get_current().id
         }
@@ -58,3 +58,6 @@ class DefaultImageManager(StateManagerMixin):
             return random.choice(pre_def_images).image
         else:
             return None
+        
+class BannerManager(StateManagerMixin, SiteObjectsManagerMixin):
+    pass

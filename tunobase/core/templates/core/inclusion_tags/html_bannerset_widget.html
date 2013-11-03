@@ -1,0 +1,9 @@
+{% if bannerset %}
+<ul id="slider">
+	{% for banner in bannerset.site_banners %}
+		<li>{{ banner.rich_content|safe }}</li>
+	{% endfor %}
+</ul>
+{% else %}
+	{% if user.is_admin %}<p style="color: red;">Please load an HTML BannerSet with slug &#39;{{ slug }}&#39; in the database</p>{% endif %}
+{% endif %}

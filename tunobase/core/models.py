@@ -50,22 +50,29 @@ class SlugModel(models.Model):
     A mixin Model for creating unique Slugs
     '''
     title = models.CharField(max_length=255, db_index=True)
-    slug = models.SlugField(editable=False, db_index=True, unique=True)
+    slug = models.SlugField(editable=False, db_index=True)
     
     class Meta:
         abstract = True
         
     def save(self, *args, **kwargs):
-        try:
-            if not self.id:
-                self.slug = slugify(self.title)
-                
-            super(SlugModel, self).save(*args, **kwargs)
-        except IntegrityError:
-            if not self.id:
-                self.slug = '%s-%s' % (slugify(self.title), random.randint(1, 100))
-                                       
-            super(SlugModel, self).save(*args, **kwargs)
+        params = {
+            'slug': slugify(self.title),
+        }
+        i = 1
+        
+        if hasattr(self, 'site'):
+            params['site'] = self.site
+        elif hasattr(self, 'sites'):
+            params['sites'] = self.sites
+        
+        while self.__class__.objects.filter(**params).exists():
+            params['slug'] = '%s-%s' % (params['slug'], i)
+            i += 1
+        
+        self.slug = params['slug']   
+        
+        super(SlugModel, self).save(*args, **kwargs)
             
 class AuditModel(models.Model):
     '''
@@ -117,8 +124,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = DefaultImage.permitted.get_random(self.default_image_category)
-        
-        if not self.image_name:
+        elif not self.image_name:
             self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
 
         super(ContentModel, self).save(*args, **kwargs)
@@ -128,7 +134,8 @@ class ContentBlock(ContentModel):
     Used for portlets placed throughout the Site where
     just a block on content is needed.
     '''
-
+    default_manager = managers.SiteObjectsManager()
+    
 class DefaultImage(ImageModel, StateModel):
     '''
     A model to store default images for content types.
@@ -163,7 +170,18 @@ class ImageBanner(Banner, ImageModel):
     '''
     Image Banner for Site sliders
     '''
-    pass
+    image_name = models.CharField(
+        max_length=512, 
+        blank=True, 
+        null=True, 
+        unique=True
+    )
+    
+    def save(self, *args, **kwargs):
+        if self.image and not self.image_name:
+            self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
+
+        super(ImageBanner, self).save(*args, **kwargs)
 
 class HTMLBanner(Banner):
     '''
@@ -178,6 +196,8 @@ class BannerSet(StateModel):
     '''
     slug = models.SlugField()
     sites = models.ManyToManyField(Site, blank=True, null=True)
+    
+    permitted = managers.BannerManager()
     
     class Meta:
         abstract = True

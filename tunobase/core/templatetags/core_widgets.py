@@ -31,13 +31,12 @@ def ajax_more_pagination_widget(context, page_obj, load_more_url):
     })
     return context
 
-@register.inclusion_tag('tunobase/inclusion_tags/content_block.html', takes_context=True)
-def content_block(context, slug):
+@register.inclusion_tag('core/inclusion_tags/content_block_widget.html', takes_context=True)
+def content_block_widget(context, slug):
     context = copy(context)
-    
     try:
-        content = models.ContentBlock.permitted.get(slug=slug)
-    except  models.ContentBlock.DoesNotExist:
+        content = models.ContentBlock.permitted.for_current_site().get(slug=slug)
+    except models.ContentBlock.DoesNotExist:
         content = None
     
     context.update({
@@ -47,29 +46,35 @@ def content_block(context, slug):
     
     return context
     
-@register.inclusion_tag('tunobase/inclusion_tags/image_bannerset.html')
-def image_bannerset(slug):
+@register.inclusion_tag('core/inclusion_tags/image_bannerset_widget.html', takes_context=True)
+def image_bannerset_widget(context, slug):
+    context = copy(context)
     try:
-        bannerset = models.ImageBannerSet.permitted.get(slug=slug)
-    except  models.ImageBannerSet.DoesNotExist:
+        bannerset = models.ImageBannerSet.permitted.for_current_site().get(slug=slug)
+    except models.ImageBannerSet.DoesNotExist:
         bannerset = None
     
-    return {
+    context.update({
         'bannerset': bannerset,
         'slug': slug
-    }
+    })
+    
+    return context
 
-@register.inclusion_tag('tunobase/inclusion_tags/html_bannerset.html')
-def html_bannerset(slug):
+@register.inclusion_tag('core/inclusion_tags/html_bannerset_widget.html', takes_context=True)
+def html_bannerset_widget(context, slug):
+    context = copy(context)
     try:
-        bannerset = models.HTMLBannerSet.permitted.get(slug=slug)
-    except  models.HTMLBannerSet.DoesNotExist:
+        bannerset = models.HTMLBannerSet.permitted.for_current_site().get(slug=slug)
+    except models.HTMLBannerSet.DoesNotExist:
         bannerset = None
     
-    return {
+    context.update({
         'bannerset': bannerset,
         'slug': slug
-    }
+    })
+    
+    return context
     
 @register.tag
 def breadcrumb_widget(parser, token):
