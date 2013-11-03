@@ -33,16 +33,19 @@ def ajax_more_pagination_widget(context, page_obj, load_more_url):
 
 @register.inclusion_tag('tunobase/inclusion_tags/content_block.html', takes_context=True)
 def content_block(context, slug):
+    context = copy(context)
+    
     try:
         content = models.ContentBlock.permitted.get(slug=slug)
     except  models.ContentBlock.DoesNotExist:
         content = None
     
-    return {
+    context.update({
         'content': content,
-        'user': context['request'].user,
         'slug': slug
-    }
+    })
+    
+    return context
     
 @register.inclusion_tag('tunobase/inclusion_tags/image_bannerset.html')
 def image_bannerset(slug):

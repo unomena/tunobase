@@ -17,7 +17,7 @@ register = template.Library()
 
 @register.inclusion_tag('commenting/inclusion_tags/commenting_widget.html', 
                         takes_context=True)
-def commenting_widget(context, obj, paginate_by=2):
+def commenting_widget(context, obj, paginate_by=10):
     context = copy(context)
     content_type_id= ContentType.objects.get_for_model(obj).id
     comments = models.CommentModel.permitted.get_comments_for_object(
