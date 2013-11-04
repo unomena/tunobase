@@ -1,0 +1,1 @@
+from tunobase.corporate.company_info.newsletter import signals

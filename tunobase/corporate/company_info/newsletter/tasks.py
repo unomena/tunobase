@@ -17,7 +17,7 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
     '''
     Sends active newsletter recipients the Newsletter content
     '''
-    from tunobase.corporate.company_info import models
+    from tunobase.corporate.company_info.newsletter import models
         
     active_newsletter_recipients = models.NewsletterRecipient.active_recipients.all()
     bcc_addresses = ['dev@unomena.com']
@@ -60,32 +60,3 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
     if newsletter_id is not None:
         newsletter = models.Newsletter.objects.get(id=newsletter_id)
         newsletter.recipients.add(*list(active_newsletter_recipients))
-
-@task(default_retry_delay=10 * 60)
-def email_contact_message(contact_message_id):
-    '''
-    Sends a Contact Message email to the Site's owners/support team
-    '''
-    try:
-        from tunobase.corporate.company_info import models
-        
-        contact_message = models.ContactMessage.objects.get(
-            pk=contact_message_id
-        )
-        user = contact_message.user
-        
-        ctx_dict = {
-            'contact_message' : contact_message,
-        }
-        
-        mailer_utils.send_mail(
-            subject='email/subjects/contact_message_subject.txt', 
-            html_content='email/html/contact_message.html', 
-            text_content='email/txt/contact_message.txt', 
-            context=ctx_dict,
-            to_addresses=[settings.CONTACT_MESSAGE_TO_EMAIL,],
-            bcc_addresses=['dev@unomena.com'],
-            user=user
-        )
-    except Exception, exc:
-        raise email_contact_message.retry(exc=exc)

@@ -5,7 +5,7 @@ Created on 23 Oct 2013
 '''
 from django import forms
 
-from tunobase.corporate.company_info import models, signals
+from tunobase.corporate.company_info.contact import models, signals
 
 class ContactMessageForm(forms.ModelForm):
     
