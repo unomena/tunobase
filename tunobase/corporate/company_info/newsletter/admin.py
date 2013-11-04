@@ -14,3 +14,5 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Newsletter)
 admin.site.register(models.NewsletterRecipient)
+admin.site.register(models.RichNewsletterPart)
+admin.site.register(models.PlainNewsletterPart)

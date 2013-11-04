@@ -10,9 +10,12 @@ from django.conf import settings
 class NewsletterManager(models.Manager):
     
     def send_due(self):
-        due_newsletters = super(NewsletterManager, self).get_query_set().filter(
-            send_at__lte=timezone.now()
-        ).exclude(sent=True)
+        due_newsletters = super(NewsletterManager, self).get_query_set()\
+            .select_related(
+                'rich_header', 'rich_footer', 'plain_header', 'plain_footer'
+            ).filter(
+                send_at__lte=timezone.now()
+            ).exclude(sent=True)
         
         for newsletter in due_newsletters:
             newsletter.send()

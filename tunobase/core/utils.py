@@ -4,8 +4,11 @@ Created on 22 Oct 2013
 @author: michael
 '''
 import json
+import types
 
 from django import http
+from django.template import Context, Template
+from django.utils.encoding import smart_unicode
 
 def respond_with_json(response_dict):
     '''
@@ -63,7 +66,7 @@ def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
 
 def create_crumb(title, url=None):
     '''
-    Helper function
+    Helper function to create breadcrumb HTML
     '''
     crumb = '<img src="/static/breadcrumbs/img/crumb.png" />'
     if url:
@@ -72,3 +75,30 @@ def create_crumb(title, url=None):
         crumb = "%s&nbsp;%s" % (crumb, title)
 
     return crumb
+
+def render_string_to_string(string, context):
+    '''
+    Renders a string with context
+    '''
+    template = Template(string)
+    context = Context(context)
+    return template.render(context)
+
+def ensure_unicode(the_string):
+    '''
+    Checking if unicode
+    '''
+    if not type(the_string) == types.UnicodeType:
+    #        the_string = unicode(str(the_string))
+        the_string = smart_unicode(the_string)
+
+    return smart_unicode(the_string)
+
+def not_null_str(obj):
+    '''
+    Ensures that the returned string is not null
+    '''
+    if obj == None:
+        return ''
+    else:
+        return ensure_unicode(obj)

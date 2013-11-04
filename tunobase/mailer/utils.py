@@ -20,10 +20,39 @@ def send_messages(messages):
     if settings.EMAIL_ENABLED:
         connection = get_connection()
         connection.send_messages(messages)
+        
+def render_content(subject, text_content, html_content=None, 
+                   context=None, apply_context_to_string=False):
+    '''
+    Render the content in the email
+    '''
+    if context is None:
+        context = {}
+    try:
+        subject = render_to_string(subject, context)
+    except TemplateDoesNotExist:
+        if apply_context_to_string:
+            subject = core_utils.render_string_to_string(subject, context)
+        
+    try:
+        text_content = render_to_string(text_content, context)
+    except TemplateDoesNotExist:
+        if apply_context_to_string:
+            text_content = core_utils.render_string_to_string(text_content, context)
+    
+    if html_content is not None:
+        try:
+            html_content = render_to_string(html_content, context)
+        except TemplateDoesNotExist:
+            if apply_context_to_string:
+                html_content = core_utils.render_string_to_string(html_content, context)
+                
+    return subject, text_content, html_content
     
 def create_message(subject, text_content, to_addresses, 
                    from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
-                   html_content=None, context=None, attachments=None, user=None):
+                   html_content=None, context=None, attachments=None, user=None,
+                   apply_context_to_string=False):
     '''
     Create and return the Email message to be sent
     '''
@@ -43,21 +72,13 @@ def create_message(subject, text_content, to_addresses,
     # Check if the content is actual content or a location to a file
     # containing the content and render the content from that file
     # if it is
-    try:
-        subject = render_to_string(subject, context)
-    except TemplateDoesNotExist:
-        pass
-        
-    try:
-        text_content = render_to_string(text_content, context)
-    except TemplateDoesNotExist:
-        pass
-    
-    if html_content is not None:
-        try:
-            html_content = render_to_string(html_content, context)
-        except TemplateDoesNotExist:
-            pass
+    subject, text_content, html_content = render_content(
+        subject,
+        text_content,
+        html_content,
+        context,
+        apply_context_to_string
+    )
     
     # Build message with text_message as default content
     msg = EmailMultiAlternatives(
@@ -120,14 +141,15 @@ def track_mail(subject, to_addresses, html_content,
 
 def send_mail(subject, text_content, to_addresses, 
               from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
-              html_content=None, context=None, attachments=None, user=None):
+              html_content=None, context=None, attachments=None, user=None,
+              apply_context_to_string=False):
     '''
     Sends an email containing both text(provided) and html(produced from
     povided template name and context) content as well as provided
     attachments to provided to_addresses from provided from_address
     '''
     # Create the message
-    message, _ = create_message(
+    message, context = create_message(
         subject, 
         text_content, 
         to_addresses, 
@@ -136,11 +158,23 @@ def send_mail(subject, text_content, to_addresses,
         html_content,
         context,
         attachments,
-        user
+        user,
+        apply_context_to_string
     )
 
     # Send the message
     send_messages([message])
+    
+    # Check if the content is actual content or a location to a file
+    # containing the content and render the content from that file
+    # if it is
+    subject, text_content, html_content = render_content(
+        subject,
+        text_content,
+        html_content,
+        context,
+        apply_context_to_string
+    )
     
     # Create an entry in the email tracker to
     # track sent emails by the system

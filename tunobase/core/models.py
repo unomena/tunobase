@@ -66,6 +66,9 @@ class SlugModel(models.Model):
         elif hasattr(self, 'sites'):
             params['sites'] = self.sites
         
+        # Check if the same slug of this type exists
+        # and increment the index until a unique slug
+        # is found
         while self.__class__.objects.filter(**params).exists():
             params['slug'] = '%s-%s' % (params['slug'], i)
             i += 1
@@ -132,7 +135,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
 class ContentBlock(ContentModel):
     '''
     Used for portlets placed throughout the Site where
-    just a block on content is needed.
+    just a block of content is needed.
     '''
     default_manager = managers.SiteObjectsManager()
     

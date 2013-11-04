@@ -15,13 +15,51 @@ from ckeditor.fields import RichTextField
 from tunobase.core import models as core_models, managers as core_managers
 from tunobase.corporate.company_info.newsletter import managers, signals
 
+class RichNewsletterPart(models.Model):
+    content = RichTextField()
+    
+    def __unicode__(self):
+        return u'%s' % self.content
+    
+class PlainNewsletterPart(models.Model):
+    content = models.TextField()
+    
+    def __unicode__(self):
+        return u'%s' % self.content
+
 class Newsletter(models.Model):
     '''
     Newsletter to send to active recipients
     '''
     subject = models.CharField(max_length=255)
+    
+    plain_header = models.ForeignKey(
+        PlainNewsletterPart, 
+        related_name='newsletter_headers', 
+        blank=True, 
+        null=True
+    )
     plain_content = models.TextField(blank=True, null=True)
+    plain_footer = models.ForeignKey(
+        PlainNewsletterPart, 
+        related_name='newsletter_footers', 
+        blank=True, 
+        null=True
+    )
+    rich_header = models.ForeignKey(
+        RichNewsletterPart, 
+        related_name='newsletter_headers', 
+        blank=True, 
+        null=True
+    )
     rich_content = RichTextField(blank=True, null=True)
+    rich_footer = models.ForeignKey(
+        RichNewsletterPart, 
+        related_name='newsletter_footers', 
+        blank=True, 
+        null=True
+    )
+    
     site = models.ForeignKey(Site, blank=True, null=True)
     send_at = models.DateTimeField(blank=True, null=True)
     sent = models.BooleanField(default=False)
@@ -79,6 +117,10 @@ class NewsletterRecipient(models.Model):
             return self.user.email
         
         return self.email
+    
+    def unsubscribe(self):
+        self.is_active = False
+        self.save()
     
     def save(self, *args, **kwargs):
         if not self.id and self.email:
