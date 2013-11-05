@@ -94,10 +94,13 @@ class NewsletterRecipient(models.Model):
     from the Site
     '''
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
+        settings.AUTH_USER_MODEL,
+        related_name='newsletter_recipient',
         blank=True, 
         null=True
     )
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True, unique=True)
     is_active = models.BooleanField(default=True)
     newsletters_received = models.ManyToManyField(
@@ -107,10 +110,20 @@ class NewsletterRecipient(models.Model):
         null=True
     )
     
+    objects = models.Manager()
     active_recipients = managers.NewsletterRecipientManager()
     
     def __unicode__(self):
         return u'%s' % self.get_email()
+    
+    def get_greeting_name(self):
+        if self.user is not None:
+            return self.user.first_name
+        
+        if self.first_name is not None:
+            return self.first_name
+        
+        return self.email
     
     def get_email(self):
         if self.user is not None:

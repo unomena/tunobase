@@ -6,8 +6,21 @@ Created on 23 Oct 2013
 from django.views import generic as generic_views
 from django.utils.http import base36_to_int
 from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 
+from tunobase.core import utils as core_utils
 from tunobase.corporate.company_info.newsletter import models, utils
+
+class NewsletterSubscribe(generic_views.CreateView):
+    
+    def form_valid(self, form):
+        obj = form.save(self.request)
+        
+        return core_utils.respond_with_json({
+            'success': True,
+            'message': 'You have been successfully subscribed to our newsletter'
+        })
 
 class NewsletterUnsubscribe(generic_views.TemplateView):
     
@@ -26,5 +39,15 @@ class NewsletterUnsubscribe(generic_views.TemplateView):
             )
         
         return redirect('index')
+    
+class EmailValidate(generic_views.View):
+    
+    def get(self, request, *args, **kwargs):
+        email = request.GET.get('email')
+        User = get_user_model()
         
+        if User.objects.filter(email__iexact=email).exists() or \
+           models.NewsletterRecipient.objects.filter(email__iexact=email).exists():
+            return HttpResponse('false')
         
+        return HttpResponse('true')

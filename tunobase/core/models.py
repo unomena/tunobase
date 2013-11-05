@@ -127,7 +127,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = DefaultImage.permitted.get_random(self.default_image_category)
-        elif not self.image_name:
+        if not self.image_name:
             self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
 
         super(ContentModel, self).save(*args, **kwargs)

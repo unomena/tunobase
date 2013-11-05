@@ -29,7 +29,8 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
         uid, token = utils.get_uid_and_token(newsletter_recipient)
         ctx_dict = {
             'uid': uid,
-            'token': token
+            'token': token,
+            'recipient': newsletter_recipient
         }
         message, context = mailer_utils.create_message(
             subject=subject, 
