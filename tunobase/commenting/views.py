@@ -20,7 +20,7 @@ class PostComment(generic_views.FormView):
             return core_utils.respond_with_json({
                 'success': True,
                 'comment': render_to_string(
-                    'commenting/includes/comment.html', 
+                    self.template_name, 
                     RequestContext(self.request, {'comment': comment})
                 ),
                 'num_comments': num_comments

@@ -19,6 +19,9 @@ class ContentModelAdmin(admin.ModelAdmin, SiteListAdminMixin):
     
 class BannerSetAdmin(admin.ModelAdmin, SiteListAdminMixin):
     list_display = ('slug', 'site_list')
+    
+class GalleryAdmin(admin.ModelAdmin, SiteListAdminMixin):
+    list_display = ('slug', 'site_list')
 
 admin.site.register(models.ContentModel, ContentModelAdmin)
 admin.site.register(models.ContentBlock, ContentModelAdmin)
@@ -27,3 +30,5 @@ admin.site.register(models.ImageBanner)
 admin.site.register(models.HTMLBanner)
 admin.site.register(models.ImageBannerSet, BannerSetAdmin)
 admin.site.register(models.HTMLBannerSet, BannerSetAdmin)
+admin.site.register(models.GalleryImage)
+admin.site.register(models.Gallery, GalleryAdmin)

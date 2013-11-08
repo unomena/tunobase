@@ -10,7 +10,8 @@ from tunobase.commenting import views, forms
 urlpatterns = patterns('',            
     url(r'^post-comment/$',
         views.PostComment.as_view(
-            form_class=forms.CommentForm
+            form_class=forms.CommentForm,
+            template_name='commenting/includes/comment.html'
         ),
         name='post_comment'
     ),

@@ -19,7 +19,7 @@ from tunobase.core import constants
 class SiteObjectsManagerMixin(models.Manager):
     
     def for_current_site(self):
-        key = '%s__id__exact' % 'sites' if hasattr(self.model, 'sites') else 'site'
+        key = '%s__id__exact' % 'sites' if hasattr(self.model, 'sites') else 'site_id'
         params = {
             key: Site.objects.get_current().id
         }
@@ -29,7 +29,7 @@ class SiteObjectsManager(PolymorphicManager, SiteObjectsManagerMixin):
     pass
 
 class StateManagerMixin(models.Manager):
-    
+        
     def publish_objects(self):
         queryset = super(StateManagerMixin, self).get_query_set().filter(
             publish_at__lte=timezone.now()
@@ -39,7 +39,7 @@ class StateManagerMixin(models.Manager):
 
     def get_query_set(self):
         queryset = super(StateManagerMixin, self).get_query_set().filter(
-            state__in=[constants.STATE_PUBLISHED, constants.STATE_STAGED]
+            state__in=constants.PERMITTED_STATE
         )
             
         # exclude objects in staging state if not in staging mode (settings.STAGING = False)
@@ -59,5 +59,5 @@ class DefaultImageManager(StateManagerMixin):
         else:
             return None
         
-class BannerManager(StateManagerMixin, SiteObjectsManagerMixin):
+class SiteObjectsStateManagerMixin(StateManagerMixin, SiteObjectsManagerMixin):
     pass

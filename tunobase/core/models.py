@@ -64,12 +64,12 @@ class SlugModel(models.Model):
         if hasattr(self, 'site'):
             params['site'] = self.site
         elif hasattr(self, 'sites'):
-            params['sites'] = self.sites
+            params['sites'] = self.sites.all()
         
         # Check if the same slug of this type exists
         # and increment the index until a unique slug
         # is found
-        while self.__class__.objects.filter(**params).exists():
+        while self.__class__.objects.filter(**params).exclude(pk=self.pk).exists():
             params['slug'] = '%s-%s' % (params['slug'], i)
             i += 1
         
@@ -200,7 +200,7 @@ class BannerSet(StateModel):
     slug = models.SlugField()
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
-    permitted = managers.BannerManager()
+    permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
         abstract = True
@@ -222,4 +222,40 @@ class HTMLBannerSet(BannerSet):
     '''
     Containing Model for HTML Banners
     '''
-    banners = models.ManyToManyField(HTMLBanner, related_name='banner_sets')
+    banners = models.ManyToManyField(HTMLBanner, related_name='banner_sets')    
+
+class GalleryImage(ImageModel, StateModel):
+    '''
+    A model to store Gallery Images
+    '''
+    sites = models.ManyToManyField(Site, blank=True, null=True)
+    
+    objects = models.Manager()
+    permitted = managers.SiteObjectsStateManagerMixin()
+    
+    def __unicode__(self):
+        return u'%s %s' % (self.image, self.sites.all())
+    
+class Gallery(StateModel, SlugModel):
+    '''
+    Containing model for Gallery Images
+    '''
+    images = models.ManyToManyField(
+        GalleryImage, 
+        related_name='galleries', 
+        blank=True, 
+        null=True
+    )
+    sites = models.ManyToManyField(Site, blank=True, null=True)
+    
+    objects = models.Manager()
+    permitted = managers.SiteObjectsStateManagerMixin()
+    
+    class Meta:
+        verbose_name_plural = 'galleries'
+    
+    def __unicode__(self):
+        return u'%s' % self.title
+    
+    def get_permitted_images(self):
+        return self.images.filter(state__in=constants.PERMITTED_STATE)

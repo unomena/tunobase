@@ -4,7 +4,7 @@
 
 {% block content %}
     <form id="frmBulkImport" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
-        {% include 'core/includes/message_error_header.html' %}
+        {% include 'includes/message_error_header.html' %}
         <h2>Bulk Import</h2>
         
         {% if csv_errors %}

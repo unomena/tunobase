@@ -3,8 +3,6 @@ Created on 05 Mar 2013
 
 @author: michael
 '''
-import datetime
-
 from django.views import generic as generic_views
 from django.http import HttpResponseRedirect
 

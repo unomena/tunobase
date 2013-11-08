@@ -1,0 +1,12 @@
+<script>
+	$('body').on('click', '.tunosocial_like_button', function(e){
+		console.log('Like!');
+		var already_liked = $(this).attr('data-liked');
+		
+		if(already_liked){
+			$.post("{% url 'tunosocial_remove_like' %}");
+		} else{
+			$.post("{% url 'tunosocial_add_like' %}");
+		}
+	});
+</script>

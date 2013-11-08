@@ -5,7 +5,7 @@ Created on 23 Oct 2013
 '''
 from django.contrib import admin
 
-from tunobase.api.core import models
+from tunobase.api import models
 
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('service', 'status', 'created_timestamp', 'completed_timestamp',)

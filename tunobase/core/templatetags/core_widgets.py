@@ -45,6 +45,21 @@ def content_block_widget(context, slug):
     })
     
     return context
+
+@register.inclusion_tag('core/inclusion_tags/gallery_widget.html', takes_context=True)
+def gallery_widget(context, slug):
+    context = copy(context)
+    try:
+        gallery = models.Gallery.permitted.for_current_site().get(slug=slug)
+    except models.Gallery.DoesNotExist:
+        gallery = None
+    
+    context.update({
+        'gallery': gallery,
+        'slug': slug
+    })
+    
+    return context
     
 @register.inclusion_tag('core/inclusion_tags/image_bannerset_widget.html', takes_context=True)
 def image_bannerset_widget(context, slug):

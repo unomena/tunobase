@@ -35,4 +35,4 @@ class ContentBlockUpdate(mixins.AdminRequiredMixin, generic_views.View):
         content_block.content = content
         content_block.save()
         
-        return utils.respond_with_json({'status': 'success'})
+        return utils.respond_with_json({'success': True})
