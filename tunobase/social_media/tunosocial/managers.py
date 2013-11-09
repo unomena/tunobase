@@ -15,3 +15,15 @@ class LikeManager(models.Manager):
                 object_pk=obj.pk,
                 site=site
             ).count()
+            
+    def get_already_liked(self, user, obj, site=None):
+        if user.is_authenticated():
+            return super(LikeManager, self).get_query_set()\
+                .filter(
+                    user=user,
+                    content_type=ContentType.objects.get_for_model(obj),
+                    object_pk=obj.pk,
+                    site=site
+                ).exists()
+                
+        return False

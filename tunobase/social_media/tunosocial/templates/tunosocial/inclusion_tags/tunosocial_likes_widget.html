@@ -1,2 +1,2 @@
-<p>{{ num_likes }} likes</p>
-<a class="tunosocial_like_button" href="javascript: void(0);">Like</a>
+<p><span class='num_likes'>{{ num_likes }}</span> <span class='num_likes_text'>like{{ num_likes|pluralize }}</span></p>
+<a data-already-liked="{{ already_liked }}" data-content-type-id="{{ content_type_id }}" data-object-pk="{{ object.pk }}" class="tunosocial_like_button" href="javascript: void(0);">{% if already_liked %}Liked{% else %}Like{% endif %}</a>

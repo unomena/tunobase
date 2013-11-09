@@ -50,8 +50,3 @@ class Like(BaseLikeAbstractModel):
     
     def __unicode__(self):
         return u'%s - %s %s' % (self.user, self.content_type, self.object_pk)
-    
-    def save(self, *args, **kwargs):
-        if self.site is None:
-            self.site = Site.objects.get_current()
-        super(Like, self).save(*args, **kwargs)

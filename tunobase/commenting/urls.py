@@ -3,7 +3,7 @@ Created on 25 Oct 2013
 
 @author: michael
 '''
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 from tunobase.commenting import views, forms
 

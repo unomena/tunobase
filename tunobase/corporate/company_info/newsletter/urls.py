@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.views import generic as generic_views
 
 from tunobase.corporate.company_info.newsletter import views, forms

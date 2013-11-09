@@ -6,6 +6,7 @@ Created on 29 Oct 2013
 from django.views import generic as generic_views
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
+from django.contrib.sites.models import Site
 
 from tunobase.core import utils as core_utils
 from tunobase.social_media.tunosocial import models
@@ -23,7 +24,8 @@ class AddLike(generic_views.View):
         like = models.Like.objects.create(
             user=user,
             content_type_id=content_type_id,
-            object_pk=object_pk
+            object_pk=object_pk,
+            site=Site.objects.get_current()
         )
         
         return core_utils.respond_with_json({
@@ -39,7 +41,8 @@ class RemoveLike(generic_views.View):
         like = get_object_or_404(
             models.Like, 
             content_type_id=content_type_id,
-            object_pk=object_pk
+            object_pk=object_pk,
+            site=Site.objects.get_current()
         )
         like.delete()
         
