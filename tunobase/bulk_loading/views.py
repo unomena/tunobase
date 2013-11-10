@@ -71,6 +71,9 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin, generic_views.FormView
         except self.model.DoesNotExist:
             return None
     
+    def bulk_create_objects(self, object_list):
+        return NotImplemented
+    
     def create_object(self, data):
         return NotImplemented
     
@@ -82,7 +85,8 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin, generic_views.FormView
             self.request, 
             self.get_object, 
             self.create_object, 
-            self.update_object
+            self.update_object,
+            self.bulk_create_objects
         )
         
         return self.render_to_response(self.get_context_data(form=form))

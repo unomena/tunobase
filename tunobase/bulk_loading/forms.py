@@ -106,29 +106,36 @@ class BulkUploadForm(forms.Form):
         
         return self._process_uploaded_file()
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, request, get_obj_callback, create_obj_callback, 
-             update_obj_callback, *args, **kwargs):
-        update_count = 0
-        create_count = 0
+             update_obj_callback, bulk_create_callback, *args, **kwargs):
+        '''
+        Save uploaded objects
+        '''
+        create = self.cleaned_data['create']
+        update = self.cleaned_data['update']
         
-        for data in self.cleaned_data['upload_file']:
-            created = False
-            
-            obj = get_obj_callback(data)
-
-            if obj is None and self.cleaned_data['create']:
+        # If we're only creating objects, then bulk
+        # insert them to optimize performance
+        if create and not update:
+            objs = []
+            for data in self.cleaned_data['upload_file']:
                 obj = create_obj_callback(data)
+                objs.append(obj)
+            bulk_create_callback(objs)
+        else:
+            for data in self.cleaned_data['upload_file']:
+                created = False
                 
-                created = True
-                create_count += 1
-
-            if created or self.cleaned_data['update']:
-                # Set simple fields.
-                update_obj_callback(obj, data, created)
-
-                if not created:
-                    update_count += 1
+                obj = get_obj_callback(data)
+    
+                if obj is None and create:
+                    obj = create_obj_callback(data)
+                    created = True
+    
+                if created or update:
+                    # Set simple fields.
+                    update_obj_callback(obj, data, created)
 
         messages.success(
             request,

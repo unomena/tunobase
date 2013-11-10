@@ -17,7 +17,8 @@ import facebook
 class LoginCallback(generic_views.View):
     
     def get(self, request, *args, **kwargs):
-        if not 'error' in request.GET:
+        if not 'error' in request.GET and \
+           request.session['facebook_state'] == request.GET['state']:
             login_redirect_uri = 'http://%s%s' % (
                 Site.objects.get_current().domain, 
                 reverse_lazy('facebook_login_callback')

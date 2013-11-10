@@ -25,7 +25,7 @@ class FacebookBackend(object):
         if token_valid:
             try:
                 facebook_user = models.FacebookUser.objects.get(
-                    facebook_user_id=user_id
+                    facebook_user_id=str(user_id)
                 )
                 
                 facebook_user.update_access_token(
@@ -52,7 +52,7 @@ class FacebookBackend(object):
                  
                 facebook_user = models.FacebookUser(
                     user=user,
-                    facebook_user_id=user_id
+                    facebook_user_id=str(user_id)
                 )
                 facebook_user.update_access_token(
                     access_token,

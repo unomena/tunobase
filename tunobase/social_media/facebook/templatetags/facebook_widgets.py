@@ -21,8 +21,10 @@ def facebook_login_widget(context):
         Site.objects.get_current().domain, 
         reverse_lazy('facebook_login_callback')
     )
+    csrf_token = unicode(context['csrf_token'])
+    context['request'].session['facebook_state'] = csrf_token
     context.update({
-        'auth_url': facebook.auth_url(settings.FACEBOOK_APP_ID, login_redirect_uri, ['email'])
+        'auth_url': facebook.auth_url(settings.FACEBOOK_APP_ID, login_redirect_uri, ['email'], csrf_token)
     })
     
     return context
