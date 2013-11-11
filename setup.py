@@ -11,11 +11,25 @@ setup(
     url='http://git.unomena.net/unomena/tunobase',
     packages = find_packages(),
     install_requires = [
+        'South',
+        'django-polymorphic',
+        'django-ckeditor==3.6.2.2',
+        'django-photologue==2.8.praekelt',
+        'django-preferences',
+        'python-memcached',
+        'celery==3.0.23',
+        'django-celery==3.0.23',
+        'django-honeypot',
+        'Pillow',
+        'facebook-sdk',
+        'twython',
+        'google-api-python-client',
+        'flufl.password==1.2.1',
     ],
     tests_require=[
         'django-setuptest>=0.1.2',
         'pysqlite>=2.5',
-	'pycurl'
+	    'pycurl'
     ],
     test_suite="setuptest.setuptest.SetupTestSuite",
     include_package_data=True,
