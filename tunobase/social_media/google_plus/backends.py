@@ -26,14 +26,13 @@ class GooglePlusBackend(object):
             http = httplib2.Http()
             http = credential.authorize(http)
             response_headers, response_body = http.request('https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
-            #print response_headers, response_body
-            #response_headers = json.loads(response_headers)
             response_body = json.loads(response_body)
             
-            print response_body
+            if not response_headers['status'] == '200':
+                raise Exception('An error occurred with the Request to Google')
             
-            #if not response_headers['status'] == '200':
-            #    raise Exception('An error occurred with the Request to Google')
+            if not response_body['verified_email']:
+                raise Exception('Email address is not verified')
             
             try:
                 google_plus_user = models.GooglePlusUser.objects.get(
@@ -51,16 +50,19 @@ class GooglePlusBackend(object):
                 user = google_plus_user.user
             except models.GooglePlusUser.DoesNotExist:
                 # Create a new user.
-                user = get_user_model().objects.create(
-                    username=response_body['email'],
+                user, created = get_user_model().objects.get_or_create(
                     email=response_body['email'],
-                    is_regular_user=False,
-                    is_active=True,
-                    first_name=response_body['given_name'],
-                    last_name=response_body['family_name'],
+                    defaults={
+                        'username': response_body['email'],
+                        'is_regular_user': False,
+                        'is_active': True,
+                        'first_name': response_body['given_name'],
+                        'last_name': response_body['family_name'],
+                    }
                 )
-                user.set_password(generate(10))
-                user.save()
+                if created:
+                    user.set_password(generate(10))
+                    user.save()
                   
                 google_plus_user = models.GooglePlusUser(
                     user=user,

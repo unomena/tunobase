@@ -54,8 +54,6 @@ class TwitterBackend(object):
                 )
                 user.set_password(generate(10))
                 user.save()
-                
-                print verification_details, twitter_oauth_token, twitter_oauth_token_secret
                  
                 twitter_user = models.TwitterUser(
                     user=user,

@@ -13,12 +13,10 @@ class Vacancy(core_models.ContentModel):
     Job vacancies within the company
     '''
     external_link = models.URLField(blank=True, null=True)
-    order = models.PositiveIntegerField(default=0, db_index=True)
     
     default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
-        ordering = ['order']
         verbose_name_plural = 'Vacancies'
     
 class CompanyMemberPosition(core_models.StateModel, core_models.SlugModel):
@@ -32,7 +30,7 @@ class CompanyMemberPosition(core_models.StateModel, core_models.SlugModel):
         return u'%s' % self.title
     
     class Meta:
-        ordering = ['order']
+        ordering = ['order', '-publish_at']
 
 class CompanyMember(core_models.ContentModel):
     '''
@@ -42,9 +40,5 @@ class CompanyMember(core_models.ContentModel):
     
     positions = models.ManyToManyField(CompanyMemberPosition, related_name='company_members')
     job_title = models.CharField(max_length=255, blank=True, null=True)
-    order = models.PositiveIntegerField(default=0, db_index=True)
     
     default_manager = core_managers.SiteObjectsManager()
-    
-    class Meta:
-        ordering = ['order']

@@ -113,13 +113,16 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
-    
+    order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
     default_image_category = 'content'
     
     objects = managers.SiteObjectsManager()
     permitted = managers.StateManager()
+    
+    class Meta:
+        ordering = ['order', '-publish_at']
     
     def __unicode__(self):
         return u'%s' % self.title
@@ -160,11 +163,13 @@ class Banner(StateModel):
     '''
     title = models.CharField(max_length=255)
     sites = models.ManyToManyField(Site, blank=True, null=True)
-    order = models.PositiveSmallIntegerField(default=0)
+    order = models.PositiveSmallIntegerField(default=0, db_index=True)
+    
+    permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
         abstract = True
-        ordering = ['order']
+        ordering = ['order', '-publish_at']
         
     def __unicode__(self):
         return u'%s' % self.title
@@ -199,11 +204,13 @@ class BannerSet(StateModel):
     '''
     slug = models.SlugField()
     sites = models.ManyToManyField(Site, blank=True, null=True)
+    order = models.PositiveSmallIntegerField(default=0, db_index=True)
     
     permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
         abstract = True
+        ordering = ['order', '-publish_at']
         
     def __unicode__(self):
         return u'%s' % self.slug
@@ -228,10 +235,14 @@ class GalleryImage(ImageModel, StateModel):
     '''
     A model to store Gallery Images
     '''
+    order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
     objects = models.Manager()
     permitted = managers.SiteObjectsStateManagerMixin()
+    
+    class Meta:
+        ordering = ['order', '-publish_at']
     
     def __unicode__(self):
         return u'%s %s' % (self.image, self.sites.all())
@@ -246,12 +257,14 @@ class Gallery(StateModel, SlugModel):
         blank=True, 
         null=True
     )
+    order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
     objects = models.Manager()
     permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
+        ordering = ['order', '-publish_at']
         verbose_name_plural = 'galleries'
     
     def __unicode__(self):

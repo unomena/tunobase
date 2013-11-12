@@ -42,6 +42,8 @@ class BaseLikeAbstractModel(models.Model):
 
 class Like(BaseLikeAbstractModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='tunosocial_likes', blank=True, null=True)
+    ip_address = models.IPAddressField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     
     objects = managers.LikeManager()
     

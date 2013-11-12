@@ -11,8 +11,11 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login
 from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 from twython import Twython
+
+from tunobase.core import mixins as core_mixins
 
 class PreLogin(generic_views.View):
     
@@ -64,4 +67,19 @@ class LoginCallback(generic_views.View):
          
         auth_login(request, user)
         
+        if user.email is None and settings.TWITTER_EMAIL_REQUIRED:
+            return redirect('twitter_request_email')
+        
+        return redirect(settings.LOGIN_REDIRECT_URL)
+    
+class RequestEmail(core_mixins.LoginRequiredMixin, generic_views.UpdateView):
+    
+    def get_object(self):
+        return self.request.user
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        
+        messages.success(self.request, 'Profile details updated.')
+
         return redirect(settings.LOGIN_REDIRECT_URL)

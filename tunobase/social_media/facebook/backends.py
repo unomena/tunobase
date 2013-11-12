@@ -38,17 +38,20 @@ class FacebookBackend(object):
                 # Create a new user.
                 api = facebook.GraphAPI(access_token)
                 api_data = api.get_object('me')
-                user = get_user_model().objects.create(
-                    username=api_data['username'],
+                user, created = get_user_model().objects.get_or_create(
                     email=api_data['email'],
-                    is_regular_user=False,
-                    is_active=True,
-                    first_name=api_data['first_name'],
-                    last_name=api_data['last_name'],
-                    city=api_data['location']['name'] if 'location' in api_data else None
+                    defaults={
+                        'username': api_data['username'],
+                        'is_regular_user': False,
+                        'is_active': True,
+                        'first_name': api_data['first_name'],
+                        'last_name': api_data['last_name'],
+                        'city': api_data['location']['name'] if 'location' in api_data else None
+                    }
                 )
-                user.set_password(generate(10))
-                user.save()
+                if created:
+                    user.set_password(generate(10))
+                    user.save()
                  
                 facebook_user = models.FacebookUser(
                     user=user,

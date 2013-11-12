@@ -30,7 +30,7 @@ def poll_widget(context, pk=None):
         poll = preferences.SitePreferences.active_poll
     else:
         try:
-            poll = models.PollQuestion.objects.get(pk=pk)
+            poll = models.PollQuestion.permitted.for_current_site().get(pk=pk)
         except models.PollQuestion.DoesNotExist:
             context.update({
                 'error': True,

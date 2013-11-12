@@ -38,7 +38,7 @@ class Service(models.Model):
     error_string = models.CharField(max_length=200, blank=True, null=True)
     
     def __unicode__(self):
-        return self.get_type_display()
+        return u'%s' % self.get_type_display()
     
 class Request(models.Model):
     '''
@@ -56,6 +56,9 @@ class Request(models.Model):
     completed_timestamp = models.DateTimeField(blank=True, null=True)
     retry_count = models.PositiveSmallIntegerField(default=0)
     site = models.ForeignKey(Site, blank=True, null=True)
+    
+    def __unicode__(self):
+        return u'%s - %s' % (self.uuid, self.service)
     
     @property
     def send_count(self):

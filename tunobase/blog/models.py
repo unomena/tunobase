@@ -19,7 +19,7 @@ class BlogEntry(core_models.ContentModel):
     '''
     Entries per Blog
     '''
-    blog = models.ForeignKey(Blog)
+    blog = models.ForeignKey(Blog, related_name='entries')
     author_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, 
         related_name='blog_entries_authored', 
@@ -35,7 +35,6 @@ class BlogEntry(core_models.ContentModel):
     default_manager = core_managers.SiteObjectsManager()
 
     class Meta:
-        ordering = ['-publish_at']
         verbose_name_plural = 'Blog entries'
         
     def get_absolute_url(self):

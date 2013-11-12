@@ -9,7 +9,7 @@ from django.contrib.sites.models import Site
 from django.utils import timezone
 from django.conf import settings
 
-from tunobase.core import utils as core_utils
+from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.commenting import models, exceptions
 
 class CommentForm(forms.Form):
@@ -21,28 +21,36 @@ class CommentForm(forms.Form):
     
     def save(self, request):
         ip_address = core_utils.get_client_ip(request)
-        comment_period_minutes = getattr(settings, 'COMMENT_PERIOD_MINUTES', 0)
-        comment_period_seconds = getattr(settings, 'COMMENT_PERIOD_SECONDS', 0)
-        num_comments_allowed_in_period = \
+        comment_period_lockout = getattr(settings, 'COMMENT_PERIOD_LOCKOUT', None)
+        num_comments_allowed_in_lockout = \
             getattr(settings, 'NUM_COMMENTS_ALLOWED_IN_PERIOD', 5)
+        throttle_key = 'commenting'
         
-        if comment_period_minutes or comment_period_seconds:
-            latest_comment_list = list(
-                models.CommentModel.objects.filter(
-                    ip_address=ip_address
-                ).order_by('-publish_at')[:num_comments_allowed_in_period]
-            )
-            if len(latest_comment_list) == num_comments_allowed_in_period:
-                oldest_comment = latest_comment_list[-1]
-                if oldest_comment.publish_at > timezone.now() - \
-                   timezone.timedelta(
-                       minutes=comment_period_minutes, 
-                       seconds=comment_period_seconds
-                   ):
-                    raise exceptions.RapidCommentingError(
-                        "You are commenting too quickly. "
-                        "Please wait before commenting again"
-                    )
+        if comment_period_lockout is not None:
+            if core_throttling.check_throttle_exists(request, throttle_key):
+                throttled = not core_throttling.check_throttle(
+                    request, 
+                    throttle_key, 
+                    comment_period_lockout, 
+                    num_comments_allowed_in_lockout
+                )
+            else:
+                latest_comment_list = list(
+                    models.CommentModel.objects.filter(
+                        ip_address=ip_address
+                    ).order_by('-publish_at')[:num_comments_allowed_in_lockout]
+                )
+                if len(latest_comment_list) == num_comments_allowed_in_lockout:
+                    oldest_comment = latest_comment_list[-1]
+                    throttled = oldest_comment.publish_at > timezone.now() - comment_period_lockout
+                else:
+                    throttled = False
+                
+            if throttled:
+                raise exceptions.RapidCommentingError(
+                    "You are commenting too quickly. "
+                    "Please wait before commenting again"
+                )
         
         if request.user.is_authenticated():
             user = request.user
@@ -60,6 +68,8 @@ class CommentForm(forms.Form):
             object_pk=self.cleaned_data['comment_object_pk'],
             comment=self.cleaned_data['comment_box']
         )
+        
+        core_throttling.add_to_throttle(request, throttle_key, comment.publish_at)
         
         return comment
         
