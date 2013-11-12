@@ -47,7 +47,7 @@ class StateManagerMixin(models.Manager):
             queryset = queryset.exclude(state=constants.STATE_STAGED)
         return queryset
     
-class StateManager(StateManagerMixin, SiteObjectsManager):
+class StateManager(SiteObjectsManager, StateManagerMixin):
     pass
 
 class DefaultImageManager(StateManagerMixin):
@@ -59,5 +59,5 @@ class DefaultImageManager(StateManagerMixin):
         else:
             return None
         
-class SiteObjectsStateManagerMixin(StateManagerMixin, SiteObjectsManagerMixin):
+class SiteObjectsStateManagerMixin(SiteObjectsManagerMixin, StateManagerMixin):
     pass

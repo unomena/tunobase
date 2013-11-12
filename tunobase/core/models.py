@@ -165,6 +165,7 @@ class Banner(StateModel):
     sites = models.ManyToManyField(Site, blank=True, null=True)
     order = models.PositiveSmallIntegerField(default=0, db_index=True)
     
+    objects = models.Manager()
     permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
@@ -206,6 +207,7 @@ class BannerSet(StateModel):
     sites = models.ManyToManyField(Site, blank=True, null=True)
     order = models.PositiveSmallIntegerField(default=0, db_index=True)
     
+    objects = models.Manager()
     permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:

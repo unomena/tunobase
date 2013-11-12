@@ -3,8 +3,7 @@ Created on 23 Oct 2013
 
 @author: michael
 '''
-from django.dispatch import Signal
-from django.dispatch import receiver
+from django.dispatch import Signal, receiver
 
 from tunobase.corporate.company_info.contact import tasks
 

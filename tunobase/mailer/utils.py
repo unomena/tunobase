@@ -116,7 +116,8 @@ def create_outbound_email(subject, to_addresses, html_content,
     return models.OutboundEmail(
         user=user, 
         to_addresses='\n'.join(to_addresses),
-        bcc_addresses='\n'.join(bcc_addresses),
+        bcc_addresses='\n'.join(bcc_addresses) \
+            if bcc_addresses is not None else '',
         subject=subject, 
         message=html_content,
         site=site
