@@ -32,8 +32,18 @@
 							$('#comment_widget_comment_description').html('Comment');
 						}
 						
-						var uri = $('#pagination_load_more').attr('href');
-						$('#pagination_load_more').attr('href', update_qs_parameter(uri, 'paginate_by'));
+						var load_more_pagination_link = '#pagination_load_more';
+						
+						if($(load_more_pagination_link).length){
+                            var uri = $(load_more_pagination_link).attr('href');
+                            $(load_more_pagination_link).attr('href', update_qs_parameter(uri, 'paginate_by'));
+						} else {
+							$('.ajax_pagination a').each(function(index, pagination_link){
+								var uri = $(pagination_link).attr('href');
+	                            $(pagination_link).attr('href', update_qs_parameter(uri, 'paginate_by'));
+							});
+						}
+						
 					} else{
 						alert(data.reason);
 					}

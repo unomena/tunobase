@@ -6,7 +6,9 @@
 {% block content %}
 	<h1>{{ object.title }}</h1>
 	{% tag_cloud_widget 'blog' 'blogentry' %}
-	{% include 'blog/includes/blog_entries.html' %}
+	<div id="blog_entry_container">
+	   {% include 'blog/includes/blog_entries.html' %}
+	</div>
 	{% ajax_more_pagination_widget page_obj request.get_full_path %}
 {% endblock %}
 

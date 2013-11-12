@@ -37,6 +37,7 @@ class AjaxMorePaginationMixin(object):
             paginate_by = request.GET.get('paginate_by', self.paginate_by)
             paginator = Paginator(self.queryset, paginate_by)
             object_list= paginator.page(page)
+            has_previous = object_list.has_previous()
             has_next = object_list.has_next()
             
             return core_utils.respond_with_json({
@@ -44,8 +45,13 @@ class AjaxMorePaginationMixin(object):
                 'content': render_to_string(self.partial_template_name, RequestContext(request, {
                     'object_list': object_list
                 })),
+                'has_previous': has_previous,
                 'has_next': has_next,
-                'next_page_number': object_list.next_page_number() if has_next else 0
+                'previous_page_number': object_list.previous_page_number() if has_previous else 0,
+                'next_page_number': object_list.next_page_number() if has_next else 0,
+                'page_number': object_list.number,
+                'start_index': object_list.start_index(),
+                'end_index': object_list.end_index()
             })
             
         return super(AjaxMorePaginationMixin, self).dispatch(request, *args, **kwargs)

@@ -2,6 +2,6 @@
 
 {% if object_list %}
     {% if page_obj.has_next %}
-        <a id="pagination_load_more" data-page="{{ page_obj.next_page_number }}" href="{{ load_more_url }}">Load More</a>
+        <a id="pagination_load_more" data-page="{{ page_obj.next_page_number }}" href="{{ pagination_url }}">Load More</a>
     {% endif %}
 {% endif %}

@@ -21,13 +21,23 @@ def pagination_widget(context, page_obj):
     })
     return context
 
-@register.inclusion_tag('core/inclusion_tags/ajax_more_pagination_widget.html', takes_context=True)
-def ajax_more_pagination_widget(context, page_obj, load_more_url):
+@register.inclusion_tag('core/inclusion_tags/ajax_pagination_widget.html', takes_context=True)
+def ajax_pagination_widget(context, page_obj, pagination_url, container_selector):
     context = copy(context)
     context.update({
-        'load_more_url': load_more_url,
+        'pagination_url': pagination_url,
         'page_obj': page_obj,
         'paginator': getattr(page_obj, 'paginator', None),
+        'container_selector': container_selector  
+    })
+    return context
+
+@register.inclusion_tag('core/inclusion_tags/ajax_more_pagination_widget.html', takes_context=True)
+def ajax_more_pagination_widget(context, page_obj, pagination_url):
+    context = copy(context)
+    context.update({
+        'pagination_url': pagination_url,
+        'page_obj': page_obj,
     })
     return context
 
