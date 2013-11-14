@@ -9,7 +9,7 @@ from django.forms import widgets
 from django.utils.translation import ugettext as _
 
 class DateSelectorWidget(widgets.MultiWidget):
-    month_mapping = {
+    MONTHS = {
         1: _('Jan'),
         2: _('Feb'),
         3: _('Mar'),
@@ -32,7 +32,7 @@ class DateSelectorWidget(widgets.MultiWidget):
             max_num_years_back -= 1
         
         days = [(year, year) for year in range(1, 32)]
-        months = [(year, self.month_mapping[year]) for year in range(1, 13)]
+        months = [(year, self.MONTHS[year]) for year in range(1, 13)]
         
         if reverse_years:
             years = [(year, year) for year in reversed(range(

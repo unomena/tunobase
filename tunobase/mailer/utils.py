@@ -80,6 +80,13 @@ def create_message(subject, text_content, to_addresses,
         apply_context_to_string
     )
     
+    # Update BCC list with extras from settings, if any
+    extra_bccers = getattr(settings, 'EMAIL_EXTRA_BCC_LIST', [])
+    if bcc_addresses:
+        bcc_addresses = bcc_addresses + extra_bccers
+    else:
+        bcc_addresses = extra_bccers
+    
     # Build message with text_message as default content
     msg = EmailMultiAlternatives(
         subject,
