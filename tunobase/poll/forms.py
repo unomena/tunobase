@@ -20,12 +20,12 @@ class PollAnswerForm(forms.Form):
         if self.poll is not None:
             if self.poll.multiple_choice:
                 self.fields['answers'] = forms.ModelMultipleChoiceField(
-                    queryset=self.poll.answers.all(), 
+                    queryset=self.poll.permitted_answers, 
                     widget=forms.CheckboxSelectMultiple
                 )
             else:
                 self.fields['answers'] = forms.ModelChoiceField(
-                    queryset=self.poll.answers.all(), 
+                    queryset=self.poll.permitted_answers, 
                     widget=forms.RadioSelect, 
                     empty_label=None
                 )

@@ -125,14 +125,14 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
         ordering = ['order', '-publish_at']
     
     def __unicode__(self):
-        return u'%s' % self.title
+        return u'%s - %s' % (self.title, self.sites.all())
     
     def save(self, *args, **kwargs):
         if not self.image:
             self.image = DefaultImage.permitted.get_random(self.default_image_category)
         if not self.image_name:
             self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
-
+        
         super(ContentModel, self).save(*args, **kwargs)
         
 class ContentBlock(ContentModel):
@@ -173,7 +173,7 @@ class Banner(StateModel):
         ordering = ['order', '-publish_at']
         
     def __unicode__(self):
-        return u'%s' % self.title
+        return u'%s - %s' % (self.title, self.sites.all())
 
 class ImageBanner(Banner, ImageModel):
     '''

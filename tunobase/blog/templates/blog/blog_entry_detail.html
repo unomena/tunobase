@@ -13,7 +13,7 @@
 		<p>{{ object.rich_content|safe }}</p>
 		{% tags_widget object %}
 	</div>
-	{% commenting_widget object %}
+	{% commenting_widget object 1 %}
 {% endblock %}
 
 {% block bottom_js %}

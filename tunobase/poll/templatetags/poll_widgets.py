@@ -41,6 +41,6 @@ def poll_widget(context, pk=None):
     
     context.update({
         'form': forms.PollAnswerForm(poll=poll),
-        'results': utils.get_poll_percentages(poll.answers.all()),
+        'results': utils.get_poll_percentages(poll.permitted_answers),
     })
     return context

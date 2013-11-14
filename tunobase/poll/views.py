@@ -23,10 +23,11 @@ class PollAnswer(generic_views.FormView):
         return kwargs
     
     def form_valid(self, form):
-        poll_voted = self.request.session.get('poll_voted', False)
+        session_key = 'poll_%s_voted' % self.kwargs['pk']
+        poll_voted = self.request.session.get(session_key, False)
         
         if not poll_voted:
-            self.request.session['poll_voted'] = True
+            self.request.session[session_key] = True
             answers = form.save()
             messages.success(self.request, 'You have voted.')
         else:

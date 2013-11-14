@@ -74,6 +74,18 @@ class Event(core_models.ContentModel):
         ordering = ['-start']
         
     @property
+    def is_in_past(self):
+        return self.end < timezone.now()
+    
+    @property
+    def is_present(self):
+        return self.start <= timezone.now() <= self.end
+    
+    @property
+    def is_in_future(self):
+        return self.start > timezone.now()
+        
+    @property
     def duration(self):
         return self.end - self.start
     
