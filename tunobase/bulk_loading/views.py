@@ -4,6 +4,7 @@ Created on 28 Oct 2013
 @author: michael
 '''
 import mimetypes
+import datetime
 
 from django.views import generic as generic_views
 from django.core.exceptions import ImproperlyConfigured
@@ -95,10 +96,12 @@ class BulkDownload(console_mixins.ConsoleUserRequiredMixin, generic_views.ListVi
     filename = None
     
     def render_to_response(self, context, **kwargs):
-        if self.filepath is None or self.filename is None:
+        if self.filename is None:
             raise ImproperlyConfigured(
                 "Attribute `filename` is not set"
             )
+            
+        self.filename = self.filename % {'date': datetime.date.today()}
         
         response = super(BulkDownload, self).render_to_response(
             context,
