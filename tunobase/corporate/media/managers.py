@@ -10,7 +10,7 @@ from tunobase.core import managers as core_managers
 
 class EventManagerMixin(models.Manager):
     
-    def current_events(self):
+    def current_and_future_events(self):
         return super(EventManagerMixin, self).get_query_set().filter(
             end__gte=timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         )
@@ -20,7 +20,7 @@ class EventManagerMixin(models.Manager):
             end__lt=timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         )
 
-class PermittedEventManager(core_managers.StateManager, EventManagerMixin):
+class PermittedEventManager(EventManagerMixin, core_managers.StateManager):
     pass
 
 class EventManager(core_managers.SiteObjectsManager, EventManagerMixin):
