@@ -21,6 +21,9 @@ class CoreManager(models.Manager):
     def get_queryset(self):
         return query.CoreQuerySet(self.model, using=self._db)
     
+    def for_current_site(self):
+        return self.get_queryset().for_current_site()
+    
 class CoreStateManager(CoreManager):
     
     def get_queryset(self):
@@ -38,7 +41,7 @@ class CoreStateManager(CoreManager):
 
 # Polymorphic Managers
     
-class CorePolymorphicManager(PolymorphicManager):
+class CorePolymorphicManager(PolymorphicManager, CoreManager):
     
     def get_queryset(self):
         return query.CorePolymorphicQuerySet(self.model, using=self._db)

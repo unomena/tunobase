@@ -28,7 +28,7 @@ class EULA(models.Model):
             return None
     
     def __unicode__(self):
-        return u'%s' % self.title
+        return u'%s - %s' % (self.title, self.sites.all())
     
 class EULAVersion(core_models.StateModel, core_models.AuditModel):
     eula = models.ForeignKey(EULA, related_name='instances')
@@ -44,7 +44,7 @@ class EULAVersion(core_models.StateModel, core_models.AuditModel):
         return u'%s Version %s' % (self.eula, self.version)
     
 class UserEULA(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='signed_eulas')
     eula = models.ForeignKey(EULAVersion)
     
     ip_address = models.IPAddressField()
@@ -60,9 +60,10 @@ class UserEULA(models.Model):
     content_object = generic.GenericForeignKey(
         ct_field="content_type", 
         fk_field="object_pk",
-        blank=True,
-        null=True
     )
+    
+    class Meta:
+        unique_together = ('user', 'eula')
     
     def __unicode__(self):
         return u'%s - %s' % (self.user, self.eula)

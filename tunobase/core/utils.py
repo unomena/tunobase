@@ -43,26 +43,45 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+def get_object_for_current_site_or_404(klass, *args, **kwargs):
+    '''
+    Retrieve an object from a Django model only if
+    it is a part of the current Site
+    '''
+    queryset = klass.objects
+    try:
+        return queryset.for_current_site().get(*args, **kwargs)
+    except queryset.model.DoesNotExist:
+        raise http.Http404(
+            'No %s matches the given query.' % queryset.model._meta.object_name
+        )
+
 def get_permitted_object_or_404(klass, *args, **kwargs):
     '''
-    Retrieve an object from a Django model only if its State is published
+    Retrieve an object from a Django model only if
+    its State is published
     '''
     queryset = klass.objects.permitted()
     try:
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
-        raise http.Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+        raise http.Http404(
+            'No %s matches the given query.' % queryset.model._meta.object_name
+        )
     
 def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
     '''
-    Retrieve an object from a Django model only if its State is published
-    and it is a part of the current Site
+    Retrieve an object from a Django model only if
+    its State is published and it is a part of the 
+    current Site
     '''
     queryset = klass.objects.permitted()
     try:
         return queryset.for_current_site().get(*args, **kwargs)
     except queryset.model.DoesNotExist:
-        raise http.Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+        raise http.Http404(
+            'No %s matches the given query.' % queryset.model._meta.object_name
+        )
 
 def create_crumb(title, url=None):
     '''
