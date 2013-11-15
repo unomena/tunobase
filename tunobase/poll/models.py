@@ -15,8 +15,7 @@ class PollQuestion(core_models.StateModel):
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
-    objects = models.Manager()
-    permitted = core_managers.SiteObjectsStateManagerMixin()
+    objects = core_managers.CoreStateManager()
     
     class Meta:
         ordering = ['order', '-publish_at']
@@ -35,8 +34,7 @@ class PollAnswer(core_models.StateModel):
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
-    objects = models.Manager()
-    permitted = core_managers.SiteObjectsStateManagerMixin()
+    objects = core_managers.CoreStateManager()
     
     class Meta:
         ordering = ['order', 'answer']

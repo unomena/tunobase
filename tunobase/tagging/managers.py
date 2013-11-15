@@ -45,5 +45,5 @@ class ContentObjectTagManager(models.Manager):
                 
         return tag_counter_dict
 
-class TagManager(core_managers.SiteObjectsManagerMixin):
+class TagManager(core_managers.CoreManager):
     pass

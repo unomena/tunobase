@@ -49,8 +49,7 @@ class CommentModel(core_models.StateModel, core_models.AuditModel,
     moderated_at = models.DateTimeField(null=True, blank=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
     
-    objects = comment_managers.CommentManager()
-    permitted = managers.CommentManager()
+    objects = managers.CommentManager()
 
     class Meta:
         permissions = [

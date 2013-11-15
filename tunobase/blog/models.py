@@ -7,13 +7,12 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from tunobase.core import models as core_models, managers as core_managers
+from tunobase.core import models as core_models
 
 class Blog(core_models.ContentModel):
     '''
     Blogs the Site has
     '''
-    default_manager = core_managers.SiteObjectsManager()
 
 class BlogEntry(core_models.ContentModel):
     '''
@@ -31,8 +30,6 @@ class BlogEntry(core_models.ContentModel):
         blank=True, 
         null=True
     )
-    
-    default_manager = core_managers.SiteObjectsManager()
 
     class Meta:
         verbose_name_plural = 'Blog entries'

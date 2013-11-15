@@ -45,7 +45,7 @@ def ajax_more_pagination_widget(context, page_obj, pagination_url):
 def content_block_widget(context, slug):
     context = copy(context)
     try:
-        content = models.ContentBlock.permitted.for_current_site().get(slug=slug)
+        content = models.ContentBlock.objects.permitted().for_current_site().get(slug=slug)
     except models.ContentBlock.DoesNotExist:
         content = None
     
@@ -60,7 +60,8 @@ def content_block_widget(context, slug):
 def gallery_widget(context, slug):
     context = copy(context)
     try:
-        gallery = models.Gallery.permitted.for_current_site().get(slug=slug)
+        gallery = models.Gallery.objects.permitted()\
+            .for_current_site().get(slug=slug)
     except models.Gallery.DoesNotExist:
         gallery = None
     
@@ -75,7 +76,8 @@ def gallery_widget(context, slug):
 def image_bannerset_widget(context, slug):
     context = copy(context)
     try:
-        bannerset = models.ImageBannerSet.permitted.for_current_site().get(slug=slug)
+        bannerset = models.ImageBannerSet.objects.permitted()\
+            .for_current_site().get(slug=slug)
     except models.ImageBannerSet.DoesNotExist:
         bannerset = None
     
@@ -90,7 +92,8 @@ def image_bannerset_widget(context, slug):
 def html_bannerset_widget(context, slug):
     context = copy(context)
     try:
-        bannerset = models.HTMLBannerSet.permitted.for_current_site().get(slug=slug)
+        bannerset = models.HTMLBannerSet.objects.permitted()\
+            .for_current_site().get(slug=slug)
     except models.HTMLBannerSet.DoesNotExist:
         bannerset = None
     

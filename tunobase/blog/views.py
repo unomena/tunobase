@@ -43,12 +43,12 @@ class BlogDetail(core_mixins.AjaxMorePaginationMixin, core_views.ListWithDetailV
                     
             return blog_entries
         
-        return models.BlogEntry.permitted.filter(blog=self.object)
+        return models.BlogEntry.objects.permitted().filter(blog=self.object)
 
 class SingleBlogDetail(BlogDetail):
 
     def get_object(self):
-        blogs = models.Blog.permitted.all()
+        blogs = models.Blog.objects.permitted()
         if blogs:
             return blogs[0]
         
@@ -57,7 +57,7 @@ class SingleBlogDetail(BlogDetail):
 class BlogList(generic_views.ListView):
 
     def get_queryset(self):
-        return models.Blog.permitted.all()
+        return models.Blog.objects.permitted()
 
 class BlogEntryDetail(generic_views.DetailView):
 
@@ -73,7 +73,7 @@ class BlogFeed(Feed):
     description = "Blog entries for %s" % settings.APP_NAME
 
     def items(self):
-        return models.BlogEntry.permitted.all()
+        return models.BlogEntry.objects.permitted()
 
     def item_title(self, item):
         return item.title

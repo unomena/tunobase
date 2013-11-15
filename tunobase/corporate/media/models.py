@@ -8,7 +8,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-from tunobase.core import models as core_models, managers as core_managers
+from tunobase.core import models as core_models
 from tunobase.corporate.media import constants, managers
 
 class Article(core_models.ContentModel):
@@ -16,8 +16,6 @@ class Article(core_models.ContentModel):
     Company's articles
     '''
     default_image_category = 'article'
-    
-    default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
         ordering = ['-publish_at']
@@ -30,8 +28,6 @@ class PressRelease(core_models.ContentModel):
     
     pdf = models.FileField(upload_to='press_releases', blank=True, null=True)
     
-    default_manager = core_managers.SiteObjectsManager()
-    
     class Meta:
         ordering = ['-publish_at']
 
@@ -43,8 +39,6 @@ class MediaCoverage(core_models.ContentModel):
 
     pdf = models.FileField(upload_to='media_coverage', blank=True, null=True)
     external_link = models.URLField(blank=True, null=True)
-    
-    default_manager = core_managers.SiteObjectsManager()
     
     class Meta:
         ordering = ['-publish_at']
@@ -68,7 +62,6 @@ class Event(core_models.ContentModel):
     external_link = models.CharField(max_length=255, blank=True, null=True)
     
     objects = managers.EventManager()
-    permitted = managers.PermittedEventManager()
     
     class Meta:
         ordering = ['-start']

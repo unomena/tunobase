@@ -47,7 +47,7 @@ def get_permitted_object_or_404(klass, *args, **kwargs):
     '''
     Retrieve an object from a Django model only if its State is published
     '''
-    queryset = klass.permitted
+    queryset = klass.objects.permitted()
     try:
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
@@ -58,7 +58,7 @@ def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
     Retrieve an object from a Django model only if its State is published
     and it is a part of the current Site
     '''
-    queryset = klass.permitted
+    queryset = klass.objects.permitted()
     try:
         return queryset.for_current_site().get(*args, **kwargs)
     except queryset.model.DoesNotExist:

@@ -20,7 +20,7 @@ register = template.Library()
 def commenting_widget(context, obj, paginate_by=10):
     context = copy(context)
     content_type_id= ContentType.objects.get_for_model(obj).id
-    comments = models.CommentModel.permitted.get_comments_for_object(
+    comments = models.CommentModel.objects.permitted().get_comments_for_object(
         content_type_id, 
         obj.pk
     )

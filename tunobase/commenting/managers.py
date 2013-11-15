@@ -8,15 +8,16 @@ from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 
 from tunobase.core import managers as core_managers
+from tunobase.commenting import query
 
-class CommentManager(core_managers.StateManagerMixin, comment_managers.CommentManager):
+class CommentManager(core_managers.CoreStateManager, comment_managers.CommentManager):
+    
+    def get_queryset(self):
+        return query.CommentQuerySet(self.model, using=self._db)
     
     def get_comments_for_object(self, content_type_id, object_pk, site=None):
-        if site is None:
-            site = Site.objects.get_current()
-        
-        return super(CommentManager, self).get_query_set().filter(
-            content_type_id=content_type_id,
-            object_pk=object_pk,
-            site=site
+        return self.get_queryset().get_comments_for_object(
+            content_type_id,
+            object_pk,
+            site
         )

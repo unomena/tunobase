@@ -15,7 +15,7 @@ class PostComment(generic_views.FormView):
     def form_valid(self, form):
         try:
             comment = form.save(self.request)
-            num_comments = models.CommentModel.permitted.count()
+            num_comments = models.CommentModel.objects.permitted().count()
             
             return core_utils.respond_with_json({
                 'success': True,
@@ -40,7 +40,7 @@ class PostComment(generic_views.FormView):
 class LoadMoreComments(core_mixins.AjaxMorePaginationMixin, generic_views.ListView):
     
     def get_queryset(self):
-        return models.CommentModel.permitted.get_comments_for_object(
+        return models.CommentModel.objects.permitted().get_comments_for_object(
             self.request.GET['content_type_id'],
             self.request.GET['object_pk'],
         )

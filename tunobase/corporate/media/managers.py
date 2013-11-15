@@ -7,21 +7,15 @@ from django.db import models
 from django.utils import timezone
 
 from tunobase.core import managers as core_managers
+from tunobase.corporate.media import query
 
-class EventManagerMixin(models.Manager):
+class EventManager(core_managers.CorePolymorphicStateManager):
+    
+    def get_queryset(self):
+        return query.EventQuerySet(self.model, using=self._db)
     
     def current_and_future_events(self):
-        return super(EventManagerMixin, self).get_query_set().filter(
-            end__gte=timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        )
+        return self.get_queryset().current_and_future_events()
         
     def past_events(self):
-        return super(EventManagerMixin, self).get_query_set().filter(
-            end__lt=timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        )
-
-class PermittedEventManager(EventManagerMixin, core_managers.StateManager):
-    pass
-
-class EventManager(core_managers.SiteObjectsManager, EventManagerMixin):
-    pass
+        return self.get_queryset().past_events()

@@ -14,8 +14,6 @@ class Vacancy(core_models.ContentModel):
     '''
     external_link = models.URLField(blank=True, null=True)
     
-    default_manager = core_managers.SiteObjectsManager()
-    
     class Meta:
         verbose_name_plural = 'Vacancies'
     
@@ -40,5 +38,3 @@ class CompanyMember(core_models.ContentModel):
     
     positions = models.ManyToManyField(CompanyMemberPosition, related_name='company_members')
     job_title = models.CharField(max_length=255, blank=True, null=True)
-    
-    default_manager = core_managers.SiteObjectsManager()

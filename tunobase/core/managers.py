@@ -5,52 +5,52 @@ Created on 25 Oct 2013
 '''
 import random
 
-from django.db import models, IntegrityError
+from django.db import models
 from django.contrib.sites.models import Site
 from django.utils import timezone
-from django.template.defaultfilters import slugify
-from django.db.models import signals
 from django.conf import settings
 
 from polymorphic import PolymorphicManager
 
-from tunobase.core import constants
+from tunobase.core import constants, query
 
-class SiteObjectsManagerMixin(models.Manager):
+# Normal managers
     
-    def for_current_site(self):
-        key = '%s__id__exact' % 'sites' if hasattr(self.model, 'sites') else 'site_id'
-        params = {
-            key: Site.objects.get_current().id
-        }
-        return super(SiteObjectsManagerMixin, self).get_query_set().filter(**params)
-
-class SiteObjectsManager(PolymorphicManager, SiteObjectsManagerMixin):
-    pass
-
-class StateManagerMixin(models.Manager):
-        
+class CoreManager(models.Manager):
+    
+    def get_queryset(self):
+        return query.CoreQuerySet(self.model, using=self._db)
+    
+class CoreStateManager(CoreManager):
+    
+    def get_queryset(self):
+        return query.CoreStateQuerySet(self.model, using=self._db)
+    
     def publish_objects(self):
-        queryset = super(StateManagerMixin, self).get_query_set().filter(
+        queryset = self.filter(
             publish_at__lte=timezone.now()
         ).exclude(state=constants.STATE_PUBLISHED)
         
         queryset.update(state=constants.STATE_PUBLISHED)
 
-    def get_query_set(self):
-        queryset = super(StateManagerMixin, self).get_query_set().filter(
-            state__in=constants.PERMITTED_STATE
-        )
-            
-        # exclude objects in staging state if not in staging mode (settings.STAGING = False)
-        if not getattr(settings, 'STAGING', False):
-            queryset = queryset.exclude(state=constants.STATE_STAGED)
-        return queryset
-    
-class StateManager(SiteObjectsManager, StateManagerMixin):
-    pass
+    def permitted(self):
+        return self.get_queryset().permitted()
 
-class DefaultImageManager(StateManagerMixin):
+# Polymorphic Managers
+    
+class CorePolymorphicManager(PolymorphicManager):
+    
+    def get_queryset(self):
+        return query.CorePolymorphicQuerySet(self.model, using=self._db)
+    
+class CorePolymorphicStateManager(CorePolymorphicManager, CoreStateManager):
+    
+    def get_queryset(self):
+        return query.CorePolymorphicStateQuerySet(self.model, using=self._db)
+    
+# Other Managers
+    
+class DefaultImageManager(CoreStateManager):
 
     def get_random(self, category=None):
         pre_def_images = self.filter(category=category)
@@ -58,6 +58,3 @@ class DefaultImageManager(StateManagerMixin):
             return random.choice(pre_def_images).image
         else:
             return None
-        
-class SiteObjectsStateManagerMixin(SiteObjectsManagerMixin, StateManagerMixin):
-    pass

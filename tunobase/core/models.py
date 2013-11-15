@@ -32,8 +32,7 @@ class StateModel(models.Model):
     publish_at = models.DateTimeField(blank=True, null=True, db_index=True)
     retract_at = models.DateTimeField(blank=True, null=True)
     
-    objects = models.Manager()
-    permitted = managers.StateManagerMixin()
+    objects = managers.CoreStateManager()
     
     class Meta:
         ordering = ['-publish_at']
@@ -118,8 +117,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     
     default_image_category = 'content'
     
-    objects = managers.SiteObjectsManager()
-    permitted = managers.StateManager()
+    objects = managers.CorePolymorphicStateManager()
     
     class Meta:
         ordering = ['order', '-publish_at']
@@ -129,7 +127,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     
     def save(self, *args, **kwargs):
         if not self.image:
-            self.image = DefaultImage.permitted.get_random(self.default_image_category)
+            self.image = DefaultImage.objects.permitted().get_random(self.default_image_category)
         if not self.image_name:
             self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
         
@@ -140,7 +138,7 @@ class ContentBlock(ContentModel):
     Used for portlets placed throughout the Site where
     just a block of content is needed.
     '''
-    default_manager = managers.SiteObjectsManager()
+    #default_manager = managers.SiteObjectsManager()
     
 class DefaultImage(ImageModel, StateModel):
     '''
@@ -151,8 +149,7 @@ class DefaultImage(ImageModel, StateModel):
         choices=settings.DEFAULT_IMAGE_CATEGORY_CHOICES
     )
     
-    objects = models.Manager()
-    permitted = managers.DefaultImageManager()
+    objects = managers.DefaultImageManager()
     
     def __unicode__(self):
         return u'%s' % self.get_category_display()
@@ -164,9 +161,6 @@ class Banner(StateModel):
     title = models.CharField(max_length=255)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     order = models.PositiveSmallIntegerField(default=0, db_index=True)
-    
-    objects = models.Manager()
-    permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
         abstract = True
@@ -207,9 +201,6 @@ class BannerSet(StateModel):
     sites = models.ManyToManyField(Site, blank=True, null=True)
     order = models.PositiveSmallIntegerField(default=0, db_index=True)
     
-    objects = models.Manager()
-    permitted = managers.SiteObjectsStateManagerMixin()
-    
     class Meta:
         abstract = True
         ordering = ['order', '-publish_at']
@@ -240,9 +231,6 @@ class GalleryImage(ImageModel, StateModel):
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
-    objects = models.Manager()
-    permitted = managers.SiteObjectsStateManagerMixin()
-    
     class Meta:
         ordering = ['order', '-publish_at']
     
@@ -261,9 +249,6 @@ class Gallery(StateModel, SlugModel):
     )
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
-    
-    objects = models.Manager()
-    permitted = managers.SiteObjectsStateManagerMixin()
     
     class Meta:
         ordering = ['order', '-publish_at']
