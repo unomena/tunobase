@@ -18,12 +18,11 @@ urlpatterns = patterns('',
         name='media_articles'
     ),
                        
-    url(r'^press-releases/$',
-        views.PressReleases.as_view(
-            template_name='media/press_releases/press_releases.html',
-            paginate_by=20
+    url(r'^article/(?P<slug>[-\w]+)/$',
+        views.ArticleDetail.as_view(
+            template_name='media/artices/article_detail.html',
         ),
-        name='media_press_releases'
+        name='media_article_detail'
     ),
                        
     url(r'^media-coverage/$',
@@ -39,5 +38,20 @@ urlpatterns = patterns('',
             template_name='media/events/events.html',
         ),
         name='media_events'
+    ),
+                       
+    url(r'^press-releases/$',
+        views.PressReleases.as_view(
+            template_name='media/press_releases/press_releases.html',
+            paginate_by=20
+        ),
+        name='media_press_releases'
+    ),
+                       
+    url(r'^press-release/(?P<slug>[-\w]+)/$',
+        views.PressReleaseDetail.as_view(
+            template_name='media/press_releases/press_release_detail.html',
+        ),
+        name='media_press_release_detail'
     ),
 )

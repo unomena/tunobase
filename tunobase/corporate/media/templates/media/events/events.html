@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load core_widgets %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+	<h1>Events</h1>
+	{% for object in object_list %}
+	    {% if object.image %}
+	        <div><a href="{{ object.external_link }}" target="_blank"><img src="{{ object.image.url }}" /></a></div>
+	    {% endif %}
+	    <h3>{{ object.title|truncatechars:75 }}</h3>
+	    <p>{{ object.rich_content|safe }}</p>
+	    {% if object.external_link %}
+	        <p><a href="{{ object.external_link }}" target="_blank">Learn More</a></p>
+	    {% endif %}
+	{% empty %}
+	    <p>There are no Events to list</p>
+	{% endfor %}
+	{% pagination_widget page_obj %}
+{% endblock %}
