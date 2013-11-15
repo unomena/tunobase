@@ -10,13 +10,8 @@
 	    <p>{{ object.publish_at|date:'j F Y' }}</p>
 	    <p>{{ object.rich_content|safe|truncatechars:200 }}</p>
 	    <a href="{% url 'media_article_detail' object.slug %}">Read More</a></p>
-	    {% tunosocial_likes_widget object %}
 	{% empty %}
 	    <p>There are no Articles to list</p>
 	{% endfor %}
 	{% pagination_widget page_obj %}
-{% endblock %}
-
-{% block bottom_js %}
-    {% include 'tunosocial/includes/tunosocial_likes_widget_js.html' %}
 {% endblock %}

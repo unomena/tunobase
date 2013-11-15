@@ -6,9 +6,9 @@ Created on 23 Oct 2013
 from django import forms
 
 from tunobase.corporate.company_info.contact import models, signals
+from tunobase.bulk_loading import fields as bulk_loading_fields
 
 class ContactMessageForm(forms.ModelForm):
-    
     class Meta:
         model = models.ContactMessage
         
@@ -19,7 +19,8 @@ class ContactMessageForm(forms.ModelForm):
         if self.user is not None:
             self.fields['user'].initial = self.user
             if self.user.first_name and self.user.last_name:
-                self.fields['name'].initial = '%s %s' % (self.user.first_name, self.user.last_name)
+                self.fields['name'].initial = '%s %s' % \
+                    (self.user.first_name, self.user.last_name)
                 
             if self.user.mobile_number:
                 self.fields['mobile_number'].initial = self.user.mobile_number

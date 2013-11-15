@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load honeypot %}
 
 {% block title %}Contact Us | {% endblock %}
 
@@ -13,10 +14,21 @@
 	    {{ form.email }}{{ form.email.errors }}
 	    <label for="id_mobile">Mobile Number</label>
 	    {{ form.mobile_number }}{{ form.mobile_number.errors }}
+	    {% render_honeypot_field %}
 	    <label for="id_message">Message</label>
 	    {{ form.message }}{{ form.message.errors }}
 		{{ form.user }}{{ form.user.errors }}
 		
 		<input type="submit" id="submit" value="Send Message" />
 	</form>
+{% endblock %}
+
+{% block bottom_js %}
+<script>
+    $('#frmContact').validate({
+    	submitHandler: function(form){
+    		form.submit();
+    	}
+    });
+</script>
 {% endblock %}

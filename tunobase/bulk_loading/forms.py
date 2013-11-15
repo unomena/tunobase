@@ -107,8 +107,9 @@ class BulkUploadForm(forms.Form):
         return self._process_uploaded_file()
 
     @transaction.atomic
-    def save(self, request, get_obj_callback, create_obj_callback, 
-             update_obj_callback, bulk_create_callback, *args, **kwargs):
+    def save(self, get_obj_callback, create_obj_callback, 
+             update_obj_callback, bulk_create_callback, 
+             *args, **kwargs):
         '''
         Save uploaded objects
         '''
@@ -136,10 +137,10 @@ class BulkUploadForm(forms.Form):
                 if created or update:
                     # Set simple fields.
                     update_obj_callback(obj, data, created)
-
-        messages.success(
-            request,
-            "Thank you! Your import completed successfully."
+                    
+    def save_upload_data(self):
+        return models.BulkUploadData.objects.create(
+            data=self.cleaned_data['upload_file']
         )
         
 class BulkUploadValidatorForm(forms.Form):
@@ -147,3 +148,16 @@ class BulkUploadValidatorForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.update = kwargs.pop('update', False)
         super(BulkUploadValidatorForm, self).__init__(*args, **kwargs)
+
+from tunobase.bulk_loading import fields        
+        
+class BulkImageUploadForm(forms.Form):
+    images = fields.AjaxBulkImageField()
+    
+    def save(self):
+        bulk_upload_image_ids = []
+        for image in self.cleaned_data['images']:
+            bulk_upload_image = models.BulkUploadImage.objects.create(image=image)
+            bulk_upload_image_ids.append(bulk_upload_image.pk)
+            
+        return bulk_upload_image_ids

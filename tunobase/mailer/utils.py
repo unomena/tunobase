@@ -3,6 +3,8 @@ Created on 22 Oct 2013
 
 @author: michael
 '''
+import logging
+
 from django.conf import settings
 from django.core.mail import get_connection, EmailMultiAlternatives
 from django.contrib.sites.models import Site
@@ -12,6 +14,8 @@ from django.template.base import TemplateDoesNotExist
 from tunobase.core import utils as core_utils
 from tunobase.mailer import models
 
+logger = logging.getLogger('console')
+
 def send_messages(messages):
     '''
     Bulk send the message(s)
@@ -20,6 +24,8 @@ def send_messages(messages):
     if settings.EMAIL_ENABLED:
         connection = get_connection()
         connection.send_messages(messages)
+    else:
+        logger.debug("Not sending mail because setting 'EMAIL_ENABLED' is False")
         
 def render_content(subject, text_content, html_content=None, 
                    context=None, apply_context_to_string=False):
