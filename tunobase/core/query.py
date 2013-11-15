@@ -5,8 +5,11 @@ Created on 25 Oct 2013
 '''
 from django.db.models.query import QuerySet
 from django.contrib.sites.models import Site
+from django.conf import settings
 
 from polymorphic import PolymorphicQuerySet
+
+from tunobase.core import constants
 
 class CoreQuerySet(QuerySet):
     
@@ -35,3 +38,12 @@ class CorePolymorphicQuerySet(PolymorphicQuerySet, CoreQuerySet):
 
 class CorePolymorphicStateQuerySet(PolymorphicQuerySet, CoreStateQuerySet):
     pass
+
+class DefaultImageQuerySet(CoreStateQuerySet):
+    
+    def get_random(self, category=None):
+        pre_def_images = self.filter(category=category)
+        if pre_def_images:
+            return random.choice(pre_def_images).image
+        else:
+            return None

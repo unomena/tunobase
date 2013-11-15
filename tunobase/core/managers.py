@@ -51,10 +51,9 @@ class CorePolymorphicStateManager(CorePolymorphicManager, CoreStateManager):
 # Other Managers
     
 class DefaultImageManager(CoreStateManager):
+    
+    def get_queryset(self):
+        return query.DefaultImageQuerySet(self.model, using=self._db)
 
     def get_random(self, category=None):
-        pre_def_images = self.filter(category=category)
-        if pre_def_images:
-            return random.choice(pre_def_images).image
-        else:
-            return None
+        return self.get_queryset().get_random(category)
