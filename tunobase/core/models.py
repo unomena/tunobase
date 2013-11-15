@@ -106,8 +106,7 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     image_name = models.CharField(
         max_length=512, 
         blank=True, 
-        null=True, 
-        unique=True
+        null=True,
     )
     
     plain_content = models.TextField(blank=True, null=True)
@@ -127,9 +126,11 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     
     def save(self, *args, **kwargs):
         if not self.image:
-            self.image = DefaultImage.objects.permitted().get_random(self.default_image_category)
-        if not self.image_name:
-            self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
+            self.image = DefaultImage.objects.permitted()\
+                .get_random(self.default_image_category)
+        if self.image and not self.image_name:
+            self.image_name = '%s %s' % \
+                (self.title, timezone.now().strftime('%Y-%m-%d'))
         
         super(ContentModel, self).save(*args, **kwargs)
         

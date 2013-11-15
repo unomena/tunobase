@@ -4,8 +4,8 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
-	<h1>Events</h1>
-	{% for object in object_list %}
+	<h1>Current Events</h1>
+	{% for object in current_and_future_events %}
 	    {% if object.image %}
 	        <div><a href="{{ object.external_link }}" target="_blank"><img src="{{ object.image.url }}" /></a></div>
 	    {% endif %}
@@ -15,7 +15,20 @@
 	        <p><a href="{{ object.external_link }}" target="_blank">Learn More</a></p>
 	    {% endif %}
 	{% empty %}
-	    <p>There are no Events to list</p>
+	    <p>There are no Current Events to list</p>
 	{% endfor %}
-	{% pagination_widget page_obj %}
+	
+	<h1>Past Events</h1>
+	{% for object in past_events %}
+        {% if object.image %}
+            <div><a href="{{ object.external_link }}" target="_blank"><img src="{{ object.image.url }}" /></a></div>
+        {% endif %}
+        <h3>{{ object.title|truncatechars:75 }}</h3>
+        <p>{{ object.rich_content|safe }}</p>
+        {% if object.external_link %}
+            <p><a href="{{ object.external_link }}" target="_blank">Learn More</a></p>
+        {% endif %}
+    {% empty %}
+        <p>There are no Past Events to list</p>
+    {% endfor %}
 {% endblock %}

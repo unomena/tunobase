@@ -20,7 +20,7 @@ urlpatterns = patterns('',
                        
     url(r'^article/(?P<slug>[-\w]+)/$',
         views.ArticleDetail.as_view(
-            template_name='media/artices/article_detail.html',
+            template_name='media/articles/article_detail.html',
         ),
         name='media_article_detail'
     ),

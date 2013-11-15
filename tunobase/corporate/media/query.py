@@ -3,6 +3,8 @@ Created on 25 Oct 2013
 
 @author: michael
 '''
+from django.utils import timezone
+
 from tunobase.core import query as core_query
     
 class EventQuerySet(core_query.CorePolymorphicStateQuerySet):

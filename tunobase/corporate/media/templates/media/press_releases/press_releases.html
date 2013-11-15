@@ -15,7 +15,7 @@
 	        <a href="{% url 'media_press_release_detail' object.slug %}">Read More</a></p>
 	    </p>
 	{% empty %}
-	    <p>There is no Media Coverage to list</p>
+	    <p>There are no Press Releases to list</p>
 	{% endfor %}
 	{% pagination_widget page_obj %}
 {% endblock %}

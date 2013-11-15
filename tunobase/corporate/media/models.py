@@ -16,9 +16,6 @@ class Article(core_models.ContentModel):
     Company's articles
     '''
     default_image_category = 'article'
-    
-    class Meta:
-        ordering = ['-publish_at']
 
 class PressRelease(core_models.ContentModel):
     '''
@@ -27,9 +24,6 @@ class PressRelease(core_models.ContentModel):
     default_image_category = 'press_release'
     
     pdf = models.FileField(upload_to='press_releases', blank=True, null=True)
-    
-    class Meta:
-        ordering = ['-publish_at']
 
 class MediaCoverage(core_models.ContentModel):
     '''
@@ -39,9 +33,6 @@ class MediaCoverage(core_models.ContentModel):
 
     pdf = models.FileField(upload_to='media_coverage', blank=True, null=True)
     external_link = models.URLField(blank=True, null=True)
-    
-    class Meta:
-        ordering = ['-publish_at']
 
 class Event(core_models.ContentModel):
     '''
@@ -64,7 +55,7 @@ class Event(core_models.ContentModel):
     objects = managers.EventManager()
     
     class Meta:
-        ordering = ['-start']
+        ordering = ['order', '-start']
         
     @property
     def is_in_past(self):

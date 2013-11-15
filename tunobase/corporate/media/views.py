@@ -39,7 +39,7 @@ class MediaCoverage(generic_views.ListView):
     def get_queryset(self):
         return models.MediaCoverage.objects.permitted().for_current_site()
     
-class Events(generic_views.ListView):
+class Events(generic_views.TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super(Events, self).get_context_data(**kwargs)
