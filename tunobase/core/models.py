@@ -49,7 +49,7 @@ class SlugModel(models.Model):
     A mixin Model for creating unique Slugs
     '''
     title = models.CharField(max_length=255, db_index=True)
-    slug = models.SlugField(editable=False, db_index=True)
+    slug = models.SlugField(max_length=255, editable=False, db_index=True)
     
     class Meta:
         abstract = True

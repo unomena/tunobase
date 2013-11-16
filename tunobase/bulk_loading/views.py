@@ -10,10 +10,11 @@ from django.views import generic as generic_views
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDict
+from django.contrib import messages
 
 from tunobase.core import utils as core_utils
 from tunobase.console import mixins as console_mixins
-from tunobase.bulk_loading import forms
+from tunobase.bulk_loading import forms, tasks
 
 class BulkUploadTemplate(console_mixins.ConsoleUserRequiredMixin, generic_views.View):
     filepath = None
@@ -40,10 +41,9 @@ class BulkUploadTemplate(console_mixins.ConsoleUserRequiredMixin, generic_views.
 class BulkUpload(console_mixins.ConsoleUserRequiredMixin, generic_views.FormView):
     template_name = 'bulk_loading/bulk_upload.html'
     form_class = forms.BulkUploadForm
-    model = None
-    data_key = None
     validator_form_class = None
     unique_field_names = []
+    bulk_updater_class = None
     
     def get_form_kwargs(self):
         kwargs = super(BulkUpload, self).get_form_kwargs()
@@ -55,46 +55,28 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin, generic_views.FormView
 
         return kwargs
     
-    def get_object(self, data):
-        if self.data_key is None:
+    def form_valid(self, form):
+        if self.bulk_updater_class is None:
             raise ImproperlyConfigured(
-                "Attribute 'data_key' is not set"
-            )
-            
-        if self.model is None:
-            raise ImproperlyConfigured(
-                "Attribute 'model' is not set"
+                "Attribute 'bulk_updater_class' is not set"
             )
         
-        try:
-            kwargs = {
-                self.data_key: data[self.data_key]
-            }
-            return self.model.objects.get(**kwargs)
-        except self.model.DoesNotExist:
-            return None
-    
-    def bulk_create_objects(self, object_list):
-        return NotImplemented
-    
-    def create_object(self, data):
-        return NotImplemented
-    
-    def update_object(self, obj, data, created):
-        return NotImplemented
-    
-    def form_valid(self, form):
-        use_celery = getattr(settings, 'USE_CELERY_FOR_BULK_UPLOADING', False)
-        if use_celery:
+        if form.cleaned_data['use_celery']:
             upload_data = form.save_upload_data()
-            tasks.upload_data.delay(upload_data.id)
-        else:
-            form.save(
-                self.get_object, 
-                self.create_object, 
-                self.update_object,
-                self.bulk_create_objects
+            tasks.upload_data.delay(
+                upload_data.pk, 
+                self.bulk_updater_class,
+                form.cleaned_data['create'],
+                form.cleaned_data['update']
             )
+            
+            messages.success(
+                self.request,
+                "Your import will begin momentarily and you will be "
+                "notified via email once it is complete."
+            )
+        else:
+            form.save(self.bulk_updater_class)
             
             messages.success(
                 self.request,

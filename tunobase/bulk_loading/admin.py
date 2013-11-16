@@ -8,3 +8,4 @@ from django.contrib import admin
 from tunobase.bulk_loading import models
 
 admin.site.register(models.BulkUploadImage)
+admin.site.register(models.BulkUploadData)

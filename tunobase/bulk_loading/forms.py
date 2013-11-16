@@ -8,10 +8,8 @@ import csv
 
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
-from django.db import transaction
-from django.contrib import messages
 
-from tunobase.bulk_loading import models
+from tunobase.bulk_loading import models, fields
 
 class BulkUploadForm(forms.Form):
     '''
@@ -24,6 +22,7 @@ class BulkUploadForm(forms.Form):
     )
     create = forms.BooleanField(required=False)
     update = forms.BooleanField(required=False)
+    use_celery = forms.BooleanField(required=False, initial=True)
     upload_file = forms.FileField()
     
     def __init__(self, *args, **kwargs):
@@ -32,8 +31,14 @@ class BulkUploadForm(forms.Form):
         
         if self.validator_form is None:
             raise ImproperlyConfigured(
-                "kwargs `validator_form` is required"
+                "kwargs 'validator_form' is required"
             )
+            
+        if not isinstance(self.unique_field_names, (list, tuple)):
+            raise ImproperlyConfigured(
+                "kwargs 'unique_field_names' is not iterable"
+            )
+            
         super(BulkUploadForm, self).__init__(*args, **kwargs)
         
     def _check_file_previously_uploaded(self):
@@ -106,37 +111,15 @@ class BulkUploadForm(forms.Form):
         
         return self._process_uploaded_file()
 
-    @transaction.atomic
-    def save(self, get_obj_callback, create_obj_callback, 
-             update_obj_callback, bulk_create_callback, 
-             *args, **kwargs):
+    def save(self, bulk_updater_class, *args, **kwargs):
         '''
         Save uploaded objects
         '''
         create = self.cleaned_data['create']
         update = self.cleaned_data['update']
         
-        # If we're only creating objects, then bulk
-        # insert them to optimize performance
-        if create and not update:
-            objs = []
-            for data in self.cleaned_data['upload_file']:
-                obj = create_obj_callback(data)
-                objs.append(obj)
-            bulk_create_callback(objs)
-        else:
-            for data in self.cleaned_data['upload_file']:
-                created = False
-                
-                obj = get_obj_callback(data)
-    
-                if obj is None and create:
-                    obj = create_obj_callback(data)
-                    created = True
-    
-                if created or update:
-                    # Set simple fields.
-                    update_obj_callback(obj, data, created)
+        bulk_updater = bulk_updater_class(self.cleaned_data['upload_file'])
+        bulk_updater.save(create, update)
                     
     def save_upload_data(self):
         return models.BulkUploadData.objects.create(
@@ -147,9 +130,7 @@ class BulkUploadValidatorForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         self.update = kwargs.pop('update', False)
-        super(BulkUploadValidatorForm, self).__init__(*args, **kwargs)
-
-from tunobase.bulk_loading import fields        
+        super(BulkUploadValidatorForm, self).__init__(*args, **kwargs)        
         
 class BulkImageUploadForm(forms.Form):
     images = fields.AjaxBulkImageField()

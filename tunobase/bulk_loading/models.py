@@ -8,6 +8,7 @@ import json
 from django.db import models
 
 from tunobase.core import models as core_models
+from tunobase.bulk_loading import managers
 
 class BulkUploadHash(models.Model):
     '''
@@ -21,6 +22,8 @@ class BulkUploadHash(models.Model):
     
 class BulkUploadData(models.Model):
     data = models.TextField()
+    
+    objects = managers.BulkUploadDataManager()
     
     def __unicode__(self):
         return u'%s' % self.data
