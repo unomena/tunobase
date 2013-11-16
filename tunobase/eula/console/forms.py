@@ -33,4 +33,3 @@ EULAVersionFormSet = inlineformset_factory(
     form=EULAVersionForm, 
     extra=1
 )
-    

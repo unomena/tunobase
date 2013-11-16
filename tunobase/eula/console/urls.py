@@ -1,6 +1,9 @@
-__author__ = 'michael'
+'''
+Created on 05 Mar 2013
 
-from django.conf.urls.defaults import patterns, url
+@author: michael
+'''
+from django.conf.urls import patterns, url
 
 from tunobase.eula.console import views, forms
 

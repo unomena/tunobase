@@ -8,14 +8,18 @@ from django.utils.datastructures import MultiValueDict, MergeDict
 
 class AjaxBulkFileInput(forms.ClearableFileInput):
     
+    def value_from_datadict(self, data, files, name):
+        return files.get(name, None)
+
+class AjaxBulkFileMultiInput(AjaxBulkFileInput):
+    
     def render(self, name, value, attrs=None):
         if attrs is None:
             attrs = {}
         attrs['multiple'] = 'multiple'
-        return super(AjaxBulkFileInput, self).render(name, value, attrs)
+        return super(AjaxBulkFileMultiInput, self).render(name, value, attrs)
     
     def value_from_datadict(self, data, files, name):
         if isinstance(files, (MultiValueDict, MergeDict)):
             return files.getlist(name)
         return files.get(name, None)
-        

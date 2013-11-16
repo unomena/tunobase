@@ -4,7 +4,7 @@ Created on 23 Oct 2013
 @author: michael
 '''
 from django.views import generic as generic_views
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -24,6 +24,18 @@ class ListWithDetailView(generic_views.ListView):
             object_list=self.object_list,
             request=self.request)
         return self.render_to_response(context)
+    
+class MarkDeleteView(generic_views.DeleteView):
+    
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and then
+        redirects to the success URL.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.mark_deleted()
+        return HttpResponseRedirect(success_url)
     
 class ContentBlockUpdate(mixins.AdminRequiredMixin, generic_views.View):
     

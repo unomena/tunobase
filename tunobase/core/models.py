@@ -37,6 +37,10 @@ class StateModel(models.Model):
     class Meta:
         ordering = ['-publish_at']
         abstract = True
+        
+    def mark_deleted(self):
+        self.state = constants.STATE_DELETED
+        self.save()
                 
     def save(self, *args, **kwargs):
         if not self.publish_at and self.state == constants.STATE_PUBLISHED:

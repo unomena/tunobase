@@ -14,7 +14,7 @@ from django.utils import six
 from tunobase.bulk_loading import widgets, models
 
 class AjaxBulkFileField(forms.FileField):
-    widget = widgets.AjaxBulkFileInput
+    widget = widgets.AjaxBulkFileMultiInput
     
     def to_python(self, data):
         for datum in data:
