@@ -41,7 +41,7 @@ class EULAVersionFormSetMixin(object):
             return HttpResponseRedirect(self.get_success_url())
         
         return self.render_to_response(self.get_context_data(form=form))
-
+        
 class EULACreate(AdminMixin, EULAVersionFormSetMixin, generic_views.CreateView):
     permission_required = 'eula.add_eula'
     

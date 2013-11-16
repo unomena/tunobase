@@ -12,7 +12,7 @@ class EULAForm(forms.ModelForm):
     
     class Meta:
         model = eula_models.EULA
-        fields = ['title']
+        fields = ['title', 'sites']
         
 class EULAVersionForm(forms.ModelForm):
     
