@@ -5,6 +5,7 @@ Created on 09 Nov 2013
 '''
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
 
 from flufl.password import generate
 
@@ -12,7 +13,7 @@ from twython import Twython
 
 from tunobase.social_media.twitter import models
 
-class TwitterBackend(object):
+class TwitterBackend(ModelBackend):
     '''
     Authenticate against a Facebook access token
     '''
@@ -67,10 +68,3 @@ class TwitterBackend(object):
             return user
         
         return None
-
-    def get_user(self, user_id):
-        User = get_user_model()
-        try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return None
