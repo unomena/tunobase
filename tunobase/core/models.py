@@ -3,8 +3,6 @@ Created on 22 Oct 2013
 
 @author: michael
 '''
-import random
-
 from django.db import models, IntegrityError
 from django.contrib.sites.models import Site
 from django.utils import timezone
@@ -14,7 +12,7 @@ from django.conf import settings
 
 from polymorphic import PolymorphicModel
 
-from photologue.models import ImageModel
+from photologue.models import ImageModel as PhotologueImageModel
 
 from ckeditor.fields import RichTextField
 
@@ -102,17 +100,35 @@ class AuditModel(models.Model):
     
     class Meta:
         abstract = True
-    
-class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditModel):
-    '''
-    All Content on the Site must derive from this Model
-    '''
+        
+class ImageModel(PhotologueImageModel):
     image_name = models.CharField(
         max_length=512, 
         blank=True, 
         null=True,
     )
     
+    class Meta:
+        abstract = True
+        
+    def __unicode__(self):
+        return u'%s' % self.image_name
+    
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = DefaultImage.objects.permitted()\
+                .get_random(self.default_image_category)
+        if self.image and not self.image_name:
+            self.image_name = '%s %s' % \
+                (self.title, timezone.now().strftime('%Y-%m-%d'))
+        
+        super(ImageModel, self).save(*args, **kwargs)
+    
+    
+class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditModel):
+    '''
+    All Content on the Site must derive from this Model
+    '''
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
@@ -127,16 +143,6 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.sites.all())
-    
-    def save(self, *args, **kwargs):
-        if not self.image:
-            self.image = DefaultImage.objects.permitted()\
-                .get_random(self.default_image_category)
-        if self.image and not self.image_name:
-            self.image_name = '%s %s' % \
-                (self.title, timezone.now().strftime('%Y-%m-%d'))
-        
-        super(ContentModel, self).save(*args, **kwargs)
         
 class ContentBlock(ContentModel):
     '''
@@ -145,7 +151,7 @@ class ContentBlock(ContentModel):
     '''
     #default_manager = managers.SiteObjectsManager()
     
-class DefaultImage(ImageModel, StateModel):
+class DefaultImage(PhotologueImageModel, StateModel):
     '''
     A model to store default images for content types.
     '''
@@ -178,18 +184,7 @@ class ImageBanner(Banner, ImageModel):
     '''
     Image Banner for Site sliders
     '''
-    image_name = models.CharField(
-        max_length=512, 
-        blank=True, 
-        null=True, 
-        unique=True
-    )
-    
-    def save(self, *args, **kwargs):
-        if self.image and not self.image_name:
-            self.image_name = '%s %s' % (self.title, timezone.now().strftime('%Y-%m-%d'))
-
-        super(ImageBanner, self).save(*args, **kwargs)
+    pass
 
 class HTMLBanner(Banner):
     '''

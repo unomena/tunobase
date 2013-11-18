@@ -9,7 +9,7 @@ from django.contrib.sites.models import Site
 from tunobase.core import models as core_models, managers as core_managers, \
     constants as core_constants
 
-class PollQuestion(core_models.StateModel):
+class PollQuestion(core_models.ImageModel, core_models.StateModel):
     question = models.CharField(max_length=1024)
     multiple_choice = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0, db_index=True)
