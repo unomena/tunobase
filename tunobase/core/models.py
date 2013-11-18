@@ -108,6 +108,8 @@ class ImageModel(PhotologueImageModel):
         null=True,
     )
     
+    default_image_category = 'image'
+    
     class Meta:
         abstract = True
         
@@ -120,7 +122,7 @@ class ImageModel(PhotologueImageModel):
                 .get_random(self.default_image_category)
         if self.image and not self.image_name:
             self.image_name = '%s %s' % \
-                (self.title, timezone.now().strftime('%Y-%m-%d'))
+                (self.image, timezone.now().strftime('%Y-%m-%d'))
         
         super(ImageModel, self).save(*args, **kwargs)
     
