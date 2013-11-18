@@ -25,10 +25,6 @@
 
 {% block bottom_js %}
 <script>
-    $('#frmContact').validate({
-    	submitHandler: function(form){
-    		form.submit();
-    	}
-    });
+    $('#frmContact').validate();
 </script>
 {% endblock %}

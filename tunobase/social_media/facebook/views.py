@@ -11,12 +11,21 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login
 from django.core.exceptions import ValidationError
+from django.utils.http import unquote
 
 import facebook
+
+class PreLogin(generic_views.View):
+    
+    def get(self, request, *args, **kwargs):
+        request.session['facebook_login_redirect_url'] = request.META['HTTP_REFERER']
+        
+        return redirect(unquote(request.GET['auth_url']))
 
 class LoginCallback(generic_views.View):
     
     def get(self, request, *args, **kwargs):
+        redirect_url = settings.LOGIN_REDIRECT_URL
         if not 'error' in request.GET and \
            request.session['facebook_state'] == request.GET['state']:
             login_redirect_uri = 'http://%s%s' % (
@@ -29,7 +38,10 @@ class LoginCallback(generic_views.View):
                 settings.FACEBOOK_APP_ID,
                 settings.FACEBOOK_APP_SECRET
             )
-            
+            redirect_url = request.session.get(
+                'facebook_login_redirect_url', 
+                settings.LOGIN_REDIRECT_URL
+            )
             user = authenticate(
                 access_token=access_token['access_token'],
                 access_token_expiry_seconds=access_token['expires']
@@ -43,4 +55,4 @@ class LoginCallback(generic_views.View):
             
             auth_login(request, user)
         
-        return redirect(settings.LOGIN_REDIRECT_URL)
+        return redirect(redirect_url)

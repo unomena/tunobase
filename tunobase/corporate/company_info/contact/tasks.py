@@ -34,7 +34,6 @@ def email_contact_message(contact_message_id):
             text_content='email/txt/contact_message.txt', 
             context=ctx_dict,
             to_addresses=[settings.CONTACT_MESSAGE_TO_EMAIL,],
-            bcc_addresses=['dev@unomena.com'],
             user=user
         )
     except Exception, exc:

@@ -3,7 +3,6 @@
 	  var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i"),
 	      separator = uri.indexOf('?') !== -1 ? "&" : "?";
 	      match = uri.match(re);
-	  console.log(match[0]);
 	  if (match) {
 		var value = parseInt(match[0].split('=')[1]) + 1;
 	    return uri.replace(re, '$1' + key + "=" + value + '$2');

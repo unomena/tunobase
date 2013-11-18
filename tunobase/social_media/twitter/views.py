@@ -34,6 +34,7 @@ class PreLogin(generic_views.View):
         
         request.session['twitter_oauth_token'] = auth['oauth_token']
         request.session['twitter_oauth_token_secret'] = auth['oauth_token_secret']
+        request.session['twitter_login_redirect_url'] = request.META['HTTP_REFERER']
         
         return redirect(auth['auth_url'])
 
@@ -53,7 +54,10 @@ class LoginCallback(generic_views.View):
         
         twitter_oauth_token = final_step['oauth_token']
         twitter_oauth_token_secret = final_step['oauth_token_secret']
-              
+        redirect_url = request.session.get(
+            'twitter_login_redirect_url', 
+            settings.LOGIN_REDIRECT_URL
+        )
         user = authenticate(
             twitter_oauth_token=twitter_oauth_token,
             twitter_oauth_token_secret=twitter_oauth_token_secret
@@ -70,7 +74,7 @@ class LoginCallback(generic_views.View):
         if user.email is None and settings.TWITTER_EMAIL_REQUIRED:
             return redirect('twitter_request_email')
         
-        return redirect(settings.LOGIN_REDIRECT_URL)
+        return redirect(redirect_url)
     
 class RequestEmail(core_mixins.LoginRequiredMixin, generic_views.UpdateView):
     

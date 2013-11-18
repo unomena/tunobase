@@ -6,15 +6,17 @@ Created on 23 Oct 2013
 from django.conf.urls import patterns, url
 from django.views import generic as generic_views
 
+from honeypot.decorators import check_honeypot
+
 from tunobase.corporate.company_info.contact import views, forms
 
 urlpatterns = patterns('',
 
     url(r'^contact/$',
-        views.Contact.as_view(
+        check_honeypot(views.Contact.as_view(
             template_name='contact/contact.html',
             form_class=forms.ContactMessageForm
-        ),
+        )),
         name='company_info_contact'
     ),
                        

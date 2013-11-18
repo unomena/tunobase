@@ -22,7 +22,6 @@ class BulkUploadForm(forms.Form):
     )
     create = forms.BooleanField(required=False)
     update = forms.BooleanField(required=False)
-    use_celery = forms.BooleanField(required=False, initial=True)
     upload_file = forms.FileField()
     
     def __init__(self, *args, **kwargs):

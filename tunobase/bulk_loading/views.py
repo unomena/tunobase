@@ -11,6 +11,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDict
 from django.contrib import messages
+from django.conf import settings
 
 from tunobase.core import utils as core_utils
 from tunobase.console import mixins as console_mixins
@@ -61,7 +62,7 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin, generic_views.FormView
                 "Attribute 'bulk_updater_class' is not set"
             )
         
-        if form.cleaned_data['use_celery']:
+        if settings.USE_CELERY:
             upload_data = form.save_upload_data()
             tasks.upload_data.delay(
                 upload_data.pk, 
