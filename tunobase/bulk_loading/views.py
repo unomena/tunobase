@@ -129,8 +129,6 @@ class BulkImageUpload(generic_views.View):
         })
         
     def form_invalid(self, form):
-        print form.errors
-        
         return core_utils.respond_with_json({
             'success': False
         })

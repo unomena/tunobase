@@ -1,7 +1,5 @@
 <script>
-    var $images_elem = $('#id_images');
-    
-    $images_elem.change(function(e){
+    $('body').on('change', '.bulk_image', function(e){
         var $loading_elem = $('<p>Loading...</p>'),
             self = this,
             len = self.files.length,
@@ -12,8 +10,23 @@
             
             if (!!file.type.match(/image.*/)) {  
                 var reader = new FileReader();  
-                reader.onloadend = function (e) {   
-                    console.log(e.target.result);  
+                reader.onloadend = function (e) {
+                	var $list = $(self).parent().find('.image_list'),  
+                        $li = $('<li/>'),  
+                        $img = $('<img/>', {
+                            'src': e.target.result,
+                            'width': '100px',
+                            'height': '100px'
+                        }),
+                        $remove_button = $('<a/>', {
+                        	'href': 'javascript: void(0);',
+                        	'class': 'image_remove_button'
+                        });
+                	
+                	$remove_button.html('Remove');
+                    $li.append($img).append($remove_button);  
+                    $list.append($li);
+                    $(self).replaceWith(self = $(self).clone(true));
                 };  
                 reader.readAsDataURL(file);
                 form_data.append('images[]', file);
@@ -34,7 +47,14 @@
             success: function(data){  
                 data = JSON.parse(data);
                 if(data.success){
-                    $('#id_image_ids').val(data.image_ids);
+                	var $image_ids_elem = $(self).parents('form').find('.image_ids'),
+                        image_ids_elem_val = $image_ids_elem.val();
+                	
+                	if(image_ids_elem_val){
+                		$image_ids_elem.val(image_ids_elem_val + ',' + data.image_ids);
+                	} else{
+                		$image_ids_elem.val(data.image_ids);
+                	}
                     
                 } else{
                     alert('Something went wrong');
@@ -46,10 +66,13 @@
         });
     });
     
-    $images_elem.parent().validate({
-        submitHandler: function(form){
-            $images_elem.remove();
-            form.submit();
-        }
-    });
+    /*$('.bulk_image').each(function(){
+    	var self = this;
+	   	$(self).parents('form').validate({
+           submitHandler: function(form){
+               $(self).remove();
+               form.submit();
+           }
+	   	});
+    });*/
 </script>

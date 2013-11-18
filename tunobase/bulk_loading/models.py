@@ -7,7 +7,7 @@ import json
 
 from django.db import models
 
-from tunobase.core import models as core_models
+from tunobase.core import models as core_models, fields as core_fields
 from tunobase.bulk_loading import managers
 
 class BulkUploadHash(models.Model):
@@ -36,6 +36,7 @@ class BulkUploadData(models.Model):
 class BulkUploadImage(core_models.AuditModel):
     image = models.ImageField(upload_to='bulk_upload_images')
     has_been_attached = models.BooleanField(default=False)
+    uuid = core_fields.UUIDField()
     
     def __unicode__(self):
         return u'%s' % self.image

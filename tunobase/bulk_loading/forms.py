@@ -139,6 +139,6 @@ class BulkImageUploadForm(forms.Form):
         bulk_upload_image_ids = []
         for image in self.cleaned_data['images']:
             bulk_upload_image = models.BulkUploadImage.objects.create(image=image)
-            bulk_upload_image_ids.append(bulk_upload_image.pk)
+            bulk_upload_image_ids.append(bulk_upload_image.uuid)
             
         return bulk_upload_image_ids

@@ -8,6 +8,12 @@ from django.utils.datastructures import MultiValueDict, MergeDict
 
 class AjaxBulkFileInput(forms.ClearableFileInput):
     
+    def render(self, name, value, attrs=None):
+        if attrs is None:
+            attrs = {}
+        attrs['class'] = 'bulk_image'
+        return super(AjaxBulkFileInput, self).render(name, value, attrs)
+    
     def value_from_datadict(self, data, files, name):
         return files.get(name, None)
 

@@ -121,8 +121,13 @@ class AjaxBulkImageField(AjaxBulkFileField):
 class MultiImageIDField(forms.Field):
     widget = forms.HiddenInput
     
+    def widget_attrs(self, widget):
+        attrs = super(MultiImageIDField, self).widget_attrs(widget)
+        attrs.update({'class': 'image_ids'})
+        return attrs
+    
     def to_python(self, value):
         "Returns a Unicode object."
         if value in self.empty_values:
-            return ''
-        return models.BulkUploadImage.objects.filter(pk__in=value.split(','))
+            return None
+        return models.BulkUploadImage.objects.filter(uuid__in=value.split(','))
