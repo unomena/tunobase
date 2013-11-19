@@ -15,6 +15,12 @@ class PollQuestion(core_models.ImageModel, core_models.StateModel):
     multiple_choice = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
+    users_answered = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='polls_answered',
+        blank=True, 
+        null=True
+    )
     
     class Meta:
         ordering = ['order', '-publish_at']
@@ -28,12 +34,6 @@ class PollAnswer(core_models.StateModel):
     vote_count = models.PositiveIntegerField(default=0)
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
-    users_answered = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='polls_answered',
-        blank=True, 
-        null=True
-    )
     
     objects = managers.PollAnswerManager()
     
