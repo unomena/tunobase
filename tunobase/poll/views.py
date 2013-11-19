@@ -16,6 +16,8 @@ class PollAnswer(generic_views.FormView):
     '''
     View for handling poll submissions
     '''
+    ajax_template_name = None
+    
     def get_form_kwargs(self):
         kwargs = super(PollAnswer, self).get_form_kwargs()
         
@@ -27,22 +29,38 @@ class PollAnswer(generic_views.FormView):
         return kwargs
     
     def form_valid(self, form):
+        if self.request.user.is_authenticated():
+            user = self.request.user
+        else:
+            user = None
         cookie_name = 'poll_%s_voted' % self.kwargs['pk']
-        poll_voted = self.request.COOKIES.get(cookie_name, False)
+        
+        if user is not None:
+            poll_voted = self.request.COOKIES.get(cookie_name, False)
+        else:
+            poll_voted = user.polls_answered.filter(pk=self.kwargs['pk']).exists()
+            
         if not poll_voted:
             messages.error(self.request, 'You have already voted in this poll.')
         else:
-            form.save()
+            form.save(user)
             messages.success(self.request, 'You have voted.')
         
-        response = core_utils.respond_with_json({
-            'success': True,
-            'results': render_to_string(
-                self.template_name, RequestContext(self.request, {
-                    'results': self.poll.answers.get_poll_percentages()
-                })
+        if self.request.is_ajax():
+            response = core_utils.respond_with_json({
+                'success': True,
+                'results': render_to_string(
+                    self.ajax_template_name, RequestContext(self.request, {
+                        'results': self.poll.answers.get_poll_percentages()
+                    })
+                )
+            })
+        else:
+            response = self.render_to_response(
+                self.get_context_data(
+                    results=self.poll.answers.get_poll_percentages()
+                )
             )
-        })
         response.set_cookie(cookie_name, True)
         
         return response

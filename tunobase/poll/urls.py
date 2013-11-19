@@ -12,7 +12,8 @@ urlpatterns = patterns('',
     url(r'^answer/(?P<pk>\d+)/$',
         views.PollAnswer.as_view(
             form_class=forms.PollAnswerForm,
-            template_name='poll/includes/poll_results.html'
+            ajax_template_name='poll/includes/poll_results.html',
+            template_name='poll/poll_results.html'
         ),
         name='poll_answer'),
 )
