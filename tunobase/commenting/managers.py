@@ -25,13 +25,13 @@ class CommentManager(core_managers.CoreStateManager, comment_managers.CommentMan
         )
     
     def remove_flagged_comments(self):
-        for object in self.permitted():
-            num_removal_flags = object.flags.filter(
+        for comment in self.permitted():
+            num_removal_flags = comment.flags.filter(
                 flag=constants.FLAG_SUGGEST_REMOVAL
             ).count()
             if num_removal_flags >= getattr(settings, 'COMMENT_FLAGS_FOR_REMOVAL', 5):
-                object.is_removed = True
-                object.save()
+                comment.is_removed = True
+                comment.save()
         
 class CommentFlagManager(models.Manager):
     

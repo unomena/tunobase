@@ -13,7 +13,7 @@ class CommentQuerySet(core_query.CoreStateQuerySet):
         if site is None:
             site = Site.objects.get_current()
         
-        return self.filter(
+        return self.select_related('user').filter(
             content_type_id=content_type_id,
             object_pk=object_pk,
             site=site
