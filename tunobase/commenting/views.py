@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
+from django.db import IntegrityError
 
 from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.commenting import models, exceptions
@@ -67,10 +68,20 @@ class PostComment(generic_views.FormView):
 class ReportComment(core_mixins.LoginRequiredMixin, generic_views.View):
     
     def get(self, request, *args, **kwargs):
-        models.CommentFlag.objects.report(
-            request.user,
-            self.kwargs['pk'],
-        )
+        try:
+            models.CommentFlag.objects.report(
+                request.user,
+                self.kwargs['pk'],
+            )
+        except IntegrityError:
+            if request.is_ajax():
+                return core_utils.respond_with_json({
+                    'success': False,
+                    'reason': 'You have already reported this comment'
+                })
+            
+            messages.error(request, 'You have already reported this comment')
+            return redirect(request.META['HTTP_REFERER'])
         
         if request.is_ajax():
             return core_utils.respond_with_json({
