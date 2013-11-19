@@ -7,12 +7,12 @@ from django.views import generic as generic_views
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib import messages
+from django.shortcuts import redirect
 
 from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.commenting import models, exceptions
 
 class PostComment(generic_views.FormView):
-    ajax_response_template_name = None
     
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
@@ -32,9 +32,7 @@ class PostComment(generic_views.FormView):
         except exceptions.RapidCommentingError as e:
             messages.error(self.request, e)
             
-        return self.render_to_response(
-            self.get_context_data(form=form)
-        )
+        return redirect(self.request.META['HTTP_REFERER'])
     
     def ajax_form_valid(self, form):
         try:
@@ -44,7 +42,7 @@ class PostComment(generic_views.FormView):
             return core_utils.respond_with_json({
                 'success': True,
                 'comment': render_to_string(
-                    self.ajax_response_template_name, 
+                    self.template_name, 
                     RequestContext(self.request, {'comment': comment})
                 ),
                 'num_comments': num_comments

@@ -14,8 +14,7 @@ urlpatterns = patterns('',
     url(r'^post-comment/$',
         check_honeypot(views.PostComment.as_view(
             form_class=forms.CommentForm,
-            template_name='commenting/post_comment.html',
-            ajax_response_template_name='commenting/includes/comment.html'
+            template_name='commenting/includes/comment.html'
         )),
         name='post_comment'
     ),
