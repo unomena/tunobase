@@ -31,18 +31,19 @@ class PollAnswerForm(forms.Form):
                 
             self.fields['answers'].widget.attrs.update({'class': 'required'})
             
-    def increment_vote_count(self, answer, user=None):
+    def increment_vote_count(self, answer):
         answer.vote_count += 1
         answer.save()
-        if user is not None:
-            answer.users_answered.add(user)
             
     def save(self, user=None):
         answers = self.cleaned_data['answers']
         if isinstance(answers, (list, tuple)):
             for answer in answers:
-                self.increment_vote_count(answer, user)
+                self.increment_vote_count(answer)
         else:
-            self.increment_vote_count(answers, user)
+            self.increment_vote_count(answers)
+            
+        if user is not None:
+            self.poll.users_answered.add(user)
         
         return answers
