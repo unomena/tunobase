@@ -34,6 +34,11 @@ class PostComment(generic_views.FormView):
             
         return redirect(self.request.META['HTTP_REFERER'])
     
+    def form_invalid(self, form):
+        messages.error(self.request, form.errors)
+        
+        return redirect(self.request.META['HTTP_REFERER'])
+    
     def ajax_form_valid(self, form):
         try:
             comment = form.save(self.request)
