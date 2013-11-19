@@ -10,36 +10,29 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 
 from tunobase.core import utils as core_utils
-from tunobase.poll import utils, models
+from tunobase.poll import models
 
 class PollAnswer(generic_views.FormView):
     '''
     View for handling poll submissions
     '''
     def get_form_kwargs(self):
-        self.poll = get_object_or_404(models.PollQuestion, pk=self.kwargs['pk'])
         kwargs = super(PollAnswer, self).get_form_kwargs()
+        
+        self.poll = core_utils.get_permitted_object_or_404(
+            models.PollQuestion, pk=self.kwargs['pk']
+        )
         kwargs['poll'] = self.poll
+        
         return kwargs
     
     def form_valid(self, form):
-        session_key = 'poll_%s_voted' % self.kwargs['pk']
-        poll_voted = self.request.session.get(session_key, False)
-        
-        if not poll_voted:
-            self.request.session[session_key] = True
-            answers = form.save()
-            messages.success(self.request, 'You have voted.')
-        else:
-            messages.error(self.request, 'You have already voted in this poll.')
-            
+        form.save(self.request)
         return core_utils.respond_with_json({
             'success': True,
             'results': render_to_string(
                 self.template_name, RequestContext(self.request, {
-                    'results': utils.get_poll_percentages(
-                        self.poll.answers.all()
-                    )
+                    'results': self.poll.answers.get_poll_percentages()
                 })
             )
         })

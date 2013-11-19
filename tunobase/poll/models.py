@@ -5,9 +5,10 @@ Created on 26 Mar 2013
 '''
 from django.db import models
 from django.contrib.sites.models import Site
+from django.conf import settings
 
-from tunobase.core import models as core_models, managers as core_managers, \
-    constants as core_constants
+from tunobase.core import models as core_models
+from tunobase.poll import managers
 
 class PollQuestion(core_models.ImageModel, core_models.StateModel):
     question = models.CharField(max_length=1024)
@@ -15,17 +16,11 @@ class PollQuestion(core_models.ImageModel, core_models.StateModel):
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
     
-    objects = core_managers.CoreStateManager()
-    
     class Meta:
         ordering = ['order', '-publish_at']
     
     def __unicode__(self):
         return u'%s - %s' % (self.question, self.sites.all())
-    
-    @property
-    def permitted_answers(self):
-        return self.answers.filter(state__in=core_constants.PERMITTED_STATE)
     
 class PollAnswer(core_models.StateModel):
     poll = models.ForeignKey(PollQuestion, related_name='answers')
@@ -33,8 +28,14 @@ class PollAnswer(core_models.StateModel):
     vote_count = models.PositiveIntegerField(default=0)
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
+    users_answered = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='polls_answered',
+        blank=True, 
+        null=True
+    )
     
-    objects = core_managers.CoreStateManager()
+    objects = managers.PollAnswerManager()
     
     class Meta:
         ordering = ['order', 'answer']

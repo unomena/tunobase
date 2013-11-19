@@ -3,9 +3,8 @@ Created on 26 Mar 2013
 
 @author: michael
 '''
-import collections
-
 from django import forms
+from django.contrib import messages
 
 from preferences import preferences
 
@@ -20,12 +19,12 @@ class PollAnswerForm(forms.Form):
         if self.poll is not None:
             if self.poll.multiple_choice:
                 self.fields['answers'] = forms.ModelMultipleChoiceField(
-                    queryset=self.poll.permitted_answers, 
+                    queryset=self.poll.answers.permitted(), 
                     widget=forms.CheckboxSelectMultiple
                 )
             else:
                 self.fields['answers'] = forms.ModelChoiceField(
-                    queryset=self.poll.permitted_answers, 
+                    queryset=self.poll.answers.permitted(), 
                     widget=forms.RadioSelect, 
                     empty_label=None
                 )
@@ -36,13 +35,21 @@ class PollAnswerForm(forms.Form):
         answer.vote_count += 1
         answer.save()
             
-    def save(self):
-        answers = self.cleaned_data['answers']
+    def save(self, request):
+        session_key = 'poll_%s_voted' % self.kwargs['pk']
+        poll_voted = request.session.get(session_key, False)
+        if poll_voted:
+            messages.error(request, 'You have already voted in this poll.')
+            return None
         
-        if isinstance(answers, collections.Iterable):
+        answers = self.cleaned_data['answers']
+        if isinstance(answers, (list, tuple)):
             for answer in answers:
                 self.increment_vote_count(answer)
         else:
             self.increment_vote_count(answers)
+            
+        request.session[session_key] = True
+        messages.success(request, 'You have voted.')
         
         return answers

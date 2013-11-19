@@ -13,7 +13,7 @@ try:
 except ImportError:
     preferences = None
 
-from tunobase.poll import forms, utils, models
+from tunobase.poll import forms, models
 
 register = template.Library()
 
@@ -45,6 +45,6 @@ def poll_widget(context, pk=None):
     
     context.update({
         'form': forms.PollAnswerForm(poll=poll),
-        'results': utils.get_poll_percentages(poll.permitted_answers),
+        'results': poll.answers.get_poll_percentages(),
     })
     return context

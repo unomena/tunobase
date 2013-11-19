@@ -36,7 +36,7 @@ class PostComment(generic_views.FormView):
         return redirect(self.request.META['HTTP_REFERER'])
     
     def form_invalid(self, form):
-        messages.error(self.request, form.errors)
+        messages.error(self.request, str(form.errors))
         
         return redirect(self.request.META['HTTP_REFERER'])
     
