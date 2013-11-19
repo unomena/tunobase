@@ -40,7 +40,7 @@ class PollAnswer(generic_views.FormView):
         else:
             poll_voted = user.polls_answered.filter(pk=self.kwargs['pk']).exists()
             
-        if not poll_voted:
+        if poll_voted:
             messages.error(self.request, 'You have already voted in this poll.')
         else:
             form.save(user)
