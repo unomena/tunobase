@@ -35,21 +35,12 @@ class PollAnswerForm(forms.Form):
         answer.vote_count += 1
         answer.save()
             
-    def save(self, request):
-        session_key = 'poll_%s_voted' % self.kwargs['pk']
-        poll_voted = request.session.get(session_key, False)
-        if poll_voted:
-            messages.error(request, 'You have already voted in this poll.')
-            return None
-        
+    def save(self):
         answers = self.cleaned_data['answers']
         if isinstance(answers, (list, tuple)):
             for answer in answers:
                 self.increment_vote_count(answer)
         else:
             self.increment_vote_count(answers)
-            
-        request.session[session_key] = True
-        messages.success(request, 'You have voted.')
         
         return answers
