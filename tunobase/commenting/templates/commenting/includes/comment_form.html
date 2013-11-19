@@ -1,3 +1,5 @@
+{% load honeypot %}
+
 <form id="frmComment" action="{% url 'post_comment' %}" method="POST">{% csrf_token %}
     <input type="hidden" id="id_comment_content_type_id" name="comment_content_type_id" value="{{ content_type_id }}" />
     <input type="hidden" id="id_comment_object_pk" name="comment_object_pk" value="{{ object.pk }}" />
