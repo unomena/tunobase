@@ -151,7 +151,6 @@ class ContentBlock(ContentModel):
     Used for portlets placed throughout the Site where
     just a block of content is needed.
     '''
-    #default_manager = managers.SiteObjectsManager()
     
 class DefaultImage(PhotologueImageModel, StateModel):
     '''
@@ -186,7 +185,6 @@ class ImageBanner(Banner, ImageModel):
     '''
     Image Banner for Site sliders
     '''
-    pass
 
 class HTMLBanner(Banner):
     '''
@@ -209,10 +207,6 @@ class BannerSet(StateModel):
         
     def __unicode__(self):
         return u'%s' % self.slug
-    
-    @property
-    def site_banners(self):
-        return self.banners.filter(sites__id__exact=Site.objects.get_current().id)
     
 class ImageBannerSet(BannerSet):
     '''
@@ -258,6 +252,3 @@ class Gallery(StateModel, SlugModel):
     
     def __unicode__(self):
         return u'%s' % self.title
-    
-    def get_permitted_images(self):
-        return self.images.filter(state__in=constants.PERMITTED_STATE)

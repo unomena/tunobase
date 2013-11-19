@@ -1,5 +1,5 @@
 {% if gallery %}
-	{% for image in gallery.get_permitted_images %}
+	{% for image in gallery.images.permitted.for_current_site %}
 		<img src="{{ image.get_200x200_url }}" />
 	{% empty %}
 		<p>This gallery is empty</p>

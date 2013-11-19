@@ -11,7 +11,7 @@ from django.conf import settings
 
 from ckeditor.fields import RichTextField
 
-from tunobase.core import models as core_models, constants as core_constants
+from tunobase.core import models as core_models
 from tunobase.eula import managers
 
 class EULA(models.Model):
@@ -22,8 +22,7 @@ class EULA(models.Model):
     
     def latest_version(self):
         try:
-            return self.instances.filter(state__in=core_constants.PERMITTED_STATE)\
-                .order_by('-publish_at')[0]
+            return self.instances.permitted().order_by('-publish_at')[0]
         except IndexError:
             return None
     
