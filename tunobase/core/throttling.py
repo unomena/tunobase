@@ -28,5 +28,3 @@ def check_throttle(request, throttle_key, lockout_duration,
         pass
         
     return True
-        
-        

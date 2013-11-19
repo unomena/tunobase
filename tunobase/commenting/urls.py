@@ -19,6 +19,11 @@ urlpatterns = patterns('',
         name='post_comment'
     ),
                        
+    url(r'^report-comment/(?P<pk>\d+)/$',
+        views.ReportComment.as_view(),
+        name='report_comment'
+    ),
+                       
     url(r'^load-more-comments/$',
         views.LoadMoreComments.as_view(
             partial_template_name='commenting/includes/comments.html'

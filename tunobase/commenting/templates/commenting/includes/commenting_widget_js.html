@@ -50,4 +50,18 @@
 			});
 		}
 	});
+	
+	{% if user.is_authenticated %}
+		$('#comment_widget_container').on('click', 'a.report_comment', function(e){
+			$.get($(this).attr('href'), function(data){
+				data = JSON.parse(data);
+				
+				if(data.success){
+					alert('You have reported this comment');
+				}
+			});
+			
+			return false;
+		});
+	{% endif %}
 </script>

@@ -6,9 +6,11 @@ Created on 28 Oct 2013
 from django.contrib.comments import managers as comment_managers
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.conf import settings
 
 from tunobase.core import managers as core_managers
-from tunobase.commenting import query
+from tunobase.commenting import query, constants
 
 class CommentManager(core_managers.CoreStateManager, comment_managers.CommentManager):
     
@@ -21,3 +23,22 @@ class CommentManager(core_managers.CoreStateManager, comment_managers.CommentMan
             object_pk,
             site
         )
+    
+    def remove_flagged_comments(self):
+        for object in self.permitted():
+            num_removal_flags = object.flags.filter(
+                flag=constants.FLAG_SUGGEST_REMOVAL
+            ).count()
+            if num_removal_flags >= getattr(settings, 'COMMENT_FLAGS_FOR_REMOVAL', 5):
+                object.is_removed = True
+                object.save()
+        
+class CommentFlagManager(models.Manager):
+    
+    def report(self, user, comment_id):
+        self.create(
+            user=user, 
+            comment_id=comment_id,
+            flag=constants.FLAG_SUGGEST_REMOVAL
+        )
+        

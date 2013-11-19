@@ -30,7 +30,7 @@ class CoreStateManager(CoreManager):
         return query.CoreStateQuerySet(self.model, using=self._db)
     
     def publish_objects(self):
-        queryset = self.filter(
+        queryset = self.permitted().filter(
             publish_at__lte=timezone.now()
         ).exclude(state=constants.STATE_PUBLISHED)
         

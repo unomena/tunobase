@@ -84,6 +84,8 @@ class CommentFlag(core_models.AuditModel):
         max_length=30, 
         db_index=True
     )
+    
+    objects = managers.CommentFlagManager()
 
     class Meta:
         unique_together = [('user', 'comment', 'flag')]

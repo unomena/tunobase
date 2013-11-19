@@ -7,7 +7,7 @@ from django.views import generic as generic_views
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.commenting import models, exceptions
@@ -63,6 +63,22 @@ class PostComment(generic_views.FormView):
             'success': False,
             'reason': str(form.errors)
         })
+        
+class ReportComment(core_mixins.LoginRequiredMixin, generic_views.View):
+    
+    def get(self, request, *args, **kwargs):
+        models.CommentFlag.objects.report(
+            request.user,
+            self.kwargs['pk'],
+        )
+        
+        if request.is_ajax():
+            return core_utils.respond_with_json({
+                'success': True
+            })
+        
+        messages.success(request, 'This comment has been reported')
+        return redirect(request.META['HTTP_REFERER'])
         
 class LoadMoreComments(core_mixins.AjaxMorePaginationMixin, generic_views.ListView):
     

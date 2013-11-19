@@ -9,4 +9,4 @@ from tunobase.core import models
 
 @task(ignore_result=True)
 def publish_objects():
-    models.ContentModel.objects.permitted().publish_objects()
+    models.ContentModel.objects.publish_objects()
