@@ -35,7 +35,7 @@ class PollAnswer(generic_views.FormView):
             user = None
         cookie_name = 'poll_%s_voted' % self.kwargs['pk']
         
-        if user is not None:
+        if user is None:
             poll_voted = self.request.COOKIES.get(cookie_name, False)
         else:
             poll_voted = user.polls_answered.filter(pk=self.kwargs['pk']).exists()
