@@ -1,6 +1,6 @@
 {% load core_tags %}
 
-{% if object_list %}
+{% if page_obj and object_list %}
     <div class="pagination">
         <p>Displaying {{page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }}</p>
         {% if page_obj.has_other_pages %}
