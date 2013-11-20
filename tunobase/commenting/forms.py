@@ -13,6 +13,7 @@ from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.commenting import models, exceptions, throttling
 
 class CommentForm(forms.Form):
+    anonymous = forms.BooleanField(required=False)
     next = forms.CharField(required=False)
     user_id = forms.IntegerField(required=False)
     user_name = forms.CharField(max_length=100, required=False)
@@ -52,6 +53,9 @@ class CommentForm(forms.Form):
                     "You are commenting too quickly. "
                     "Please wait before commenting again"
                 )
+        
+        if self.cleaned_data['anonymous']:
+            user = None
         
         comment = models.CommentModel.objects.create(
             user=user,
