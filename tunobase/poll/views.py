@@ -58,7 +58,7 @@ class PollAnswer(generic_views.FormView):
         else:
             response = self.render_to_response(
                 self.get_context_data(
-                    results=self.poll.answers.get_poll_percentages()
+                    object_list=self.poll.answers.get_poll_percentages()
                 )
             )
         response.set_cookie(cookie_name, True)
