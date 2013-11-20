@@ -30,3 +30,7 @@ def smart_query_string(parser, token):
 @register.filter
 def letterify(value):
     return str(unichr(65 + value))
+
+@register.filter
+def class_name(obj):
+    return obj.__class__.__name__
