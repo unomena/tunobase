@@ -8,10 +8,38 @@ from django.http import Http404, HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from django.db import models
 
 from tunobase.core import models, utils, mixins
 
-class ListWithDetailView(generic_views.ListView):
+class ListWithDetailView(generic_views.ListView, generic_views.SingleObjectMixin):
+#    context_object_name = None
+    
+#     def get_context_object_name(self, obj):
+#         """
+#         Get the name to use for the object.
+#         """
+#         if self.context_object_name:
+#             return self.context_object_name
+#         elif isinstance(obj, models.Model):
+#             return obj._meta.model_name
+#         else:
+#             return None
+#     
+#     def get_context_data(self, **kwargs):
+#         context = super(ListWithDetailView, self).get_context_data(**kwargs)
+#         
+#         if self.object:
+#             context['object'] = self.object
+#             context_object_name = self.get_context_object_name(self.object)
+#             if context_object_name:
+#                 context[context_object_name] = self.object
+#         context.update(kwargs)
+#         
+#         return context
+    
+    def get_object(self):
+        return NotImplemented
     
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
