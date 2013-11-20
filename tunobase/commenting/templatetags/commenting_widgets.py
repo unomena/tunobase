@@ -17,15 +17,18 @@ register = template.Library()
 
 @register.inclusion_tag('commenting/inclusion_tags/commenting_widget.html', 
                         takes_context=True)
-def commenting_widget(context, obj, paginate_by=10):
+def commenting_widget(context, obj, paginate_by=10, page_obj=None):
     context = copy(context)
     content_type_id= ContentType.objects.get_for_model(obj).id
-    comments = models.CommentModel.objects.permitted().get_comments_for_object(
-        content_type_id, 
-        obj.pk
-    )
-    paginator = Paginator(comments, paginate_by)
-    page = paginator.page(1)
+    if page_obj is None:
+        comments = models.CommentModel.objects.permitted().get_comments_for_object(
+            content_type_id, 
+            obj.pk
+        )
+        paginator = Paginator(comments, paginate_by)
+        page = paginator.page(1)
+    else:
+        page = page_obj
     params = urllib.urlencode({
         'content_type_id': content_type_id, 
         'object_pk': obj.pk,
