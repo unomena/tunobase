@@ -233,6 +233,13 @@ class GalleryImage(ImageModel, StateModel):
     def __unicode__(self):
         return u'%s %s' % (self.image, self.sites.all())
     
+    @property
+    def gallery(self):
+        try:
+            return self.galleries.all()[0]
+        except IndexError:
+            return None
+    
 class Gallery(ContentModel):
     '''
     Containing model for Gallery Images
