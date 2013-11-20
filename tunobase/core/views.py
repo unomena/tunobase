@@ -4,6 +4,7 @@ Created on 23 Oct 2013
 @author: michael
 '''
 from django.views import generic as generic_views
+from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
@@ -12,7 +13,7 @@ from django.db import models
 
 from tunobase.core import models, utils, mixins
 
-class ListWithDetailView(generic_views.ListView, generic_views.SingleObjectMixin):
+class ListWithDetailView(generic_views.ListView, SingleObjectMixin):
 #    context_object_name = None
     
 #     def get_context_object_name(self, obj):
