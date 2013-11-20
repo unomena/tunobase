@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.conf import settings
 
 from tunobase.core import utils as core_utils, throttling as core_throttling
-from tunobase.commenting import models, exceptions
+from tunobase.commenting import models, exceptions, throttling
 
 class CommentForm(forms.Form):
     user_id = forms.IntegerField(required=False)
@@ -25,6 +25,10 @@ class CommentForm(forms.Form):
         num_comments_allowed_in_lockout = \
             getattr(settings, 'NUM_COMMENTS_ALLOWED_IN_PERIOD', 5)
         throttle_key = 'commenting'
+        if request.user.is_authenticated():
+            user = request.user
+        else:
+            user = None
         
         if comment_period_lockout is not None:
             if core_throttling.check_throttle_exists(request, throttle_key):
@@ -35,27 +39,18 @@ class CommentForm(forms.Form):
                     num_comments_allowed_in_lockout
                 )
             else:
-                latest_comment_list = list(
-                    models.CommentModel.objects.filter(
-                        ip_address=ip_address
-                    ).order_by('-publish_at')[:num_comments_allowed_in_lockout]
+                throttled = not throttling.check_throttle(
+                    user, 
+                    ip_address, 
+                    comment_period_lockout, 
+                    num_comments_allowed_in_lockout
                 )
-                if len(latest_comment_list) == num_comments_allowed_in_lockout:
-                    oldest_comment = latest_comment_list[-1]
-                    throttled = oldest_comment.publish_at > timezone.now() - comment_period_lockout
-                else:
-                    throttled = False
                 
             if throttled:
                 raise exceptions.RapidCommentingError(
                     "You are commenting too quickly. "
                     "Please wait before commenting again"
                 )
-        
-        if request.user.is_authenticated():
-            user = request.user
-        else:
-            user = None
         
         comment = models.CommentModel.objects.create(
             user=user,
@@ -72,5 +67,3 @@ class CommentForm(forms.Form):
         core_throttling.add_to_throttle(request, throttle_key, comment.publish_at)
         
         return comment
-        
-        

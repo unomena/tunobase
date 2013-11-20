@@ -13,9 +13,9 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 from tunobase.core import utils as core_utils, throttling as core_throttling
-from tunobase.social_media.tunosocial import models, exceptions
+from tunobase.social_media.tunosocial import models, exceptions, throttling
 
-def validate(self, throttle_key, ip_address):
+def validate(self, user, throttle_key, ip_address):
     like_period_lockout = getattr(settings, 'LIKE_PERIOD_LOCKOUT', None)
     num_likes_allowed_in_lockout = \
         getattr(settings, 'NUM_LIKES_ALLOWED_IN_PERIOD', 5)
@@ -28,16 +28,12 @@ def validate(self, throttle_key, ip_address):
                 num_likes_allowed_in_lockout
             )
         else:
-            latest_like_list = list(
-                models.Like.objects.filter(
-                    ip_address=ip_address
-                ).order_by('-created_at')[:num_likes_allowed_in_lockout]
+            throttled = not throttling.check_throttle(
+                user, 
+                ip_address, 
+                like_period_lockout, 
+                num_likes_allowed_in_lockout
             )
-            if len(latest_like_list) == num_likes_allowed_in_lockout:
-                oldest_like = latest_like_list[-1]
-                throttled = oldest_like.created_at > timezone.now() - like_period_lockout
-            else:
-                throttled = False
             
         if throttled:
             raise exceptions.RapidLikingError(
@@ -58,7 +54,7 @@ class AddLike(generic_views.View):
         throttle_key = 'liking_%s' % object_pk
         
         try:
-            self.validate(throttle_key, ip_address)
+            self.validate(user, throttle_key, ip_address)
         except exceptions.RapidLikingError, e:
             if request.is_ajax():
                 return core_utils.respond_with_json({
@@ -100,7 +96,7 @@ class RemoveLike(generic_views.View):
         throttle_key = 'liking_%s' % object_pk
         
         try:
-            self.validate(throttle_key, ip_address)
+            self.validate(user, throttle_key, ip_address)
         except exceptions.RapidLikingError, e:
             if request.is_ajax():
                 return core_utils.respond_with_json({
