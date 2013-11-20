@@ -20,10 +20,9 @@ def tunosocial_likes_widget(context, obj):
     num_likes = models.Like.objects.get_num_likes_for_object(obj, site)
     content_type_id = ContentType.objects.get_for_model(obj).id
     request = context['request']
-    if request.user.is_authenticated():
+    already_liked = request.COOKIES.get('liking_%s_%s' % (content_type_id, obj.pk), False)
+    if not already_liked and request.user.is_authenticated():
         already_liked = models.Like.objects.get_already_liked(request.user, obj, site)
-    else:
-        already_liked = request.COOKIES.get('liking_%s_%s' % (content_type_id, obj.pk), False)
         
     context.update({
         'object': obj,
