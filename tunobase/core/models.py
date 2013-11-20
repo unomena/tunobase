@@ -233,7 +233,7 @@ class GalleryImage(ImageModel, StateModel):
     def __unicode__(self):
         return u'%s %s' % (self.image, self.sites.all())
     
-class Gallery(StateModel, SlugModel):
+class Gallery(ContentModel):
     '''
     Containing model for Gallery Images
     '''
@@ -243,11 +243,8 @@ class Gallery(StateModel, SlugModel):
         blank=True, 
         null=True
     )
-    order = models.PositiveIntegerField(default=0, db_index=True)
-    sites = models.ManyToManyField(Site, blank=True, null=True)
     
     class Meta:
-        ordering = ['order', '-publish_at']
         verbose_name_plural = 'galleries'
     
     def __unicode__(self):
