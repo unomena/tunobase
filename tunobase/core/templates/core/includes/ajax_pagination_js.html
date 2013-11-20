@@ -15,15 +15,15 @@
 	                $($('.ajax_pagination .page')[data.page_number-1]).addClass('on');
 	                if(data.has_next){
 	                	$('.ajax_pagination .next').attr('data-page', data.next_page_number)
-	                	.removeClass('hidden');
+	                	.parent().removeClass('hidden');
 	                } else{
-	                	$('.ajax_pagination .next').addClass('hidden');
+	                	$('.ajax_pagination .next').parent().addClass('hidden');
 	                }
 	                if(data.has_previous){
 	                	$('.ajax_pagination .prev').attr('data-page', data.previous_page_number)
-	                	.removeClass('hidden');
+	                	.parent().removeClass('hidden');
 	                } else{
-	                	$('.ajax_pagination .prev').addClass('hidden');
+	                	$('.ajax_pagination .prev').parent().addClass('hidden');
 	                }
 	            }
 	        }
