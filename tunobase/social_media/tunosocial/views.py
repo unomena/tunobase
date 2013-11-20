@@ -97,7 +97,7 @@ class AddLike(generic_views.View):
         except exceptions.RapidLikingError, e:
             return core_utils.respond_with_json({
                 'success': False,
-                'reason': e
+                'reason': str(e)
             })
         
         return core_utils.respond_with_json({
@@ -122,7 +122,7 @@ class RemoveLike(generic_views.View):
         except exceptions.RapidLikingError, e:
             return core_utils.respond_with_json({
                 'success': False,
-                'reason': e
+                'reason': str(e)
             })
         
         return core_utils.respond_with_json({
