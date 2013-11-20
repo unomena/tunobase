@@ -22,6 +22,6 @@ def check_throttle(user, ip_address, comment_period_lockout, num_comments_allowe
     )
     if len(latest_comment_list) == num_comments_allowed_in_lockout:
         oldest_comment = latest_comment_list[-1]
-        return oldest_comment.publish_at > timezone.now() - comment_period_lockout
+        return oldest_comment.publish_at > (timezone.now() - comment_period_lockout)
     
-    return True
+    return False

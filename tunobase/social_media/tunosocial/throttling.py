@@ -22,6 +22,6 @@ def check_throttle(user, ip_address, like_period_lockout, num_likes_allowed_in_l
     )
     if len(latest_like_list) == num_likes_allowed_in_lockout:
         oldest_like = latest_like_list[-1]
-        return oldest_like.created_at > timezone.now() - like_period_lockout
+        return oldest_like.created_at > (timezone.now() - like_period_lockout)
     
-    return True
+    return False

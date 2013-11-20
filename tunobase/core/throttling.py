@@ -23,8 +23,8 @@ def check_throttle(request, throttle_key, lockout_duration,
             dateparse.parse_datetime(request.session[throttle_key][-num_allowed_in_lockout]),
             timezone.utc
         )
-        return oldest_timestamp < (timezone.now() - lockout_duration)
+        return oldest_timestamp > (timezone.now() - lockout_duration)
     except IndexError:
         pass
         
-    return True
+    return False

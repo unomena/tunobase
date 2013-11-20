@@ -21,14 +21,14 @@ def validate(self, user, throttle_key, ip_address):
         getattr(settings, 'NUM_LIKES_ALLOWED_IN_PERIOD', 5)
     if like_period_lockout is not None:
         if core_throttling.check_throttle_exists(self.request, throttle_key):
-            throttled = not core_throttling.check_throttle(
+            throttled = core_throttling.check_throttle(
                 self.request, 
                 throttle_key, 
                 like_period_lockout, 
                 num_likes_allowed_in_lockout
             )
         else:
-            throttled = not throttling.check_throttle(
+            throttled = throttling.check_throttle(
                 user, 
                 ip_address, 
                 like_period_lockout, 

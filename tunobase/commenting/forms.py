@@ -24,7 +24,7 @@ class CommentForm(forms.Form):
         comment_period_lockout = getattr(settings, 'COMMENT_PERIOD_LOCKOUT', None)
         num_comments_allowed_in_lockout = \
             getattr(settings, 'NUM_COMMENTS_ALLOWED_IN_PERIOD', 5)
-        throttle_key = 'commenting'
+        throttle_key = 'commenting_%s' % self.cleaned_data['comment_content_type_id']
         if request.user.is_authenticated():
             user = request.user
         else:
@@ -32,14 +32,14 @@ class CommentForm(forms.Form):
         
         if comment_period_lockout is not None:
             if core_throttling.check_throttle_exists(request, throttle_key):
-                throttled = not core_throttling.check_throttle(
+                throttled = core_throttling.check_throttle(
                     request, 
                     throttle_key, 
                     comment_period_lockout, 
                     num_comments_allowed_in_lockout
                 )
             else:
-                throttled = not throttling.check_throttle(
+                throttled = throttling.check_throttle(
                     user, 
                     ip_address, 
                     comment_period_lockout, 
