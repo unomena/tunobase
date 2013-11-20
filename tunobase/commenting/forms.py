@@ -13,6 +13,7 @@ from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.commenting import models, exceptions, throttling
 
 class CommentForm(forms.Form):
+    next = forms.CharField(required=False)
     user_id = forms.IntegerField(required=False)
     user_name = forms.CharField(max_length=100, required=False)
     comment_content_type_id = forms.IntegerField()

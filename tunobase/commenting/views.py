@@ -33,7 +33,7 @@ class PostComment(generic_views.FormView):
         except exceptions.RapidCommentingError as e:
             messages.error(self.request, e)
             
-        return redirect(self.request.META['HTTP_REFERER'])
+        return redirect(form.cleaned_data['next'] or self.request.META['HTTP_REFERER'])
     
     def form_invalid(self, form):
         messages.error(self.request, str(form.errors))
