@@ -26,7 +26,10 @@ class CommentForm(forms.Form):
         comment_period_lockout = getattr(settings, 'COMMENT_PERIOD_LOCKOUT', None)
         num_comments_allowed_in_lockout = \
             getattr(settings, 'NUM_COMMENTS_ALLOWED_IN_PERIOD', 5)
-        throttle_key = 'commenting_%s' % self.cleaned_data['comment_content_type_id']
+        throttle_key = 'commenting_%s_%s' % (
+            self.cleaned_data['comment_content_type_id'], 
+            self.cleaned_data['comment_object_pk']
+        )
         if request.user.is_authenticated():
             user = request.user
         else:

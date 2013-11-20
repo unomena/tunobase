@@ -15,7 +15,18 @@ from django.contrib import messages
 from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.social_media.tunosocial import models, exceptions, throttling
 
-def _validate(request, user, throttle_key, ip_address):
+def _validate(request, user, throttle_key, ip_address, action):
+    already_liked = request.COOKIES.get(throttle_key, None)
+    if user is None and already_liked is None and action == 'remove':
+        raise exceptions.UnauthorizedLikingError(
+            "This is not yours"
+        )
+        
+    if user is None and already_liked and action == 'add':
+        raise exceptions.UnauthorizedLikingError(
+            "You already like this"
+        )
+    
     like_period_lockout = getattr(settings, 'LIKE_PERIOD_LOCKOUT', None)
     num_likes_allowed_in_lockout = \
         getattr(settings, 'NUM_LIKES_ALLOWED_IN_PERIOD', 5)
@@ -55,9 +66,9 @@ def _like(request, action):
         object_pk = request.GET.get('object_pk', None)
         
     ip_address = core_utils.get_client_ip(request)
-    throttle_key = 'liking_%s' % object_pk
+    throttle_key = 'liking_%s_%s' % (content_type_id, object_pk)
     
-    _validate(request, user, throttle_key, ip_address)
+    _validate(request, user, throttle_key, ip_address, action)
     
     if action == 'add':
         like = models.Like.objects.create(
@@ -77,54 +88,64 @@ def _like(request, action):
             object_pk=object_pk
         )
         like.delete()
+        
+    return throttle_key
     
 
 class AddLike(generic_views.View):
     
     def get(self, request, *args, **kwargs):
         try:
-            _like(request, 'add')
-        except exceptions.RapidLikingError, e:
+            throttle_key = _like(request, 'add')
+        except (exceptions.RapidLikingError, exceptions.UnauthorizedLikingError), e:
             messages.error(request, e)
-            return redirect(request.META['HTTP_REFERER'])
+            redirect(request.META['HTTP_REFERER'])
         
         messages.success(request, 'You have liked this')
-        return redirect(request.META['HTTP_REFERER'])
+        response = redirect(request.META['HTTP_REFERER'])
+        response.set_cookie(throttle_key, True)
+        return response
     
     def post(self, request, *args, **kwargs):
         try:
-            _like(request, 'add')
-        except exceptions.RapidLikingError, e:
+            throttle_key = _like(request, 'add')
+        except (exceptions.RapidLikingError, exceptions.UnauthorizedLikingError), e:
             return core_utils.respond_with_json({
                 'success': False,
                 'reason': str(e)
             })
         
-        return core_utils.respond_with_json({
+        response = core_utils.respond_with_json({
             'success': True
         })
+        response.set_cookie(throttle_key, True)
+        return response
         
 class RemoveLike(generic_views.View):
     
     def get(self, request, *args, **kwargs):
         try:
-            _like(request, 'remove')
-        except exceptions.RapidLikingError, e:
+            throttle_key = _like(request, 'remove')
+        except (exceptions.RapidLikingError, exceptions.UnauthorizedLikingError), e:
             messages.error(request, e)
             return redirect(request.META['HTTP_REFERER'])
         
         messages.success(request, 'You have unliked this')
-        return redirect(request.META['HTTP_REFERER'])
+        response = redirect(request.META['HTTP_REFERER'])
+        response.delete_cookie(throttle_key)
+        return response
 
     def post(self, request, *args, **kwargs):
         try:
-            _like(request, 'remove')
-        except exceptions.RapidLikingError, e:
+            throttle_key = _like(request, 'remove')
+        except (exceptions.RapidLikingError, exceptions.UnauthorizedLikingError), e:
             return core_utils.respond_with_json({
                 'success': False,
                 'reason': str(e)
             })
         
-        return core_utils.respond_with_json({
+        response = core_utils.respond_with_json({
             'success': True
         })
+        response.delete_cookie(throttle_key)
+        return response

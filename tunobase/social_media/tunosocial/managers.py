@@ -21,7 +21,7 @@ class LikeManager(models.Manager):
             site=site
         ).count()
             
-    def get_already_liked(self, request, obj, site=None):
+    def get_already_liked(self, user, obj, site=None):
         if site is None:
             site = Site.objects.get_current()
             
@@ -31,11 +31,6 @@ class LikeManager(models.Manager):
             site=site
         )
         
-        if request.user.is_authenticated():
-            return queryset.filter(
-                user=request.user
-            ).exists()
-                
         return queryset.filter(
-            ip_address=core_utils.get_client_ip(request)
+            user=user
         ).exists()
