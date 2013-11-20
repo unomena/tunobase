@@ -4,19 +4,15 @@
 	    	{% csrf_token %}
 	        <p class="question">{{ form.poll.question }}:</p>
 	        {{ form.answers }}
-	        <div class="btns">
-	            <input type="submit" id="submit" value="Vote">
-	            <p><a href="javascript: void(0);">See Results</a></p>
-	        </div>
+	        <input type="submit" id="submit" value="Vote">
+            <p><a href="{% url 'poll_results' form.poll.pk %}">See Results</a></p>
 	    </form>
 	</div>
 	<div class="poll_results">
-		<div class="content">
-			{% include 'poll/includes/poll_results.html' %}
+	    <div class="content">
+		  {% include 'poll/includes/poll_results.html' %}
 		</div>
-		<div class="btns">
-	        <p><a href="javascript: void(0);">See Poll</a></p>
-	    </div>
+		<p><a href="javascript: void(0);">See Poll</a></p>
 	</div>
 {% else %}
 	{% if user.is_admin %}<p style="color: red">Please load a Poll Question with pk {{ pk }} in the database.{% endif %}

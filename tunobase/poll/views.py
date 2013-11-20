@@ -51,7 +51,7 @@ class PollAnswer(generic_views.FormView):
                 'success': True,
                 'results': render_to_string(
                     self.ajax_template_name, RequestContext(self.request, {
-                        'results': self.poll.answers.get_poll_percentages()
+                        'object_list': self.poll.answers.get_poll_percentages()
                     })
                 )
             })
@@ -70,3 +70,12 @@ class PollAnswer(generic_views.FormView):
             'success': False,
             'reason': str(form.errors)
         })
+        
+class PollResults(generic_views.ListView):
+    
+    def get_queryset(self):
+        self.poll = core_utils.get_permitted_object_or_404(
+            models.PollQuestion, pk=self.kwargs['pk']
+        )
+        
+        return self.poll.answers.get_poll_percentages()
