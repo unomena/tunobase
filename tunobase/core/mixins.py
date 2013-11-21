@@ -125,7 +125,7 @@ class GroupRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(GroupCheckMixin, self).dispatch(request,
+        return super(GroupRequiredMixin, self).dispatch(request,
             *args, **kwargs)
     
 class PermissionRequiredMixin(object):
