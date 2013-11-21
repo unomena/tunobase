@@ -55,6 +55,33 @@ class AjaxMorePaginationMixin(object):
             })
             
         return super(AjaxMorePaginationMixin, self).dispatch(request, *args, **kwargs)
+    
+class DeterministicLoginRequiredMixin(object):
+    login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
+    raise_exception = False  # Default whether to raise an exception to none
+    redirect_field_name = REDIRECT_FIELD_NAME  # Set by django.contrib.auth
+    deterministic_function = None
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.deterministic_function is None:
+            raise ImproperlyConfigured(
+                "'DeterministicLoginRequiredMixin' requires "
+                "'deterministic_function' attribute to be set."
+            )
+            
+        if not request.user.is_authenticated() and not deterministic_function():  # If the user is a standard user,
+            if self.raise_exception:  # *and* if an exception was desired
+                raise PermissionDenied  # return a forbidden response.
+            else:
+                return redirect_to_login(request.get_full_path(),
+                    self.login_url,
+                    self.redirect_field_name)
+
+        return super(AdminRequiredMixin, self).dispatch(
+            request,
+            *args, 
+            **kwargs
+        )
 
 class LoginRequiredMixin(object):
     '''

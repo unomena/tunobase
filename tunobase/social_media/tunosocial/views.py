@@ -12,7 +12,11 @@ from django.utils import timezone
 from django.shortcuts import redirect
 from django.contrib import messages
 
-from tunobase.core import utils as core_utils, throttling as core_throttling
+from tunobase.core import (
+    utils as core_utils, 
+    throttling as core_throttling,
+    mixins as core_mixins
+)
 from tunobase.social_media.tunosocial import models, exceptions, throttling
 
 def _validate(request, user, throttle_key, ip_address, action):
@@ -92,7 +96,10 @@ def _like(request, action):
     return throttle_key
     
 
-class AddLike(generic_views.View):
+class AddLike(core_mixins.DeterministicLoginRequiredMixin, generic_views.View):
+    
+    def deterministic_function(self):
+        return settings.ANONYMOUS_LIKES_ALLOWED
     
     def get(self, request, *args, **kwargs):
         try:
@@ -121,7 +128,10 @@ class AddLike(generic_views.View):
         response.set_cookie(throttle_key, True)
         return response
         
-class RemoveLike(generic_views.View):
+class RemoveLike(core_mixins.DeterministicLoginRequiredMixin, generic_views.View):
+    
+    def deterministic_function(self):
+        return settings.ANONYMOUS_LIKES_ALLOWED
     
     def get(self, request, *args, **kwargs):
         try:

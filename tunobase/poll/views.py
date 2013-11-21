@@ -9,14 +9,17 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.template import RequestContext
 
-from tunobase.core import utils as core_utils
+from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.poll import models
 
-class PollAnswer(generic_views.FormView):
+class PollAnswer(core_mixins.DeterministicLoginRequiredMixin, generic_views.FormView):
     '''
     View for handling poll submissions
     '''
     ajax_template_name = None
+    
+    def deterministic_function(self):
+        return settings.ANONYMOUS_POLL_VOTES_ALLOWED
     
     def get_form_kwargs(self):
         kwargs = super(PollAnswer, self).get_form_kwargs()

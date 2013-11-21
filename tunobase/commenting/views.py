@@ -9,11 +9,15 @@ from django.template.loader import render_to_string
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.db import IntegrityError
+from django.conf import settings
 
 from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.commenting import models, exceptions
 
-class PostComment(generic_views.FormView):
+class PostComment(core_mixins.DeterministicLoginRequiredMixin, generic_views.FormView):
+    
+    def deterministic_function(self):
+        return settings.ANONYMOUS_COMMENTS_ALLOWED
     
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
