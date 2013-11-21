@@ -112,7 +112,7 @@ class GroupRequiredMixin(object):
                 "'groups_required' attribute to be set."
             )
             
-        if request.user.groups.filter(name__in=self.groups_required).exists():
+        if request.user.is_admin or request.user.groups.filter(name__in=self.groups_required).exists():
             group_meets_requirements = True
         else:
             group_meets_requirements = False
