@@ -77,7 +77,7 @@ class DeterministicLoginRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(AdminRequiredMixin, self).dispatch(
+        return super(DeterministicLoginRequiredMixin, self).dispatch(
             request,
             *args, 
             **kwargs
