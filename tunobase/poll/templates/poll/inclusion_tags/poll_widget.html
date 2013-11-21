@@ -2,6 +2,9 @@
 	<div class="poll">
 	    <form class="poll_form" action="{% url 'poll_answer' form.poll.pk %}" method="post">
 	    	{% csrf_token %}
+	    	{% if multiple_answers %}
+              {{ form.multiple_answers }}
+            {% endif %}
 	        <p class="question">{{ form.poll.question }}:</p>
 	        {{ form.answers }}
 	        <input type="submit" id="submit" value="Vote">

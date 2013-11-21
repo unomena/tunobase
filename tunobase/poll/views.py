@@ -32,22 +32,8 @@ class PollAnswer(core_mixins.DeterministicLoginRequiredMixin, generic_views.Form
         return kwargs
     
     def form_valid(self, form):
-        if self.request.user.is_authenticated():
-            user = self.request.user
-        else:
-            user = None
         cookie_name = 'poll_%s_voted' % self.kwargs['pk']
-        
-        if user is None:
-            poll_voted = self.request.COOKIES.get(cookie_name, False)
-        else:
-            poll_voted = user.polls_answered.filter(pk=self.kwargs['pk']).exists()
-            
-        if poll_voted:
-            messages.error(self.request, 'You have already voted in this poll.')
-        else:
-            form.save(user)
-            messages.success(self.request, 'You have voted.')
+        form.save(self.request, cookie_name, self.kwargs['pk'])
         
         if self.request.is_ajax():
             response = core_utils.respond_with_json({
