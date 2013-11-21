@@ -30,9 +30,11 @@ def poll_widget(context, pk=None):
         poll = preferences.SitePreferences.active_poll
         
         if poll is None:
-            raise ImproperlyConfigured(
-                "Please set the active poll in Site Preferences admin"
-            )
+            context.update({
+                'error': True,
+                'pk': pk
+            })
+            return context
     else:
         try:
             poll = models.PollQuestion.objects.permitted().for_current_site().get(pk=pk)
