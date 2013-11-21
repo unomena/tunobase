@@ -36,12 +36,12 @@ def gallery_surrounding_image_pks(gallery, gallery_image_pk):
     for i, gallery_image in enumerate(gallery_images):
         if gallery_image.pk == gallery_image_pk:
             try:
-                previous_image_pk = gallery_images[i-1].pk
+                previous_image_pk = gallery_images[i+1].pk
             except IndexError:
                 pass
             
             try:
-                next_image_pk = gallery_images[i+1].pk
+                next_image_pk = gallery_images[i-1].pk
             except IndexError:
                 pass
             
