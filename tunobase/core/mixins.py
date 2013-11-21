@@ -95,6 +95,39 @@ class LoginRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
     
+class GroupRequiredMixin(object):
+    '''
+    Mixin allows you to require a user in certain Groups.
+    '''
+    login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
+    raise_exception = False  # Default whether to raise an exception to none
+    redirect_field_name = REDIRECT_FIELD_NAME  # Set by django.contrib.auth
+    groups_required = None
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        if self.groups_required == None:
+            raise ImproperlyConfigured(
+                "'GroupRequiredMixin' requires "
+                "'groups_required' attribute to be set."
+            )
+            
+        if request.user.groups.filter(name__in=self.groups_required).exists():
+            group_meets_requirements = True
+        else:
+            group_meets_requirements = False
+
+        if not group_meets_requirements:
+            if self.raise_exception:
+                raise PermissionDenied
+            else:
+                return redirect_to_login(request.get_full_path(),
+                    self.login_url,
+                    self.redirect_field_name)
+
+        return super(GroupCheckMixin, self).dispatch(request,
+            *args, **kwargs)
+    
 class PermissionRequiredMixin(object):
     """
     View mixin which verifies that the logged in user has the specified
@@ -327,6 +360,8 @@ class MultiplePermissionsRequiredMixin(object):
             raise ImproperlyConfigured("'MultiplePermissionsRequiredMixin' "
                                        "requires permissions dict '%s' value to be a list "
                                        "or tuple." % key)
+            
+
     
 class FilterMixin(object):
     '''
