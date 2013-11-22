@@ -125,11 +125,10 @@ class ImageModel(PhotologueImageModel):
                 (self.image, timezone.now().strftime('%Y-%m-%d'))
         
         super(ImageModel, self).save(*args, **kwargs)
-    
-    
-class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditModel):
+        
+class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel):
     '''
-    All Content on the Site must derive from this Model
+    Base Content Model
     '''
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
@@ -138,6 +137,20 @@ class ContentModel(PolymorphicModel, ImageModel, StateModel, SlugModel, AuditMod
     
     default_image_category = 'content'
     
+    objects = managers.StateManager()
+    
+    class Meta:
+        abstract = True
+        ordering = ['order', '-publish_at']
+    
+    def __unicode__(self):
+        return u'%s - %s' % (self.title, self.sites.all())
+    
+    
+class ContentModel(PolymorphicModel, BaseContentModel):
+    '''
+    All Content on the Site must derive from this Model
+    '''
     objects = managers.CorePolymorphicStateManager()
     
     class Meta:
