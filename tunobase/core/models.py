@@ -137,7 +137,7 @@ class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel):
     
     default_image_category = 'content'
     
-    objects = managers.StateManager()
+    objects = managers.CoreStateManager()
     
     class Meta:
         abstract = True
