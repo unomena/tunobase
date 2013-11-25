@@ -50,7 +50,7 @@ class Event(core_models.ContentModel):
         default=constants.EVENT_REPEAT_CHOICE_DOES_NOT_REPEAT,
     )
     repeat_until = models.DateField(blank=True, null=True)
-    external_link = models.CharField(max_length=255, blank=True, null=True)
+    external_link = models.URLField(max_length=255, blank=True, null=True)
     
     objects = managers.EventManager()
     
