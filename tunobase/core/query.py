@@ -3,6 +3,8 @@ Created on 25 Oct 2013
 
 @author: michael
 '''
+import random
+
 from django.db.models.query import QuerySet
 from django.contrib.sites.models import Site
 from django.conf import settings
