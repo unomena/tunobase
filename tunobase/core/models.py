@@ -264,7 +264,7 @@ class Gallery(ContentModel):
         null=True
     )
     
-    default_image = 'gallery'
+    default_image_category = 'gallery'
     
     class Meta:
         verbose_name_plural = 'galleries'
