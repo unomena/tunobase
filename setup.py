@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tunobase',
-    version='0.0.1.beta',
+    version='1.0.1',
     description='Unomena Base Django Application',
     long_description = open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read(),
     author='Unomena',
@@ -11,11 +11,26 @@ setup(
     url='http://git.unomena.net/unomena/tunobase',
     packages = find_packages(),
     install_requires = [
+        'South',
+        'django-polymorphic',
+        'django-ckeditor==3.6.2.2',
+        'django-photologue==2.8.praekelt',
+        'django-preferences',
+        'python-memcached',
+        'celery==3.0.23',
+        'django-celery==3.0.23',
+        'django-honeypot',
+        'Pillow',
+        'facebook-sdk',
+        'twython',
+        'google-api-python-client',
+        'flufl.password==1.2.1',
+        'requests==2.0.0',
     ],
     tests_require=[
         'django-setuptest>=0.1.2',
         'pysqlite>=2.5',
-	'pycurl'
+	    'pycurl'
     ],
     test_suite="setuptest.setuptest.SetupTestSuite",
     include_package_data=True,

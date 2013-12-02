@@ -1,0 +1,104 @@
+'''
+Created on 29 Oct 2013
+
+@author: michael
+'''
+from django.views import generic as generic_views
+from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
+from django.db import IntegrityError
+from django.conf import settings
+
+from tunobase.core import utils as core_utils, mixins as core_mixins
+from tunobase.commenting import models, exceptions
+
+class PostComment(core_mixins.DeterministicLoginRequiredMixin, generic_views.FormView):
+    
+    def deterministic_function(self):
+        return settings.ANONYMOUS_COMMENTS_ALLOWED
+    
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        
+        if form.is_valid():
+            return self.ajax_form_valid(form) \
+                if request.is_ajax() else self.form_valid(form)
+        else:
+            return self.ajax_form_invalid(form) \
+                if request.is_ajax() else self.form_invalid(form)
+        
+    def form_valid(self, form):
+        try:
+            form.save(self.request)
+            messages.success(self.request, 'Your comment has been posted')
+        except exceptions.RapidCommentingError as e:
+            messages.error(self.request, e)
+            
+        return redirect(form.cleaned_data['next'] or self.request.META['HTTP_REFERER'])
+    
+    def form_invalid(self, form):
+        messages.error(self.request, str(form.errors))
+        
+        return redirect(self.request.META['HTTP_REFERER'])
+    
+    def ajax_form_valid(self, form):
+        try:
+            comment = form.save(self.request)
+            num_comments = models.CommentModel.objects.permitted().count()
+            
+            return core_utils.respond_with_json({
+                'success': True,
+                'comment': render_to_string(
+                    self.template_name, 
+                    RequestContext(self.request, {'comment': comment})
+                ),
+                'num_comments': num_comments
+            })
+        except exceptions.RapidCommentingError as e:
+            return core_utils.respond_with_json({
+                'success': False,
+                'reason': e.value
+            })
+        
+    def ajax_form_invalid(self, form):
+        return core_utils.respond_with_json({
+            'success': False,
+            'reason': str(form.errors)
+        })
+        
+class ReportComment(core_mixins.LoginRequiredMixin, generic_views.View):
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            models.CommentFlag.objects.report(
+                request.user,
+                self.kwargs['pk'],
+            )
+        except IntegrityError:
+            if request.is_ajax():
+                return core_utils.respond_with_json({
+                    'success': False,
+                    'reason': 'You have already reported this comment'
+                })
+            
+            messages.error(request, 'You have already reported this comment')
+            return redirect(request.META['HTTP_REFERER'])
+        
+        if request.is_ajax():
+            return core_utils.respond_with_json({
+                'success': True
+            })
+        
+        messages.success(request, 'This comment has been reported')
+        return redirect(request.META['HTTP_REFERER'])
+        
+class LoadMoreComments(core_mixins.AjaxMorePaginationMixin, generic_views.ListView):
+    
+    def get_queryset(self):
+        return models.CommentModel.objects.permitted().get_comments_for_object(
+            self.request.GET['content_type_id'],
+            self.request.GET['object_pk'],
+        )

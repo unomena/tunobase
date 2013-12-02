@@ -3,7 +3,8 @@ Created on 05 Mar 2013
 
 @author: michael
 '''
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
+from django.conf import settings
 
 from tunobase.age_gate import views, forms
 

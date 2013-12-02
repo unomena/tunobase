@@ -8,7 +8,80 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
+from django.core.paginator import Paginator
+from django.template.loader import render_to_string
+from django.template import RequestContext
 from django.conf import settings
+
+from tunobase.core import utils as core_utils
+
+class AjaxMorePaginationMixin(object):
+    '''
+    View mixin that returns JSON paginated data
+    '''
+    partial_template_name = None
+    
+    def dispatch(self, request, *args, **kwargs):
+        if self.partial_template_name is None:
+            raise ImproperlyConfigured(
+                "'AjaxMorePaginationMixin' requires "
+                "'partial_template_name' attribute to be set."
+            )
+        
+        page = request.GET.get('page', None)
+        
+        if page is not None:
+            if hasattr(self, 'get_object'):
+                self.object = self.get_object()
+            self.queryset = self.get_queryset()
+            paginate_by = request.GET.get('paginate_by', self.paginate_by)
+            paginator = Paginator(self.queryset, paginate_by)
+            object_list= paginator.page(page)
+            has_previous = object_list.has_previous()
+            has_next = object_list.has_next()
+            
+            return core_utils.respond_with_json({
+                'success': True,
+                'content': render_to_string(self.partial_template_name, RequestContext(request, {
+                    'object_list': object_list
+                })),
+                'has_previous': has_previous,
+                'has_next': has_next,
+                'previous_page_number': object_list.previous_page_number() if has_previous else 0,
+                'next_page_number': object_list.next_page_number() if has_next else 0,
+                'page_number': object_list.number,
+                'start_index': object_list.start_index(),
+                'end_index': object_list.end_index()
+            })
+            
+        return super(AjaxMorePaginationMixin, self).dispatch(request, *args, **kwargs)
+    
+class DeterministicLoginRequiredMixin(object):
+    login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
+    raise_exception = False  # Default whether to raise an exception to none
+    redirect_field_name = REDIRECT_FIELD_NAME  # Set by django.contrib.auth
+    deterministic_function = None
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.deterministic_function is None:
+            raise ImproperlyConfigured(
+                "'DeterministicLoginRequiredMixin' requires "
+                "'deterministic_function' attribute to be set."
+            )
+            
+        if not request.user.is_authenticated() and not deterministic_function():  # If the user is a standard user,
+            if self.raise_exception:  # *and* if an exception was desired
+                raise PermissionDenied  # return a forbidden response.
+            else:
+                return redirect_to_login(request.get_full_path(),
+                    self.login_url,
+                    self.redirect_field_name)
+
+        return super(DeterministicLoginRequiredMixin, self).dispatch(
+            request,
+            *args, 
+            **kwargs
+        )
 
 class LoginRequiredMixin(object):
     '''
@@ -21,28 +94,39 @@ class LoginRequiredMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
-        
-class ConsoleUserRequiredMixin(object):
+    
+class GroupRequiredMixin(object):
     '''
-    Mixin allows you to require a user with `is_console_user` set to True.
+    Mixin allows you to require a user in certain Groups.
     '''
     login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
     raise_exception = False  # Default whether to raise an exception to none
     redirect_field_name = REDIRECT_FIELD_NAME  # Set by django.contrib.auth
-    
+    groups_required = None
+
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.can_access_console:  # If the user is a standard user,
-            if self.raise_exception:  # *and* if an exception was desired
-                raise PermissionDenied  # return a forbidden response.
+        if self.groups_required == None:
+            raise ImproperlyConfigured(
+                "'GroupRequiredMixin' requires "
+                "'groups_required' attribute to be set."
+            )
+            
+        if request.user.is_admin or request.user.groups.filter(name__in=self.groups_required).exists():
+            group_meets_requirements = True
+        else:
+            group_meets_requirements = False
+
+        if not group_meets_requirements:
+            if self.raise_exception:
+                raise PermissionDenied
             else:
-                return redirect_to_login(
-                    request.get_full_path(),
+                return redirect_to_login(request.get_full_path(),
                     self.login_url,
-                    self.redirect_field_name
-                )
-                
-        return super(ConsoleUserRequiredMixin, self).dispatch(request, *args, **kwargs)
+                    self.redirect_field_name)
+
+        return super(GroupRequiredMixin, self).dispatch(request,
+            *args, **kwargs)
     
 class PermissionRequiredMixin(object):
     """
@@ -84,8 +168,6 @@ class PermissionRequiredMixin(object):
 
         # Check to see if the request's user has the required permission.
         has_permission = request.user.has_perm(self.permission_required)
-        
-        print has_permission
 
         if not has_permission:  # If the user lacks the permission
             if self.raise_exception:  # *and* if an exception was desired
@@ -278,6 +360,8 @@ class MultiplePermissionsRequiredMixin(object):
             raise ImproperlyConfigured("'MultiplePermissionsRequiredMixin' "
                                        "requires permissions dict '%s' value to be a list "
                                        "or tuple." % key)
+            
+
     
 class FilterMixin(object):
     '''

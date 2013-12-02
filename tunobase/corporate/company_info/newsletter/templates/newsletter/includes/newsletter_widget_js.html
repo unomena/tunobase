@@ -1,0 +1,29 @@
+<script>
+	$('#frmNewsletter').validate({
+		rules: {
+            email: {
+                remote: {
+                    url: "{% url 'newsletter_email_validate' %}",
+                    type: 'get'
+                }
+            }
+        },
+        messages: {
+            email: {
+                remote: 'Subscriber with this email address already exists'
+            }
+        },
+	    submitHandler: function(form){
+	        $(form).ajaxSubmit({
+	            success: function(data){
+	                data = JSON.parse(data);
+	                if(data.success){
+	                	$(form).html(data.message);
+	                } else{
+	                    alert('Error subscribing to newsletter');
+	                }
+	            }
+	        });
+	    }
+	});
+</script>

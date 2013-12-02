@@ -1,0 +1,16 @@
+{% load core_tags %}
+
+{% if page_obj and object_list %}
+    <div class="pagination ajax_pagination">
+        <p>Displaying <span class='start_index'>{{ page_obj.start_index }}</span>&dash;<span class="end_index">{{ page_obj.end_index }}</span> of {{ paginator.count }}</p>
+        {% if page_obj.has_other_pages %}
+            <ul>
+                <li{% if not page_obj.has_previous %} class="hidden"{% endif %}><a data-container-selector="{{ container_selector }}" data-page="{% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}0{% endif %}" href="{{ pagination_url }}" class="prev">Previous</a></li>
+                {% for page in paginator.page_range %}
+                    <li><a data-page="{{ page }}" data-container-selector="{{ container_selector }}" href="{{ pagination_url }}" class="page{% if page_obj.number == page %} on{% endif %}">{{ page }}</a></li>
+                {% endfor %}
+                <li{% if not page_obj.has_next %} class="hidden"{% endif %}><a data-container-selector="{{ container_selector }}" data-page="{% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}" href="{{ pagination_url }}" class="next">Next</a></li>
+            </ul>
+        {% endif %}
+    </div><!--/pagination-->
+{% endif %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>EULA</h1>
+    <p>Please accept the following EULA before continuing</div>
+    {% if not form.eula %}
+        <p>Please load the EULA in the Console</p>
+    {% else %}
+        <form id="frmSignEULA" action="." method="POST">{% csrf_token %}
+            {{ form.next }}
+            {{ form.eula.content|safe }}
+            <p>I understand and agree that downloading this file is governed by the EULA.</p>
+            <label for="id_accept">I Accept the EULA</label>
+            {{ form.accept }}{{ form.accept.errors }}
+            <input type="submit" value="Submit" />
+            <a href="javascript: window.history.back();">Decline</a>
+        </form>
+    {% endif %}
+{% endblock %}

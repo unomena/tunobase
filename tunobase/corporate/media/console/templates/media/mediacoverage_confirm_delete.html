@@ -1,0 +1,4 @@
+{% extends 'confirm_delete_base.html' %}
+
+{% block confirm_delete_url %}{% url 'console_media_media_coverage_delete' object.pk %}{% endblock %}
+{% block decline_delete_url %}{% url 'console_media_media_coverage_list' %}{% endblock %}

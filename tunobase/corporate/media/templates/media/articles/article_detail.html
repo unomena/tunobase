@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}Article &dash; {{ object.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ object.title }}</h1>
+    <p>{{ object.publish_at|date:'j F Y' }}</p>
+    <p>{{ object.rich_content|safe }}</p>
+{% endblock %}

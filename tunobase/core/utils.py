@@ -4,8 +4,11 @@ Created on 22 Oct 2013
 @author: michael
 '''
 import json
+import types
 
 from django import http
+from django.template import Context, Template
+from django.utils.encoding import smart_unicode
 
 def respond_with_json(response_dict):
     '''
@@ -40,26 +43,81 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-def get_permitted_object_or_404(klass, *args, **kwargs):
+def get_object_for_current_site_or_404(klass, *args, **kwargs):
     '''
-    Retrieve an object from a Django model only if its State is published
+    Retrieve an object from a Django model only if
+    it is a part of the current Site
     '''
-    queryset = klass.permitted
-    try:
-        return queryset.get(*args, **kwargs)
-    except queryset.model.DoesNotExist:
-        raise http.Http404('No %s matches the given query.' % queryset.model._meta.object_name)
-    
-def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
-    '''
-    Retrieve an object from a Django model only if its State is published
-    and it is a part of the current Site
-    '''
-    queryset = klass.permitted
+    queryset = klass.objects
     try:
         return queryset.for_current_site().get(*args, **kwargs)
     except queryset.model.DoesNotExist:
-        raise http.Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+        raise http.Http404(
+            'No %s matches the given query.' % queryset.model._meta.object_name
+        )
+
+def get_permitted_object_or_404(klass, *args, **kwargs):
+    '''
+    Retrieve an object from a Django model only if
+    its State is published
+    '''
+    queryset = klass.objects.permitted()
+    try:
+        return queryset.get(*args, **kwargs)
+    except queryset.model.DoesNotExist:
+        raise http.Http404(
+            'No %s matches the given query.' % queryset.model._meta.object_name
+        )
     
-def is_path(path):
-    return len(path.split('/')) > 1
+def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
+    '''
+    Retrieve an object from a Django model only if
+    its State is published and it is a part of the 
+    current Site
+    '''
+    queryset = klass.objects.permitted()
+    try:
+        return queryset.for_current_site().get(*args, **kwargs)
+    except queryset.model.DoesNotExist:
+        raise http.Http404(
+            'No %s matches the given query.' % queryset.model._meta.object_name
+        )
+
+def create_crumb(title, url=None):
+    '''
+    Helper function to create breadcrumb HTML
+    '''
+    crumb = '<img src="/static/breadcrumbs/img/crumb.png" />'
+    if url:
+        crumb = "%s<a href='%s'>%s</a>" % (crumb, url, title)
+    else:
+        crumb = "%s&nbsp;%s" % (crumb, title)
+
+    return crumb
+
+def render_string_to_string(string, context):
+    '''
+    Renders a string with context
+    '''
+    template = Template(string)
+    context = Context(context)
+    return template.render(context)
+
+def ensure_unicode(the_string):
+    '''
+    Checking if unicode
+    '''
+    if not type(the_string) == types.UnicodeType:
+    #        the_string = unicode(str(the_string))
+        the_string = smart_unicode(the_string)
+
+    return smart_unicode(the_string)
+
+def not_null_str(obj):
+    '''
+    Ensures that the returned string is not null
+    '''
+    if obj == None:
+        return ''
+    else:
+        return ensure_unicode(obj)

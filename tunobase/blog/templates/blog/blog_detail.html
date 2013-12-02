@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load core_widgets tagging_widgets %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+	<h1>{{ object.title }}</h1>
+	{% tag_cloud_widget 'blog' 'blogentry' %}
+	<div id="blog_entry_container">
+	   {% include 'blog/includes/blog_entries.html' %}
+	</div>
+	{% ajax_more_pagination_widget page_obj request.get_full_path %}
+{% endblock %}
+
+{% block bottom_js %}
+    {% include 'tagging/includes/tags_widget_js.html' %}
+    {% include 'core/includes/ajax_more_pagination_js.html' %}
+{% endblock %}

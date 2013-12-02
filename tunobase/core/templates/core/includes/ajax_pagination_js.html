@@ -1,0 +1,34 @@
+<script>
+	$('.ajax_pagination a').click(function(e){
+	    var self = this;
+	    
+	    $.get(
+	        $(self).attr('href'),
+	        {'page': $(self).attr('data-page')},
+	        function(data){
+	            data = JSON.parse(data);
+	            if(data.success){
+	                $($(self).attr('data-container-selector')).html(data.content);
+	                $('.ajax_pagination .start_index').html(data.start_index);
+	                $('.ajax_pagination .end_index').html(data.end_index);
+	                $('.ajax_pagination .on').removeClass('on');
+	                $($('.ajax_pagination .page')[data.page_number-1]).addClass('on');
+	                if(data.has_next){
+	                	$('.ajax_pagination .next').attr('data-page', data.next_page_number)
+	                	.parent().removeClass('hidden');
+	                } else{
+	                	$('.ajax_pagination .next').parent().addClass('hidden');
+	                }
+	                if(data.has_previous){
+	                	$('.ajax_pagination .prev').attr('data-page', data.previous_page_number)
+	                	.parent().removeClass('hidden');
+	                } else{
+	                	$('.ajax_pagination .prev').parent().addClass('hidden');
+	                }
+	            }
+	        }
+	    );
+	    
+	    return false;
+	});
+</script>

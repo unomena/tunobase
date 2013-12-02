@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load tagging_widgets commenting_widgets %}
+
+{% block title %}{{ object.title }} | {{ object.blog.title }}{% endblock %}
+
+{% block content %}
+    <div class="blog_entry">
+		<h1>{{ object.blog.title }}</h1>
+		{% comment %}{% tag_cloud object.pk %}{% endcomment %}
+		<h3>{{ object.title }}</h3>
+		<h3>{% for author_user in object.authors.users %}{{ author_user }}{% endfor %}</h3>
+		<img src="{{ object.get_98x98_url }}" class="image_thumb" />
+		<p>{{ object.rich_content|safe }}</p>
+		{% tags_widget object %}
+	</div>
+	{% commenting_widget object 1 %}
+{% endblock %}
+
+{% block bottom_js %}
+    {% include 'tagging/includes/tags_widget_js.html' %}
+	{% include 'commenting/includes/commenting_widget_js.html' %}
+	{% include 'core/includes/ajax_more_pagination_js.html' %}
+{% endblock %}

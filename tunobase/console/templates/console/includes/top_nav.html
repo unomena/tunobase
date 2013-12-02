@@ -1,0 +1,7 @@
+<ul>
+    <li><a href="{% url 'console' %}">Index</a></li>
+    <li>Welcome, {{ user.display_name }}</li>
+    <li><a href="{% url 'secure_profile' %}">Profile</a>
+    <li><a href="{% url 'index' %}">Regular Site</a>
+    <li><a href="{% url 'auth_logout' %}">Logout</a>
+</ul>

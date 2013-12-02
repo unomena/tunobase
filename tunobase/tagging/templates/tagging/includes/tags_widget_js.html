@@ -1,0 +1,37 @@
+{% if user.is_admin %}
+<script>
+	function tagify(){
+		$('.tag_widget_tags.admin:not(.ui-widget)').tagit({
+	    	autocomplete: {
+	    		delay: 2,
+	    		minLength: 1,
+	    		source: "{% url 'retrieve_tags' %}"
+	    	}
+	    });	
+	}
+    
+    $('body').on('click', '.tag_save', function(e){
+    	var self = this;
+        $(self).parent().ajaxSubmit({
+        	beforeSubmit: function(){
+        		$(self).html('Saving...');
+        	},
+            success: function(data){
+                data = JSON.parse(data);
+                if(data.success){
+                	$(self).html('Saved!');
+                	setTimeout(function(){
+                		$(self).html('Save');
+                	}, 3000);
+                }
+            }
+        });
+     });
+    
+    $('body').on('click', '.tag_clear', function(e){
+        $(this).parent().find('.tag_widget_tags.admin').tagit('removeAll');
+    });
+    
+    tagify();
+</script>
+{% endif %}

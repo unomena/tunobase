@@ -1,0 +1,29 @@
+{% extends 'console/base.html' %}
+
+{% block content %}
+	<h1>Media Coverage List</h1>
+	<a href="{% url 'console_media_media_coverage_create' %}">Add Media Coverage</a>
+	<table>
+	    <thead>
+	        <tr>
+	            <th>Title</th>
+	            <th>&nbsp;</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        {% for object in object_list %}
+	            <tr>
+	                <td><a href="{% url 'console_media_media_coverage_detail' object.pk %}">{% if not object.title %}&nbsp;{% endif %}{{ object.title }}</a></td>
+	                <td>
+	                    <a href="{% url 'console_media_media_coverage_update' object.pk %}">Edit&nbsp;&raquo;</a> &nbsp; &nbsp;
+	                    <a href="{% url 'console_media_media_coverage_delete' object.pk %}">Delete&nbsp;&raquo;</a> 
+	                </td>
+	            </tr>
+	        {% empty %}
+	            <tr>
+	                <td colspan="2">There is no Media Coverage to list.</td>
+	            <tr>
+	        {% endfor %}
+	    </tbody>
+	</table>
+{% endblock %}

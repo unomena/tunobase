@@ -3,8 +3,9 @@ Created on 23 Oct 2013
 
 @author: michael
 '''
-from django.db import models
 import uuid
+
+from django.db import models
 
 class UUIDField(models.CharField):
     

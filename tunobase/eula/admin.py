@@ -10,3 +10,4 @@ class EULAAdmin(admin.ModelAdmin):
     
 admin.site.register(models.EULA)
 admin.site.register(models.EULAVersion)
+admin.site.register(models.UserEULA)

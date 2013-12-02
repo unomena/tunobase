@@ -1,0 +1,6 @@
+<ul class="tag_widget_tags">
+    <li><a href=".">All</a></li>
+    {% for tag in tags %}
+        <li><a href="?tag={{ tag.title }}">{{ tag.title }}</a></li>
+    {% endfor %}
+</ul>
