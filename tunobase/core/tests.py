@@ -25,7 +25,7 @@ class ContentModelTestCase(TestCase):
         published_object.state = constants.STATE_UNPUBLISHED
         published_object.save()
         try:
-            published_object = models.ContentModel.objects.permitted.get(slug=self.slug)
+            published_object = models.ContentModel.objects.permitted().get(slug=self.slug)
         except models.ContentModel.DoesNotExist:
             published_object = None
         
@@ -57,7 +57,7 @@ class ContentModelTestCase(TestCase):
     
     def test_default_image_model(self):
         try:
-            default_image_object = models.DefaultImage.objects.get(category=self.category)
+            default_image_object = models.DefaultImage.objects.get(category=self.default_image_category)
         except models.DefaultImage.DoesNotExist:
             default_image_object = None
             
