@@ -12,11 +12,9 @@ from tunobase.core import constants, models
 class ContentModelTestCase(TestCase):
     title = 'Content Model Test Case Title'
     slug = slugify(title)
-    default_image_category = 'content'
 
     def setUp(self):
         models.ContentModel.objects.create(title=self.title)
-        models.DefaultImage.objects.create(category=self.default_image_category)
 
     def test_state_model(self):
         published_object = models.ContentModel.objects.get(slug=self.slug)
@@ -54,11 +52,3 @@ class ContentModelTestCase(TestCase):
         
         self.assertLessEqual(audit_object.created_at, timezone.now())
         self.assertLessEqual(audit_object.modified_at, timezone.now())
-    
-    def test_default_image_model(self):
-        try:
-            default_image_object = models.DefaultImage.objects.get(category=self.default_image_category)
-        except models.DefaultImage.DoesNotExist:
-            default_image_object = None
-            
-        self.assertIsNotNone(default_image_object, 'Default image not found')

@@ -87,7 +87,7 @@ def create_crumb(title, url=None):
     '''
     Helper function to create breadcrumb HTML
     '''
-    crumb = '<img src="/static/breadcrumbs/img/crumb.png" />'
+    crumb = '&raquo;'
     if url:
         crumb = "%s<a href='%s'>%s</a>" % (crumb, url, title)
     else:
