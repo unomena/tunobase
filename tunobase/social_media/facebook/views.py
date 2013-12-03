@@ -18,7 +18,7 @@ import facebook
 class PreLogin(generic_views.View):
     
     def get(self, request, *args, **kwargs):
-        if not request.META['HTTP_REFERER'] == reverse('secure_login'):
+        if not reverse('secure_login') in request.META['HTTP_REFERER']:
             request.session['facebook_login_redirect_url'] = request.META['HTTP_REFERER']
         
         return redirect(unquote(request.GET['auth_url']))
