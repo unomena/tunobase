@@ -14,9 +14,15 @@ class ContentModelTestCase(TestCase):
     slug = slugify(title)
 
     def setUp(self):
+        '''
+        Create the Content Model in the Database
+        '''
         models.ContentModel.objects.create(title=self.title)
 
     def test_state_model(self):
+        '''
+        Test that the state is correct
+        '''
         published_object = models.ContentModel.objects.get(slug=self.slug)
         self.assertEqual(published_object.state, constants.STATE_PUBLISHED)
         

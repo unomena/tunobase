@@ -46,6 +46,7 @@ class StateModel(models.Model):
             
         super(StateModel, self).save(*args, **kwargs)
         
+        
 class SlugModel(models.Model):
     '''
     A mixin Model for creating unique Slugs
@@ -78,6 +79,7 @@ class SlugModel(models.Model):
         
         super(SlugModel, self).save(*args, **kwargs)
             
+            
 class AuditModel(models.Model):
     '''
     A mixin Model for auditting creations/modifications
@@ -100,6 +102,7 @@ class AuditModel(models.Model):
     
     class Meta:
         abstract = True
+        
         
 class ImageModel(PhotologueImageModel):
     image_name = models.CharField(
@@ -125,6 +128,7 @@ class ImageModel(PhotologueImageModel):
                 (self.image, timezone.now().strftime('%Y-%m-%d'))
         
         super(ImageModel, self).save(*args, **kwargs)
+        
         
 class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel):
     '''
@@ -159,11 +163,13 @@ class ContentModel(PolymorphicModel, BaseContentModel):
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.sites.all())
         
+        
 class ContentBlock(ContentModel):
     '''
     Used for portlets placed throughout the Site where
     just a block of content is needed.
     '''
+    
     
 class DefaultImage(PhotologueImageModel, StateModel):
     '''
@@ -178,6 +184,7 @@ class DefaultImage(PhotologueImageModel, StateModel):
     
     def __unicode__(self):
         return u'%s' % self.get_category_display()
+    
     
 class Banner(StateModel):
     '''
@@ -194,10 +201,12 @@ class Banner(StateModel):
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.sites.all())
 
+
 class ImageBanner(Banner, ImageModel):
     '''
     Image Banner for Site sliders
     '''
+
 
 class HTMLBanner(Banner):
     '''
@@ -205,6 +214,7 @@ class HTMLBanner(Banner):
     '''
     plain_content = models.TextField(blank=True, null=True)
     rich_content = RichTextField(blank=True, null=True)
+    
     
 class BannerSet(StateModel):
     '''
@@ -221,17 +231,20 @@ class BannerSet(StateModel):
     def __unicode__(self):
         return u'%s' % self.slug
     
+    
 class ImageBannerSet(BannerSet):
     '''
     Containing Model for Image Banners
     '''
     banners = models.ManyToManyField(ImageBanner, related_name='banner_sets')
     
+    
 class HTMLBannerSet(BannerSet):
     '''
     Containing Model for HTML Banners
     '''
     banners = models.ManyToManyField(HTMLBanner, related_name='banner_sets')    
+
 
 class GalleryImage(ImageModel, StateModel):
     '''
@@ -252,6 +265,7 @@ class GalleryImage(ImageModel, StateModel):
             return self.galleries.all()[0]
         except IndexError:
             return None
+    
     
 class Gallery(ContentModel):
     '''

@@ -11,6 +11,10 @@ from django.conf import settings
 from tunobase.core import widgets as core_widgets
 
 class AgeGateForm(forms.Form):
+    '''
+    Form for submitting the User's Age and
+    determining whether they pass the Age Gate
+    '''
     location = forms.ChoiceField(choices=settings.AGE_GATE_LOCATION_CHOICES, required=False)
     date_of_birth = forms.DateField(
         widget=core_widgets.DateSelectorWidget(
@@ -30,6 +34,10 @@ class AgeGateForm(forms.Form):
         return self.cleaned_data['terms_accept']
     
     def save(self, request):
+        '''
+        Check if the User's Age passes the legal requirements
+        for their country and let them continue if it does
+        '''
         age = settings.AGE_GATE_COUNTRY_LEGAL_AGES[self.cleaned_data['location']]
         country_date_of_birth_required = \
             datetime.date.today() - datetime.timedelta(days=age*365)

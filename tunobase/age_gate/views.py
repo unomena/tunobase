@@ -7,6 +7,10 @@ from django.views import generic as generic_views
 from django.http import HttpResponseRedirect
 
 class AgeGate(generic_views.FormView):
+    '''
+    View the User gets sent to when an Age Gate
+    is encountered
+    '''
     
     def get_initial(self):
         return {'next': self.request.GET.get('next')}

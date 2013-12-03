@@ -13,6 +13,11 @@ from tunobase.core import managers as core_managers
 from tunobase.commenting import query, constants
 
 class CommentManager(core_managers.CoreStateManager, comment_managers.CommentManager):
+    '''
+    Comment Manager for retrieving the amount of comments
+    for a given Content Object and removing flagged comments
+    passing the threshold
+    '''
     
     def get_queryset(self):
         return query.CommentQuerySet(self.model, using=self._db)
@@ -34,6 +39,9 @@ class CommentManager(core_managers.CoreStateManager, comment_managers.CommentMan
                 comment.save()
         
 class CommentFlagManager(models.Manager):
+    '''
+    Comment flag manager used for flagging comments'
+    '''
     
     def report(self, user, comment_id):
         self.create(

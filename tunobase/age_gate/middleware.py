@@ -9,6 +9,10 @@ from django.conf import settings
 from tunobase.age_gate import utils
 
 class AgeGateMiddleware(object):
+    '''
+    Enable this Middleware to make the entire
+    site Age-Gated
+    '''
     
     def process_view(self, request, view_func, view_args, view_kwargs):
         age_gate_url = getattr(settings, 'AGE_GATE_URL', 'age_gate')
