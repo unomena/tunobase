@@ -20,7 +20,8 @@ class CommentModelTestCase(TestCase):
 
     def setUp(self):
         '''
-        Create the Blog and Blog Entry Models in the database
+        Create the Comment Model, a Reply to the Comment Model and
+        enough flags to mark the Comment Model as removed in the database
         '''
         self.comment_object = models.CommentModel.objects.create(
             comment=self.comment,
