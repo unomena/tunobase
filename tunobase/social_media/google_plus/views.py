@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.contrib.auth import login as auth_login
 from django.core.exceptions import ValidationError
 from django.utils.http import unquote
@@ -18,7 +18,8 @@ from apiclient.discovery import build
 class PreLogin(generic_views.View):
     
     def get(self, request, *args, **kwargs):
-        request.session['google_plus_login_redirect_url'] = request.META['HTTP_REFERER']
+        if not request.META['HTTP_REFERER'] == reverse('secure_login'):
+            request.session['google_plus_login_redirect_url'] = request.META['HTTP_REFERER']
         
         return redirect(unquote(request.GET['auth_url']))
 

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.contrib.auth import login as auth_login
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -26,7 +26,7 @@ class PreLogin(generic_views.View):
         )
         login_redirect_uri = 'http://%s%s' % (
             Site.objects.get_current().domain, 
-            reverse_lazy('twitter_login_callback')
+            reverse('twitter_login_callback')
         )
         auth = twitter.get_authentication_tokens(
             callback_url=login_redirect_uri
@@ -34,7 +34,8 @@ class PreLogin(generic_views.View):
         
         request.session['twitter_oauth_token'] = auth['oauth_token']
         request.session['twitter_oauth_token_secret'] = auth['oauth_token_secret']
-        request.session['twitter_login_redirect_url'] = request.META['HTTP_REFERER']
+        if not request.META['HTTP_REFERER'] == reverse('secure_login'):
+            request.session['twitter_login_redirect_url'] = request.META['HTTP_REFERER']
         
         return redirect(auth['auth_url'])
 

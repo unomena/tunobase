@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.contrib.auth import login as auth_login
 from django.core.exceptions import ValidationError
 from django.utils.http import unquote
@@ -18,7 +18,8 @@ import facebook
 class PreLogin(generic_views.View):
     
     def get(self, request, *args, **kwargs):
-        request.session['facebook_login_redirect_url'] = request.META['HTTP_REFERER']
+        if not request.META['HTTP_REFERER'] == reverse('secure_login'):
+            request.session['facebook_login_redirect_url'] = request.META['HTTP_REFERER']
         
         return redirect(unquote(request.GET['auth_url']))
 
@@ -30,7 +31,7 @@ class LoginCallback(generic_views.View):
            request.session['facebook_state'] == request.GET['state']:
             login_redirect_uri = 'http://%s%s' % (
                 Site.objects.get_current().domain, 
-                reverse_lazy('facebook_login_callback')
+                reverse('facebook_login_callback')
             )
             access_token = facebook.get_access_token_from_code(
                 request.GET['code'], 
