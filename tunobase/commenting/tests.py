@@ -62,7 +62,7 @@ class CommentModelTestCase(TestCase):
         Test that when a Comment is flagged a certain amount of times, 
         it gets marked as removed
         '''
-        self.assertEqual(self.comment_object.flags.count(), 5)
+        self.assertEqual(self.comment_object.flags.count(), settings.COMMENT_FLAGS_FOR_REMOVAL)
         models.CommentModel.objects.remove_flagged_comments()
         comment_object = models.CommentModel.objects.get(comment=self.comment)
         self.assertTrue(comment_object.is_removed)
