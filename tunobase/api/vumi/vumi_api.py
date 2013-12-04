@@ -21,6 +21,6 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
             verify=False
         )
         
-    return response.json
+    return response.json()
 
 
