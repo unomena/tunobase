@@ -20,7 +20,7 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
     from tunobase.corporate.company_info.newsletter import models, utils
         
     active_newsletter_recipients = models.NewsletterRecipient.active_recipients.all()
-    bcc_addresses = ['dev@unomena.com']
+    bcc_addresses = []
     messages = []
     contexts = []
     

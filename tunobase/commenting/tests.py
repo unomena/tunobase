@@ -12,9 +12,9 @@ from tunobase.commenting import models, constants
 class CommentModelTestCase(TestCase):
     comment = 'Comment Model Test Case Comment'
     comment_reply = 'Comment Model Test Case Comment Reply'
-    comment_user_name = 'michael'
-    comment_user_email = 'michael@unomena.com'
-    comment_user_url = 'http://google.com'
+    comment_user_name = 'test'
+    comment_user_email = 'test@example.com'
+    comment_user_url = 'http://example.com'
     ip_address = '127.0.0.1'
     flag = constants.FLAG_SUGGEST_REMOVAL
 
