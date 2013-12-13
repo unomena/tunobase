@@ -7,7 +7,8 @@ from django.utils import timezone
 
 from tunobase.commenting import models
 
-def check_throttle(user, ip_address, comment_period_lockout, num_comments_allowed_in_lockout):
+def check_throttle(user, ip_address, comment_period_lockout,
+        num_comments_allowed_in_lockout):
     if user is not None:
         queryset = models.CommentModel.objects.filter(
             user=user
@@ -16,12 +17,14 @@ def check_throttle(user, ip_address, comment_period_lockout, num_comments_allowe
         queryset = models.CommentModel.objects.filter(
             ip_address=ip_address
         )
-        
+
     latest_comment_list = list(
         queryset.order_by('-publish_at')[:num_comments_allowed_in_lockout]
     )
     if len(latest_comment_list) == num_comments_allowed_in_lockout:
         oldest_comment = latest_comment_list[-1]
-        return oldest_comment.publish_at > (timezone.now() - comment_period_lockout)
-    
+        return oldest_comment.publish_at > (
+                timezone.now() - comment_period_lockout
+        )
+
     return False

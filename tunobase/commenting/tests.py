@@ -3,11 +3,11 @@ Created on 02 Dec 2013
 
 @author: euan
 '''
-from django.test import TestCase
 from django.conf import settings
+from django.test import TestCase
 
-from tunobase.core import constants as core_constants
 from tunobase.commenting import models, constants
+from tunobase.core import constants as core_constants
 
 class CommentModelTestCase(TestCase):
     comment = 'Comment Model Test Case Comment'
@@ -57,13 +57,16 @@ class CommentModelTestCase(TestCase):
         self.assertEqual(comment_object.user_email, self.comment_user_email)
         self.assertEqual(comment_object.user_url, self.comment_user_url)
         self.assertGreaterEqual(comment_object.replies.count(), 1)
-        
+
     def test_comment_flags(self):
         '''
         Test that when a Comment is flagged a certain amount of times, 
         it gets marked as removed
         '''
-        self.assertEqual(self.comment_object.flags.count(), settings.COMMENT_FLAGS_FOR_REMOVAL)
+        self.assertEqual(
+                self.comment_object.flags.count(),
+                settings.COMMENT_FLAGS_FOR_REMOVAL
+        )
         models.CommentModel.objects.remove_flagged_comments()
         comment_object = models.CommentModel.objects.get(comment=self.comment)
         self.assertTrue(comment_object.is_removed)
