@@ -8,12 +8,12 @@ import uuid
 from django.db import models
 
 class UUIDField(models.CharField):
-    
+
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = kwargs.get('max_length', 64 )
         kwargs['blank'] = True
         models.CharField.__init__(self, *args, **kwargs)
-    
+
     def pre_save(self, model_instance, add):
         if add :
             value = str(uuid.uuid1())

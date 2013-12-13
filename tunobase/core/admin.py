@@ -8,18 +8,20 @@ from django.contrib import admin
 from tunobase.core import models
 
 class SiteListAdminMixin(object):
-    
+
     def site_list(self, model):
         return ', '.join([site.domain for site in model.sites.all()])
 
 class ContentModelAdmin(admin.ModelAdmin, SiteListAdminMixin):
-    list_display = ('title', 'state', 'slug', 'created_at', 'publish_at', 'site_list')
+    list_display = (
+            'title', 'state', 'slug', 'created_at', 'publish_at', 'site_list'
+    )
     list_filter = ('title', 'state', 'created_at', 'publish_at')
     search_fields = ('title',)
-    
+
 class BannerSetAdmin(admin.ModelAdmin, SiteListAdminMixin):
     list_display = ('slug', 'site_list')
-    
+
 class GalleryAdmin(admin.ModelAdmin, SiteListAdminMixin):
     list_display = ('slug', 'site_list')
 

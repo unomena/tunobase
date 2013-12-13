@@ -3,15 +3,15 @@ Created on 23 Oct 2013
 
 @author: michael
 '''
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib.auth.views import redirect_to_login
-from django.core.paginator import Paginator
-from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.conf import settings
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.core.paginator import Paginator
+from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 
 from tunobase.core import utils as core_utils
 
@@ -20,16 +20,16 @@ class AjaxMorePaginationMixin(object):
     View mixin that returns JSON paginated data
     '''
     partial_template_name = None
-    
+
     def dispatch(self, request, *args, **kwargs):
         if self.partial_template_name is None:
             raise ImproperlyConfigured(
                 "'AjaxMorePaginationMixin' requires "
                 "'partial_template_name' attribute to be set."
             )
-        
+
         page = request.GET.get('page', None)
-        
+
         if page is not None:
             if hasattr(self, 'get_object'):
                 self.object = self.get_object()
@@ -39,23 +39,32 @@ class AjaxMorePaginationMixin(object):
             object_list= paginator.page(page)
             has_previous = object_list.has_previous()
             has_next = object_list.has_next()
-            
+
             return core_utils.respond_with_json({
                 'success': True,
-                'content': render_to_string(self.partial_template_name, RequestContext(request, {
-                    'object_list': object_list
-                })),
+                'content': render_to_string(
+                    self.partial_template_name,
+                    RequestContext(
+                        request, {
+                            'object_list': object_list
+                        }
+                    )
+                ),
                 'has_previous': has_previous,
                 'has_next': has_next,
-                'previous_page_number': object_list.previous_page_number() if has_previous else 0,
-                'next_page_number': object_list.next_page_number() if has_next else 0,
+                'previous_page_number': object_list.previous_page_number() \
+                        if has_previous else 0,
+                'next_page_number': object_list.next_page_number() \
+                        if has_next else 0,
                 'page_number': object_list.number,
                 'start_index': object_list.start_index(),
                 'end_index': object_list.end_index()
             })
-            
-        return super(AjaxMorePaginationMixin, self).dispatch(request, *args, **kwargs)
-    
+
+        return super(AjaxMorePaginationMixin, self)\
+                .dispatch(request, *args, **kwargs)
+
+
 class DeterministicLoginRequiredMixin(object):
     login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
     raise_exception = False  # Default whether to raise an exception to none
@@ -68,8 +77,9 @@ class DeterministicLoginRequiredMixin(object):
                 "'DeterministicLoginRequiredMixin' requires "
                 "'deterministic_function' attribute to be set."
             )
-            
-        if not request.user.is_authenticated() and not deterministic_function():  # If the user is a standard user,
+
+        if not request.user.is_authenticated() \
+                and not self.deterministic_function():  # Standard user,
             if self.raise_exception:  # *and* if an exception was desired
                 raise PermissionDenied  # return a forbidden response.
             else:
@@ -77,11 +87,9 @@ class DeterministicLoginRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(DeterministicLoginRequiredMixin, self).dispatch(
-            request,
-            *args, 
-            **kwargs
-        )
+        return super(DeterministicLoginRequiredMixin, self)\
+                .dispatch(request, *args, **kwargs)
+
 
 class LoginRequiredMixin(object):
     '''
@@ -93,8 +101,10 @@ class LoginRequiredMixin(object):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
-    
+        return super(LoginRequiredMixin, self)\
+                .dispatch(request, *args, **kwargs)
+
+
 class GroupRequiredMixin(object):
     '''
     Mixin allows you to require a user in certain Groups.
@@ -111,8 +121,9 @@ class GroupRequiredMixin(object):
                 "'GroupRequiredMixin' requires "
                 "'groups_required' attribute to be set."
             )
-            
-        if request.user.is_admin or request.user.groups.filter(name__in=self.groups_required).exists():
+
+        if request.user.is_admin or request.user.groups\
+                .filter(name__in=self.groups_required).exists():
             group_meets_requirements = True
         else:
             group_meets_requirements = False
@@ -125,9 +136,10 @@ class GroupRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(GroupRequiredMixin, self).dispatch(request,
-            *args, **kwargs)
-    
+        return super(GroupRequiredMixin, self)\
+                .dispatch(request, *args, **kwargs)
+
+
 class PermissionRequiredMixin(object):
     """
     View mixin which verifies that the logged in user has the specified
@@ -163,8 +175,10 @@ class PermissionRequiredMixin(object):
         # or raise a configuration error.
         if self.permission_required == None or len(
             self.permission_required.split(".")) != 2:
-            raise ImproperlyConfigured("'PermissionRequiredMixin' requires "
-                                       "'permission_required' attribute to be set.")
+            raise ImproperlyConfigured(
+                    "'PermissionRequiredMixin' requires "
+                    "'permission_required' attribute to be set."
+            )
 
         # Check to see if the request's user has the required permission.
         has_permission = request.user.has_perm(self.permission_required)
@@ -179,6 +193,7 @@ class PermissionRequiredMixin(object):
 
         return super(PermissionRequiredMixin, self).dispatch(request,
             *args, **kwargs)
+
 
 class PermissionOrCreatorRequiredMixin(object):
     """
@@ -215,14 +230,17 @@ class PermissionOrCreatorRequiredMixin(object):
         # or raise a configuration error.
         if self.permission_required == None or len(
             self.permission_required.split(".")) != 2:
-            raise ImproperlyConfigured("'PermissionOrCreatorRequiredMixin' requires "
-                                       "'permission_required' attribute to be set.")
+            raise ImproperlyConfigured(
+                    "'PermissionOrCreatorRequiredMixin' requires "
+                    "'permission_required' attribute to be set."
+            )
 
         # Check to see if the request's user has the required permission.
         has_permission = request.user.has_perm(self.permission_required)
         user_created = request.user == self.get_object().created_by
 
-        if not has_permission and not user_created:  # If the user lacks the permission
+        # If the user lacks the permission
+        if not has_permission and not user_created:
             if self.raise_exception:  # *and* if an exception was desired
                 raise PermissionDenied  # return a forbidden response.
             else:
@@ -230,9 +248,10 @@ class PermissionOrCreatorRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(PermissionOrCreatorRequiredMixin, self).get(request,
-            *args, **kwargs)
-        
+        return super(PermissionOrCreatorRequiredMixin, self)\
+                .get(request, *args, **kwargs)
+
+
 class AdminRequiredMixin(object):
     """
     Mixin allows you to require a user with `is_superuser` set to True.
@@ -250,8 +269,9 @@ class AdminRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(AdminRequiredMixin, self).dispatch(request,
-            *args, **kwargs)
+        return super(AdminRequiredMixin, self)\
+                .dispatch(request, *args, **kwargs)
+
 
 class MultiplePermissionsRequiredMixin(object):
     """
@@ -329,16 +349,18 @@ class MultiplePermissionsRequiredMixin(object):
                     self.login_url,
                     self.redirect_field_name)
 
-        return super(MultiplePermissionsRequiredMixin, self).dispatch(request,
-            *args, **kwargs)
+        return super(MultiplePermissionsRequiredMixin, self)\
+                .dispatch(request, *args, **kwargs)
 
     def _check_permissions_attr(self):
         """
         Check permissions attribute is set and that it is a dict.
         """
         if self.permissions is None or not isinstance(self.permissions, dict):
-            raise ImproperlyConfigured("'PermissionsRequiredMixin' requires "
-                                       "'permissions' attribute to be set to a dict.")
+            raise ImproperlyConfigured(
+                    "'PermissionsRequiredMixin' requires "
+                    "'permissions' attribute to be set to a dict."
+            )
 
     def _check_permissions_keys_set(self, perms_all=None, perms_any=None):
         """
@@ -347,9 +369,11 @@ class MultiplePermissionsRequiredMixin(object):
         came in. Both are invalid and should raise an exception.
         """
         if perms_all is None and perms_any is None:
-            raise ImproperlyConfigured("'PermissionsRequiredMixin' requires"
-                                       "'permissions' attribute to be set to a dict and the 'any' "
-                                       "or 'all' key to be set.")
+            raise ImproperlyConfigured(
+                    "'PermissionsRequiredMixin' requires"
+                    "'permissions' attribute to be set to a dict and the "
+                    "'any' or 'all' key to be set."
+            )
 
     def _check_perms_keys(self, key=None, perms=None):
         """
@@ -357,12 +381,13 @@ class MultiplePermissionsRequiredMixin(object):
         sure that it is of the type list or tuple.
         """
         if perms and not isinstance(perms, (list, tuple)):
-            raise ImproperlyConfigured("'MultiplePermissionsRequiredMixin' "
-                                       "requires permissions dict '%s' value to be a list "
-                                       "or tuple." % key)
-            
+            raise ImproperlyConfigured(
+                    "'MultiplePermissionsRequiredMixin' "
+                    "requires permissions dict '%s' value to be a list "
+                    "or tuple." % key
+            )
 
-    
+
 class FilterMixin(object):
     '''
     Mixin allows you to filter by keys in the GET request.

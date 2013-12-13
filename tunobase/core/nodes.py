@@ -3,8 +3,8 @@ Created on 29 Oct 2013
 
 @author: michael
 '''
-from django.template import loader, Node, Variable
-from django.utils.encoding import smart_str, smart_unicode
+from django.template import Node, Variable
+from django.utils.encoding import smart_unicode
 from django.template import VariableDoesNotExist
 
 from tunobase.core import utils
@@ -41,6 +41,7 @@ class BreadcrumbNode(Node):
 
         return utils.create_crumb(title, url)
 
+
 class UrlBreadcrumbNode(Node):
     def __init__(self, title, url_node):
         self.title = Variable(title)
@@ -61,7 +62,8 @@ class UrlBreadcrumbNode(Node):
 
         url = self.url_node.render(context)
         return utils.create_crumb(title, url)
-    
+
+
 class SmartQueryStringNode(Node):
     def __init__(self, addition_pairs):
         self.addition_pairs = []

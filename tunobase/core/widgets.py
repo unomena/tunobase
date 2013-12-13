@@ -23,28 +23,32 @@ class DateSelectorWidget(widgets.MultiWidget):
         11: _('Nov'),
         12: _('Dec')
     }
-    
-    def __init__(self, attrs=None, min_num_years_back=10, max_num_years_back=-1, 
-                 reverse_years=False):
+
+    def __init__(self, attrs=None, min_num_years_back=10,
+            max_num_years_back=-1, reverse_years=False):
         # create choices for days, months, years
         # example below, the rest snipped for brevity.
         if max_num_years_back >= 0:
             max_num_years_back -= 1
-        
+
         days = [(year, year) for year in range(1, 32)]
         months = [(year, self.MONTHS[year]) for year in range(1, 13)]
-        
+
         if reverse_years:
             years = [(year, year) for year in reversed(range(
-                (datetime.datetime.now() - datetime.timedelta(days=min_num_years_back*365)).year, 
-                (datetime.datetime.now() - datetime.timedelta(days=max_num_years_back*365)).year))
+                (datetime.datetime.now() -
+                    datetime.timedelta(days=min_num_years_back*365)).year,
+                (datetime.datetime.now() -
+                    datetime.timedelta(days=max_num_years_back*365)).year))
             ]
         else:
             years = [(year, year) for year in range(
-                (datetime.datetime.now() - datetime.timedelta(days=min_num_years_back*365)).year, 
-                (datetime.datetime.now() - datetime.timedelta(days=max_num_years_back*365)).year)
+                (datetime.datetime.now() -
+                    datetime.timedelta(days=min_num_years_back*365)).year,
+                (datetime.datetime.now() -
+                    datetime.timedelta(days=max_num_years_back*365)).year)
             ]
-        
+
         _widgets = (
             widgets.Select(attrs=attrs, choices=days),
             widgets.Select(attrs=attrs, choices=months),
@@ -64,7 +68,7 @@ class DateSelectorWidget(widgets.MultiWidget):
         datelist = [
             widget.value_from_datadict(data, files, name + '_%s' % i)
             for i, widget in enumerate(self.widgets)]
-        
+
         try:
             D = datetime.date(day=int(datelist[0]), month=int(datelist[1]),
                     year=int(datelist[2]))
