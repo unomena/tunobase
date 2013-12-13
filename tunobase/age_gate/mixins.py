@@ -3,7 +3,7 @@ Created on 23 Oct 2013
 
 @author: michael
 '''
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
 
@@ -18,7 +18,7 @@ class AgeGateMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         age_gate_passed = request.session.get('age_gate_passed', False)
-        
+
         if not age_gate_passed:
             if self.raise_exception:  # *and* if an exception was desired
                 raise PermissionDenied  # return a forbidden response.

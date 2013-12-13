@@ -13,10 +13,10 @@ class AgeGateMiddleware(object):
     Enable this Middleware to make the entire
     site Age-Gated
     '''
-    
+
     def process_view(self, request, view_func, view_args, view_kwargs):
         age_gate_url = getattr(settings, 'AGE_GATE_URL', 'age_gate')
-        
+
         if not request.resolver_match.url_name == age_gate_url:
             age_gate_passed = request.session.get('age_gate_passed', False)
             if not age_gate_passed:
@@ -24,5 +24,5 @@ class AgeGateMiddleware(object):
                     request.get_full_path(), 
                     reverse_lazy(age_gate_url)
                 )
-            
+
         return None
