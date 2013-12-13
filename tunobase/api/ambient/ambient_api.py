@@ -14,19 +14,25 @@ API_KEY = settings.AMBIENT_API_KEY
 API_PASSWORD = settings.AMBIENT_API_PASSWORD
 
 # Optional Settings
-ALLOW_DUPLICATES = 1    # optionally set to 0 to return an error if duplicate mobile numbers are sent
-ALLOW_INVALID_NUMBERS = 0    # optionally set to 1 to allow API to carry on sending the message if an invalid number is found
+# optionally set to 0 to return an error if duplicate mobile numbers are sent
+ALLOW_DUPLICATES = 1
+# optionally set to 1 to allow API to carry on sending the message if and
+# invalid number is found
+ALLOW_INVALID_NUMBERS = 0
 
 # Ambient Mobile SMS API
 VERSION = 1.3
-SMS_API_URL = getattr(settings, 'AMBIENT_URL', 'http://services.ambientmobile.co.za/sms/')
+SMS_API_URL = getattr(
+        settings, 'AMBIENT_URL', 'http://services.ambientmobile.co.za/sms/'
+)
 USER_AGENT = 'AM Python SMS API v' + unicode(VERSION)
 
 MSG_CODES = {
   # Success
   '0'     : 'Message successfully submitted',
   '1'     : 'Message successfully submitted, but contained recipient errors',
-  '2'     : 'Message successfully submitted, but contained duplicates and recipient errors',
+  '2'     : 'Message successfully submitted, but contained duplicates and\
+          recipient errors',
   '1000': 'Message successfully submitted, but contained duplicates',
   # Failure
   '1001': 'Invalid HTTP POST',
@@ -50,14 +56,13 @@ MSG_CODES = {
   '1019': 'Account deactivated'
   }
 
-
 def send_sms(msg, recipients, msg_id=None, reply_url=None):
     if msg is None or unicode(msg).strip() == '':
         raise AMSendError("msg cannot be blank")
-    
+
     if isinstance(recipients, (list, tuple)) and len(recipients) == 0:
         raise AMSendError("supply at least one recipient")
-    
+
     sms               = ET.Element("sms")
     element         = ET.SubElement(sms, "api-key")
     element.text        = unicode(API_KEY)
@@ -72,15 +77,15 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
     element.text        = unicode(ALLOW_DUPLICATES)
     element        = ET.SubElement(sms, "allow_invalid_numbers")
     element.text        = unicode(ALLOW_INVALID_NUMBERS)
-    
+
     if msg_id:
         element        = ET.SubElement(sms, "message_id")
         element.text    = unicode(msg_id)
-    
+
     if reply_url:
         element        = ET.SubElement(sms, "reply_path")
         element.text    = unicode(reply_url)
-    
+
     # add msisdns to xml
     if isinstance(recipients, (list, tuple)):
         for msisdn in recipients:
@@ -89,25 +94,25 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
     else:
         element = ET.SubElement(recipients_element, "mobile")
         element.text = unicode(recipients)
-    
+
     #print ET.tostring(sms)
     # prepare message ready to sent
     #data = urllib.quote(ET.tostring(sms))
     data = ET.tostring(sms)
-    
+
     headers = { 'User-Agent' : USER_AGENT , 'Content-Type': 'text/xml'}
     # Send Msg27836805077
     req      = urllib2.Request(SMS_API_URL, data, headers)
     resp     = urllib2.urlopen(req)
-    
+
     response = {'status':None, 'msg':None}
-    
+
     dom = ET.fromstring(resp.read())
     msg_status = dom.find("status").text
-    
+
     response['status'] = msg_status
     response['msg']    = MSG_CODES[msg_status]
-    
+
     # Check for invalid numbers
     d = dom.find("invalid_numbers")
     if d is not None:
@@ -115,7 +120,7 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
         for m in d.findall("mobile"):
             invalid_numbers.append(m.text)
         response['invalid_numbers'] = invalid_numbers
-    
+
     # check for duplicates
     d = dom.find("duplicates")
     if d is not None:
@@ -126,6 +131,7 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
 
     return response
 
+
 class AMSendError(Exception):
     def __init__(self, value):
         self.value = value
@@ -135,4 +141,7 @@ class AMSendError(Exception):
 
 # setup a basic test script
 if __name__ == '__main__' :
-    print send_sms('Hello World! This is a Test Message & >< !@#$%^&*()', [27834002042])
+    print send_sms(
+            'Hello World! This is a Test Message & >< !@#$%^&*()',
+            [27834002042]
+    )
