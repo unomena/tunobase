@@ -3,11 +3,11 @@ Created on 02 Dec 2013
 
 @author: euan
 '''
-from django.test import TestCase
 from django.template.defaultfilters import slugify
+from django.test import TestCase
 
-from tunobase.core import constants as core_constants
 from tunobase.blog import models
+from tunobase.core import constants as core_constants
 
 class BlogModelTestCase(TestCase):
     title = 'Blog Model Test Case Title'
@@ -37,7 +37,7 @@ class BlogModelTestCase(TestCase):
         self.assertEqual(blog_object.slug, self.slug)
         self.assertEqual(blog_object.state, core_constants.STATE_PUBLISHED)
         self.assertGreaterEqual(blog_object.entries.count(), 1)
-    
+
     def test_blog_entry_model(self):
         '''
         Test that the Blog Entry was created with the right slug, state
@@ -45,6 +45,15 @@ class BlogModelTestCase(TestCase):
         '''
         blog_entry_object = models.BlogEntry.objects.get(blog=self.blog)
         self.assertEqual(blog_entry_object.slug, self.entry_slug)
-        self.assertEqual(blog_entry_object.state, core_constants.STATE_PUBLISHED)
-        self.assertEqual(blog_entry_object.authors_alternate, self.alternate_authors)
-        self.assertEqual(blog_entry_object.authors['alternate'], self.alternate_authors_splitted)
+        self.assertEqual(
+                blog_entry_object.state,
+                core_constants.STATE_PUBLISHED
+        )
+        self.assertEqual(
+                blog_entry_object.authors_alternate,
+                self.alternate_authors
+        )
+        self.assertEqual(
+                blog_entry_object.authors['alternate'],
+                self.alternate_authors_splitted
+        )

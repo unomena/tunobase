@@ -7,7 +7,7 @@ from django.conf.urls import patterns, url
 
 from tunobase.blog import views
 
-urlpatterns = patterns('',            
+urlpatterns = patterns('',
     url(r'^list/$',
         views.BlogList.as_view(
             template_name='blog/blog_list.html'
@@ -24,12 +24,12 @@ urlpatterns = patterns('',
 
     url(r'^(?P<slug>[\w-]+)/$',
         views.BlogDetail.as_view(
-            paginate_by=1, 
+            paginate_by=1,
             template_name='blog/blog_detail.html',
             partial_template_name='blog/includes/blog_entries.html'
         ),
         name='blog_detail'
     ),
-                       
+
     (r'^feed/$', views.BlogFeed()),
 )
