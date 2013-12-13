@@ -7,7 +7,7 @@ from django.conf.urls import patterns, url
 
 from tunobase.bulk_loading import views, forms
 
-urlpatterns = patterns('',            
+urlpatterns = patterns('',
     url(r'^bulk-image-upload/$',
         views.BulkImageUpload.as_view(
             form_class=forms.BulkImageUploadForm,
