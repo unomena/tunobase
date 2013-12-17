@@ -19,7 +19,7 @@ class PollModelTestCase(TestCase):
         self.poll_object = models.PollQuestion.objects.create(
             question=self.question,
         )
-        
+
         for i in range(3):
             models.PollAnswer.objects.create(
                 answer='%s %i' % (self.answer, i),
@@ -35,10 +35,10 @@ class PollModelTestCase(TestCase):
         self.assertEqual(poll_object.question, self.question)
         self.assertEqual(poll_object.state, core_constants.STATE_PUBLISHED)
         self.assertGreaterEqual(poll_object.answers.count(), 3)
-        
+
     def test_poll_answer_model(self):
         '''
-        Test that incrementing vote counts on the Poll Answer 
+        Test that incrementing vote counts on the Poll Answer
         Model works as expected
         '''
         poll_answer_object = models.PollAnswer.objects.get(pk=1)

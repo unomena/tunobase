@@ -16,7 +16,7 @@ urlpatterns = patterns('',
             template_name='poll/poll_results.html'
         ),
         name='poll_answer'),
-                       
+
     url(r'^results/(?P<pk>\d+)/$',
         views.PollResults.as_view(
             template_name='poll/poll_results.html'

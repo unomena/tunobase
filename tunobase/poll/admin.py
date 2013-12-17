@@ -10,6 +10,7 @@ from tunobase.poll import models
 class PollAnswerInline(admin.TabularInline):
     model = models.PollAnswer
 
+
 class PollQuestionAdmin(admin.ModelAdmin):
     inlines = [PollAnswerInline]
 
