@@ -5,25 +5,22 @@ Created on 21 Oct 2013
 '''
 from celery.decorators import task
 
-from django.contrib.sites.models import Site
-from django.contrib.auth import get_user_model
-from django.conf import settings
-
 from tunobase.mailer import utils as mailer_utils
 
 @task(ignore_result=True)
-def email_active_newsletter_recipients(subject, html_content, text_content, 
+def email_active_newsletter_recipients(subject, html_content, text_content,
                                        newsletter_id=None):
     '''
     Sends active newsletter recipients the Newsletter content
     '''
     from tunobase.corporate.company_info.newsletter import models, utils
-        
-    active_newsletter_recipients = models.NewsletterRecipient.active_recipients.all()
+
+    active_newsletter_recipients = models.NewsletterRecipient\
+            .active_recipients.all()
     bcc_addresses = []
     messages = []
     contexts = []
-    
+
     # Create messages for each newsletter recipient
     for newsletter_recipient in active_newsletter_recipients:
         uid, token = utils.get_uid_and_token(newsletter_recipient)
@@ -33,22 +30,22 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
             'recipient': newsletter_recipient
         }
         message, context = mailer_utils.create_message(
-            subject=subject, 
+            subject=subject,
             context=ctx_dict,
-            html_content=html_content, 
+            html_content=html_content,
             text_content=text_content,
             to_addresses=[newsletter_recipient.get_email()],
             bcc_addresses=bcc_addresses,
             user=newsletter_recipient.user,
             apply_context_to_string=True
         )
-        
+
         messages.append(message)
         contexts.append(context)
-    
+
     # Bulk send the messages
     mailer_utils.send_messages(messages)
-    
+
     # Bulk track the messages
     outbound_emails = []
     for message, context in zip(messages, contexts):
@@ -62,10 +59,10 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
             context,
             apply_context_to_string=True
         )
-        
+
         # Create the Outbound Email tracker object
         outbound_email = mailer_utils.create_outbound_email(
-            subject, 
+            subject,
             message.to,
             html_content,
             bcc_addresses,
@@ -73,9 +70,9 @@ def email_active_newsletter_recipients(subject, html_content, text_content,
             context['user']
         )
         outbound_emails.append(outbound_email)
-        
+
     mailer_utils.save_outbound_emails(outbound_emails)
-    
+
     # If a Newsletter id was supplied we will save the
     # sent emails to the recipients
     if newsletter_id is not None:

@@ -5,14 +5,13 @@ Created on 04 Nov 2013
 '''
 from datetime import date
 
-from django.conf import settings
 from django.utils.http import int_to_base36, base36_to_int
 from django.utils.crypto import constant_time_compare, salted_hmac
 from django.utils import six
 
 class NewsletterUnsubscribeTokenGenerator(object):
     '''
-    Strategy object used to generate and check tokens for the 
+    Strategy object used to generate and check tokens for the
     newsletter unsubscribe mechanism.
     '''
     def make_token(self, newsletter_recipient):
@@ -20,11 +19,14 @@ class NewsletterUnsubscribeTokenGenerator(object):
         Returns a token that can be used once to do a newsletter unsubscribe
         for the given user.
         """
-        return self._make_token_with_timestamp(newsletter_recipient, self._num_days(self._today()))
+        return self._make_token_with_timestamp(
+                newsletter_recipient, self._num_days(self._today())
+        )
 
     def check_token(self, newsletter_recipient, token):
         '''
-        Check that a newsletter unsubscribe token is correct for a given recipient.
+        Check that a newsletter unsubscribe token is correct
+        for a given recipient.
         '''
         # Parse the token
         try:
@@ -38,7 +40,11 @@ class NewsletterUnsubscribeTokenGenerator(object):
             return False
 
         # Check that the timestamp/uid has not been tampered with
-        if not constant_time_compare(self._make_token_with_timestamp(newsletter_recipient, ts), token):
+        if not constant_time_compare(
+                self._make_token_with_timestamp(
+                    newsletter_recipient, ts
+                ), token
+        ):
             return False
 
         return True
@@ -49,10 +55,12 @@ class NewsletterUnsubscribeTokenGenerator(object):
         ts_b36 = int_to_base36(timestamp)
 
         # We limit the hash to 20 chars to keep URL short
-        key_salt = "tunobase.corporate.company_info.newsletter.NewsletterUnsubscribeTokenGenerator"
+        key_salt = "tunobase.corporate.company_info.\
+                newsletter.NewsletterUnsubscribeTokenGenerator"
 
         # Ensure results are consistent across DB backends
-        value = (six.text_type(newsletter_recipient.pk) + six.text_type(timestamp))
+        value = (six.text_type(newsletter_recipient.pk) + \
+                six.text_type(timestamp))
         hash = salted_hmac(key_salt, value).hexdigest()[::2]
         return "%s-%s" % (ts_b36, hash)
 

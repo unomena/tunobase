@@ -5,7 +5,8 @@ Created on 04 Nov 2013
 '''
 from django.utils.http import int_to_base36
 
-from tunobase.corporate.company_info.newsletter.tokens import NewsletterUnsubscribeTokenGenerator
+from tunobase.corporate.company_info.newsletter.tokens \
+        import NewsletterUnsubscribeTokenGenerator
 
 token_generator = NewsletterUnsubscribeTokenGenerator()
 
