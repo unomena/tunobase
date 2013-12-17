@@ -61,6 +61,7 @@ class PollAnswer(core_mixins.DeterministicLoginRequiredMixin,
             'reason': str(form.errors)
         })
 
+
 class PollResults(generic_views.ListView):
 
     def get_queryset(self):
