@@ -8,8 +8,8 @@ import logging
 from django.conf import settings
 from django.core.mail import get_connection, EmailMultiAlternatives
 from django.contrib.sites.models import Site
-from django.template.loader import render_to_string
 from django.template.base import TemplateDoesNotExist
+from django.template.loader import render_to_string
 
 from tunobase.core import utils as core_utils
 from tunobase.mailer import models
@@ -25,9 +25,11 @@ def send_messages(messages):
         connection = get_connection()
         connection.send_messages(messages)
     else:
-        logger.debug("Not sending mail because setting 'EMAIL_ENABLED' is False")
-        
-def render_content(subject, text_content, html_content=None, 
+        logger.debug(
+                "Not sending mail because setting 'EMAIL_ENABLED' is False"
+        )
+
+def render_content(subject, text_content, html_content=None,
                    context=None, apply_context_to_string=False):
     '''
     Render the content in the email
@@ -39,26 +41,29 @@ def render_content(subject, text_content, html_content=None,
     except TemplateDoesNotExist:
         if apply_context_to_string:
             subject = core_utils.render_string_to_string(subject, context)
-        
+
     try:
         text_content = render_to_string(text_content, context)
     except TemplateDoesNotExist:
         if apply_context_to_string:
-            text_content = core_utils.render_string_to_string(text_content, context)
-    
+            text_content = core_utils\
+                    .render_string_to_string(text_content, context)
+
     if html_content is not None:
         try:
             html_content = render_to_string(html_content, context)
         except TemplateDoesNotExist:
             if apply_context_to_string:
-                html_content = core_utils.render_string_to_string(html_content, context)
-                
+                html_content = core_utils\
+                        .render_string_to_string(html_content, context)
+
     return subject, text_content, html_content
-    
-def create_message(subject, text_content, to_addresses, 
-                   from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
-                   html_content=None, context=None, attachments=None, user=None,
-                   apply_context_to_string=False):
+
+def create_message(subject, text_content, to_addresses,
+                   from_address=settings.DEFAULT_FROM_EMAIL,
+                   bcc_addresses=None, html_content=None, context=None,
+                   attachments=None, user=None, apply_context_to_string=False
+    ):
     '''
     Create and return the Email message to be sent
     '''
@@ -69,12 +74,12 @@ def create_message(subject, text_content, to_addresses,
         context['site'] = Site.objects.get_current()
     if not 'user' in context:
         context['user'] = user
-    
+
     context.update({
         'STATIC_URL': settings.STATIC_URL,
         'app_name': settings.APP_NAME
     })
-    
+
     # Check if the content is actual content or a location to a file
     # containing the content and render the content from that file
     # if it is
@@ -85,14 +90,14 @@ def create_message(subject, text_content, to_addresses,
         context,
         apply_context_to_string
     )
-    
+
     # Update BCC list with extras from settings, if any
     extra_bccers = getattr(settings, 'EMAIL_EXTRA_BCC_LIST', [])
     if bcc_addresses:
         bcc_addresses = bcc_addresses + extra_bccers
     else:
         bcc_addresses = extra_bccers
-    
+
     # Build message with text_message as default content
     msg = EmailMultiAlternatives(
         subject,
@@ -111,7 +116,7 @@ def create_message(subject, text_content, to_addresses,
         for attachment in attachments:
             if attachment:
                 msg.attach(attachment.name, attachment.read())
-    
+
     return msg, context
 
 def save_outbound_emails(outbound_emails):
@@ -121,23 +126,22 @@ def save_outbound_emails(outbound_emails):
     if settings.EMAIL_ENABLED:
         models.OutboundEmail.objects.bulk_create(outbound_emails)
 
-def create_outbound_email(subject, to_addresses, html_content, 
+def create_outbound_email(subject, to_addresses, html_content,
                           bcc_addresses=None, site=None, user=None):
     '''
     Create Outbound Email tracking object
     '''
     return models.OutboundEmail(
-        user=user, 
+        user=user,
         to_addresses='\n'.join(to_addresses),
         bcc_addresses='\n'.join(bcc_addresses) \
             if bcc_addresses is not None else '',
-        subject=subject, 
+        subject=subject,
         message=html_content,
         site=site
     )
-    
 
-def track_mail(subject, to_addresses, html_content, 
+def track_mail(subject, to_addresses, html_content,
                bcc_addresses=None, site=None, user=None):
     '''
     Track mails sent to the User by the Site
@@ -153,8 +157,8 @@ def track_mail(subject, to_addresses, html_content,
         )
         outbound_email.save()
 
-def send_mail(subject, text_content, to_addresses, 
-              from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None, 
+def send_mail(subject, text_content, to_addresses,
+              from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None,
               html_content=None, context=None, attachments=None, user=None,
               apply_context_to_string=False):
     '''
@@ -164,9 +168,9 @@ def send_mail(subject, text_content, to_addresses,
     '''
     # Create the message
     message, context = create_message(
-        subject, 
-        text_content, 
-        to_addresses, 
+        subject,
+        text_content,
+        to_addresses,
         from_address,
         bcc_addresses,
         html_content,
@@ -178,7 +182,7 @@ def send_mail(subject, text_content, to_addresses,
 
     # Send the message
     send_messages([message])
-    
+
     # Check if the content is actual content or a location to a file
     # containing the content and render the content from that file
     # if it is
@@ -189,14 +193,14 @@ def send_mail(subject, text_content, to_addresses,
         context,
         apply_context_to_string
     )
-    
+
     # Create an entry in the email tracker to
     # track sent emails by the system
     track_mail(
-        subject, 
-        to_addresses, 
-        html_content, 
-        bcc_addresses, 
+        subject,
+        to_addresses,
+        html_content,
+        bcc_addresses,
         context['site'],
         user
     )
