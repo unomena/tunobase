@@ -1,4 +1,6 @@
 """
+AGE GATE APP
+
 This module provides redirect functionality should the user
 successfully pass the age gate requirement.
 

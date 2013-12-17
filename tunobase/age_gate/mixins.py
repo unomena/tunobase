@@ -1,4 +1,6 @@
 """
+AGE GATE APP
+
 This module provides dispatch functionality. If the user passes the
 age gate requirements, send them on to view the site's content. However,
 should they failed the age gate requirements, have the server return a

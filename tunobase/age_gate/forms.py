@@ -1,4 +1,6 @@
 """
+AGE GATE APP
+
 This module provides a form to determine that the user meets the
 required age gate.
 

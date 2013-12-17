@@ -1,4 +1,6 @@
 """
+AGE GATE APP
+
 This module is used within the age_gate.middleware module. It redirects
 the user to the home page should they meet the age gate requirements.
 

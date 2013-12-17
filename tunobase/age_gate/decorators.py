@@ -1,4 +1,6 @@
 """
+AGE GATE APP
+
 This module provides decorator functionality to the rest of the app
 for ensuring that the user is of the correct age to access the site.
 
