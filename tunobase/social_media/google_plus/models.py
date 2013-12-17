@@ -3,22 +3,23 @@ Created on 08 Nov 2013
 
 @author: michael
 '''
-from django.db import models
-from django.utils import timezone
 from django.conf import settings
+from django.db import models
  
 class GooglePlusUser(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='google_plus_user')
+    user = models.OneToOneField(
+            settings.AUTH_USER_MODEL, related_name='google_plus_user'
+    )
     google_user_id = models.CharField(max_length=255)
     access_token = models.CharField(max_length=255)
     refresh_token = models.CharField(max_length=255, blank=True, null=True)
     id_token = models.CharField(max_length=255)
     token_response = models.CharField(max_length=255)
     access_token_expiry_timestamp = models.DateTimeField()
-     
+
     def __unicode__(self):
         return u'%s' % self.user
-     
+
     def update_access_token(self, access_token, access_token_expiry_timestamp, 
                             refresh_token, id_token, token_response):
         '''
