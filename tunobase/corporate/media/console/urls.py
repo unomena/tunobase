@@ -11,7 +11,8 @@ urlpatterns = patterns('',
     url(r'^media-coverage/create/$',
         views.MediaCoverageCreate.as_view(
             form_class=forms.MediaCoverageForm,
-            template_name='console/media/media_coverage/media_coverage_edit.html'
+            template_name=\
+                    'console/media/media_coverage/media_coverage_edit.html'
         ),
         name='console_media_media_coverage_create'
     ),
@@ -19,14 +20,16 @@ urlpatterns = patterns('',
     url(r'^media-coverage/update/(?P<pk>\d+)/$',
         views.MediaCoverageUpdate.as_view(
             form_class=forms.MediaCoverageForm,
-            template_name='console/media/media_coverage/media_coverage_edit.html'
+            template_name=\
+                    'console/media/media_coverage/media_coverage_edit.html'
         ),
         name='console_media_media_coverage_update'
     ),
 
     url(r'^media-coverage/(?P<pk>\d+)/detail/$',
         views.MediaCoverageDetail.as_view(
-            template_name='console/media/media_coverage/media_coverage_detail.html'
+            template_name=\
+                    'console/media/media_coverage/media_coverage_detail.html'
         ),
         name='console_media_media_coverage_detail'
     ),
@@ -38,7 +41,8 @@ urlpatterns = patterns('',
 
     url(r'^media-coverage/list/$',
         views.MediaCoverageList.as_view(
-            template_name='console/media/media_coverage/media_coverage_list.html',
+            template_name=\
+                    'console/media/media_coverage/media_coverage_list.html',
             paginate_by=20
         ),
         name='console_media_media_coverage_list'
