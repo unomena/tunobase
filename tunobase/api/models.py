@@ -1,8 +1,21 @@
-'''
+"""
+API APP
+
+This module provides api functionality.
+
+Classes:
+    Destination
+    Service
+    Request
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db import models
@@ -12,9 +25,8 @@ from tunobase.api import constants
 from tunobase.core import fields as core_fields
 
 class Destination(models.Model):
-    '''
-    Location to send API calls to
-    '''
+    """The location to send API calls to."""
+
     title = models.CharField(max_length=32)
     url = models.URLField()
     username = models.CharField(max_length=200, blank=True, null=True)
@@ -25,9 +37,11 @@ class Destination(models.Model):
 
 
 class Service(models.Model):
-    '''
-    Where to send API calls of a certain type and how many times to retry.
-    '''
+    """
+    Where to send API calls of a certain type and how many times
+    to retry.
+
+    """
     type = models.CharField(
         max_length=200,
         unique=True,
@@ -42,9 +56,8 @@ class Service(models.Model):
         return u'%s' % self.get_type_display()
 
 class Request(models.Model):
-    '''
-    The API request data being sent.
-    '''
+    """The API request data being sent."""
+
     uuid = core_fields.UUIDField(editable=False)
     service = models.ForeignKey(Service)
     request_data = models.TextField()
@@ -63,9 +76,16 @@ class Request(models.Model):
 
     @property
     def send_count(self):
+        """Increments the retry count by 1."""
+
         return self.retry_count + 1
 
     def complete_request(self, action):
+        """
+        Record the status and, if successful, the completed timestamp
+        in the database.
+
+        """
         if self.service.success_string in self.response_data:
             self.status = constants.REQUEST_STATUS_SUCCESS
             self.completed_timestamp = timezone.now()
@@ -82,6 +102,10 @@ class Request(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
+        """
+        Set self.site to be the current site should self.site be None.
+
+        """
         if self.site is None:
             self.site = Site.objects.get_current()
         super(Request, self).save(*args, **kwargs)

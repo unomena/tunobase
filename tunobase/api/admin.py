@@ -1,4 +1,5 @@
 '''
+API APP
 Created on 23 Oct 2013
 
 @author: michael
@@ -8,6 +9,11 @@ from django.contrib import admin
 from tunobase.api import models
 
 class RequestAdmin(admin.ModelAdmin):
+    """
+    This class determines how the api app should be displayed in
+    the Django admin.
+
+    """
     list_display = (
             'service', 'status', 'created_timestamp', 'completed_timestamp',
     )
