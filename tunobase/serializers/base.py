@@ -57,12 +57,14 @@ class Serializer(base.Serializer):
                                     self.handle_field(obj, field)
                         else:
                             if attname[:-3] not in self.excludes:
-                                if not self.fields or attname[:-3] in self.fields:
+                                if not self.fields \
+                                        or attname[:-3] in self.fields:
                                     self.handle_fk_field(obj, field)
                 for field in obj._meta.many_to_many:
                     if field.serialize:
                         if field.attname not in self.excludes:
-                            if not self.fields or field.attname in self.fields:
+                            if not self.fields \
+                                    or field.attname in self.fields:
                                 self.handle_m2m_field(obj, field)
                 for extra in self.extras:
                     self.handle_extra_field(obj, extra)
