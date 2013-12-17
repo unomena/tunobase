@@ -19,7 +19,9 @@ urlpatterns = patterns('',
         name='console_eula_update'),
 
     url(r'^eula/(?P<pk>\d+)/detail/$',
-        views.EULADetail.as_view(template_name='console/eula/eula_detail.html'),
+        views.EULADetail.as_view(
+            template_name='console/eula/eula_detail.html'
+        ),
         name='console_eula_detail'),
 
     url(r'^eula/delete/(?P<pk>\d+)/$',
