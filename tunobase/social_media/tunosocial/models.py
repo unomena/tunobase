@@ -3,12 +3,12 @@ Created on 08 Nov 2013
 
 @author: michael
 '''
-from django.db import models
-from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core import urlresolvers
-from django.conf import settings
+from django.db import models
 
 from tunobase.social_media.tunosocial import managers
 
@@ -23,7 +23,9 @@ class BaseLikeAbstractModel(models.Model):
         related_name="content_type_set_for_%(class)s"
     )
     object_pk = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+    content_object = generic.GenericForeignKey(
+            ct_field="content_type", fk_field="object_pk"
+    )
 
     # Metadata about the tag
     site = models.ForeignKey(Site)
@@ -40,15 +42,19 @@ class BaseLikeAbstractModel(models.Model):
             args=(self.content_type_id, self.object_pk)
         )
 
+
 class Like(BaseLikeAbstractModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='tunosocial_likes', blank=True, null=True)
+    user = models.ForeignKey(
+            settings.AUTH_USER_MODEL, related_name='tunosocial_likes',
+            blank=True, null=True
+    )
     ip_address = models.IPAddressField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     objects = managers.LikeManager()
-    
+
     class Meta:
         unique_together = ('user', 'content_type', 'object_pk')
-    
+
     def __unicode__(self):
         return u'%s - %s %s' % (self.user, self.content_type, self.object_pk)
