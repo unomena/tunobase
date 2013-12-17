@@ -3,7 +3,6 @@ Created on 09 Nov 2013
 
 @author: michael
 '''
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
@@ -20,20 +19,21 @@ class FacebookBackend(ModelBackend):
 
     supports_inactive_user = False
 
-    def authenticate(self, access_token=None, access_token_expiry_seconds=None):
+    def authenticate(self, access_token=None,
+            access_token_expiry_seconds=None):
         token_valid, user_id = utils.validate_access_token(access_token)
-        
+
         if token_valid:
             try:
                 facebook_user = models.FacebookUser.objects.get(
                     facebook_user_id=str(user_id)
                 )
-                
+
                 facebook_user.update_access_token(
                     access_token,
                     access_token_expiry_seconds
                 )
-                
+
                 user = facebook_user.user
             except models.FacebookUser.DoesNotExist:
                 # Create a new user.
@@ -47,13 +47,14 @@ class FacebookBackend(ModelBackend):
                         'is_active': True,
                         'first_name': api_data['first_name'],
                         'last_name': api_data['last_name'],
-                        'city': api_data['location']['name'] if 'location' in api_data else None
+                        'city': api_data['location']['name'] if 'location' \
+                                in api_data else None
                     }
                 )
                 if created:
                     user.set_password(generate(10))
                     user.save()
-                 
+
                 facebook_user = models.FacebookUser(
                     user=user,
                     facebook_user_id=str(user_id)
@@ -62,7 +63,7 @@ class FacebookBackend(ModelBackend):
                     access_token,
                     access_token_expiry_seconds
                 )
-                
+
             return user
-        
+
         return None

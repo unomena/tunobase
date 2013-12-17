@@ -3,9 +3,9 @@ Created on 09 Nov 2013
 
 @author: michael
 '''
+import json
 import urllib2
 import urllib
-import json
 
 from django.conf import settings
 
@@ -17,7 +17,7 @@ def validate_access_token(access_token):
     '''
     # Get an app access token
     app_token = facebook.get_app_access_token(
-        settings.FACEBOOK_APP_ID, 
+        settings.FACEBOOK_APP_ID,
         settings.FACEBOOK_APP_SECRET
     )
     args = {
