@@ -10,5 +10,6 @@ from tunobase.console import mixins
 class AdminMixin(mixins.ConsoleUserRequiredMixin):
     raise_exception = False
 
+
 class Console(AdminMixin, generic_views.TemplateView):
     pass
