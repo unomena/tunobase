@@ -43,9 +43,11 @@ class AgeGateForm(forms.Form):
 
     def clean_terms_accept(self):
         """Ensure that T & C 's have been selected before continuing."""
+
         if not self.cleaned_data['terms_accept']:
-            raise forms.ValidationError('You must accept the terms to\
-                    continue')
+            raise forms.ValidationError(
+                'You must accept the terms to continue'
+            )
 
         return self.cleaned_data['terms_accept']
 
