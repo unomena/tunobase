@@ -19,7 +19,7 @@ urlpatterns = patterns('',
         )),
         name='company_info_contact'
     ),
-                       
+
     url(r'^contact/thanks/$',
         generic_views.TemplateView.as_view(
             template_name='contact/contact_thanks.html'

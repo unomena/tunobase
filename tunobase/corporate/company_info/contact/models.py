@@ -20,20 +20,20 @@ class ContactMessage(models.Model):
     message = models.TextField()
     site = models.ForeignKey(Site, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    
+
     def __unicode__(self):
         return u'%s'  % self.name
-    
+
     def send(self):
         # Fire off signal to be received by handlers
         signals.contact_message_saved.send(
             sender=self.__class__,
             contact_message_id=self.id
         )
-    
+
     def save(self, *args, **kwargs):
         if self.site is None:
             self.site = Site.objects.get_current()
         super(ContactMessage, self).save(*args, **kwargs)
-        
+
         self.send()
