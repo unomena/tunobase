@@ -12,7 +12,7 @@ urlpatterns = patterns('',
         views.RetrieveTags.as_view(),
         name='retrieve_tags'
     ),
-                                  
+
     url(r'^update-tags/$',
         views.UpdateTags.as_view(
             form_class=forms.TagUpdateForm
