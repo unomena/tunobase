@@ -1,8 +1,19 @@
-'''
+"""
+COMPANY INFO APP
+
+This module sets up signals for the contact app to use.
+
+Classes:
+    n/a
+
+Functions:
+    send_contact_message
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.dispatch import Signal, receiver
 from django.conf import settings
 
@@ -15,6 +26,8 @@ contact_message_saved = Signal(
 
 @receiver(contact_message_saved)
 def send_contact_message(sender, **kwargs):
+    """Queue contact message."""
+
     contact_message_id = kwargs.pop('contact_message_id', None)
 
     if contact_message_id is not None:

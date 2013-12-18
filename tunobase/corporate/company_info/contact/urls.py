@@ -1,8 +1,13 @@
-'''
+"""
+CONTACT APP
+
+This module provides generic django URL routing.
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf.urls import patterns, url
 from django.views import generic as generic_views
 

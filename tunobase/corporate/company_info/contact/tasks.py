@@ -1,8 +1,19 @@
-'''
+"""
+CONTACT APP
+
+This module provides a variety of tasks to be queued by Celery.
+
+Classes:
+    n/a
+
+Functions:
+    email_contact_message
+    
 Created on 21 Oct 2013
 
 @author: michael
-'''
+
+"""
 from celery.decorators import task
 
 from django.conf import settings
@@ -11,9 +22,10 @@ from tunobase.mailer import utils as mailer_utils
 
 @task(default_retry_delay=10 * 60)
 def email_contact_message(contact_message_id):
-    '''
+    """
     Sends a Contact Message email to the Site's owners/support team
-    '''
+
+    """
     try:
         from tunobase.corporate.company_info.contact import models
 

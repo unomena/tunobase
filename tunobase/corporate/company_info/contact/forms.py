@@ -1,17 +1,32 @@
-'''
+"""
+CONTACT APP
+
+This module sets up the forms needed to capture company info.
+
+Classes:
+    ContactMessageForm
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django import forms
 
 from tunobase.corporate.company_info.contact import models
 
 class ContactMessageForm(forms.ModelForm):
+    """Display contact us form."""
+
     class Meta:
         model = models.ContactMessage
 
     def __init__(self, *args, **kwargs):
+        """Initialise variables."""
+
         self.user = kwargs.pop('user', None)
         super(ContactMessageForm, self).__init__(*args, **kwargs)
 
