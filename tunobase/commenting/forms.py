@@ -1,8 +1,19 @@
-'''
+"""
+COMMENTING APP
+
+This module provides the fields for the comment form.
+
+Classes:
+    CommentForm
+
+Functions:
+    n/a
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -11,6 +22,8 @@ from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.commenting import models, exceptions, throttling
 
 class CommentForm(forms.Form):
+    """Set up the required fields for the comments form."""
+
     anonymous = forms.BooleanField(required=False)
     next = forms.CharField(required=False)
     user_id = forms.IntegerField(required=False)
@@ -20,6 +33,8 @@ class CommentForm(forms.Form):
     comment_box = forms.CharField(max_length=512)
 
     def save(self, request):
+        """Process and save cleaned data in the database."""
+
         ip_address = core_utils.get_client_ip(request)
         comment_period_lockout = getattr(
                 settings, 'COMMENT_PERIOD_LOCKOUT', None

@@ -1,8 +1,13 @@
-'''
+"""
+COMMENTING APP
+
+This module provides generic django URL routing.
+
 Created on 25 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf.urls import patterns, url
 
 from honeypot.decorators import check_honeypot

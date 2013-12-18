@@ -1,14 +1,27 @@
-'''
+"""
+COMMENTING APP
+
+This module prevent users from commenting overzealously.
+
+Classes:
+    n/a
+
+Functions:
+    check_throttle
+
 Created on 20 Nov 2013
 
 @author: michael
-'''
+
+"""
 from django.utils import timezone
 
 from tunobase.commenting import models
 
 def check_throttle(user, ip_address, comment_period_lockout,
         num_comments_allowed_in_lockout):
+    """Prevent users from posting comments overzealously."""
+
     if user is not None:
         queryset = models.CommentModel.objects.filter(
             user=user

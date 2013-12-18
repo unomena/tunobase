@@ -1,8 +1,21 @@
-'''
+"""
+COMMENTING APP
+
+This module provides an interface to flagging and fetching comments.
+
+Classes:
+    PostComment
+    ReportComment
+    LoadMoreComments
+
+Functions:
+    n/a
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib import messages
 from django.db import IntegrityError
@@ -16,11 +29,16 @@ from tunobase.commenting import models, exceptions
 
 class PostComment(core_mixins.DeterministicLoginRequiredMixin,
         generic_views.FormView):
+    """Provide post comment form functionality."""
 
     def deterministic_function(self):
+        """Determine if comments are allowed."""
+
         return settings.ANONYMOUS_COMMENTS_ALLOWED
 
     def post(self, request, *args, **kwargs):
+        """Receive posted form."""
+
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
@@ -32,6 +50,7 @@ class PostComment(core_mixins.DeterministicLoginRequiredMixin,
                 if request.is_ajax() else self.form_invalid(form)
 
     def form_valid(self, form):
+        """Determine if the comment form is valid and redirect."""
         try:
             form.save(self.request)
             messages.success(self.request, 'Your comment has been posted')
@@ -42,11 +61,15 @@ class PostComment(core_mixins.DeterministicLoginRequiredMixin,
                 or self.request.META['HTTP_REFERER'])
 
     def form_invalid(self, form):
+        """Redirect if comment form is invalid."""
+
         messages.error(self.request, str(form.errors))
 
         return redirect(self.request.META['HTTP_REFERER'])
 
     def ajax_form_valid(self, form):
+        """Allow for ajax form posts and check if form is valid."""
+
         try:
             comment = form.save(self.request)
             num_comments = models.CommentModel.objects.permitted().count()
@@ -66,6 +89,8 @@ class PostComment(core_mixins.DeterministicLoginRequiredMixin,
             })
 
     def ajax_form_invalid(self, form):
+        """Redirect if form invalid."""
+
         return core_utils.respond_with_json({
             'success': False,
             'reason': str(form.errors)
@@ -73,8 +98,11 @@ class PostComment(core_mixins.DeterministicLoginRequiredMixin,
 
 
 class ReportComment(core_mixins.LoginRequiredMixin, generic_views.View):
+    """Flag a comment to be removed."""
 
     def get(self, request, *args, **kwargs):
+        """Flag a particular comment."""
+
         try:
             models.CommentFlag.objects.report(
                 request.user,
@@ -100,8 +128,11 @@ class ReportComment(core_mixins.LoginRequiredMixin, generic_views.View):
 
 
 class LoadMoreComments(core_mixins.AjaxMorePaginationMixin, generic_views.ListView):
+    """Display more comments."""
 
     def get_queryset(self):
+        """Get more comments."""
+
         return models.CommentModel.objects.permitted().get_comments_for_object(
             self.request.GET['content_type_id'],
             self.request.GET['object_pk'],

@@ -1,8 +1,20 @@
-'''
+"""
+COMMENTING APP
+
+This module sets up the comment models.
+
+Classes:
+    CommentModel
+    CommentFlag
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.comments import models as comment_models
 from django.db import models
@@ -12,9 +24,8 @@ from tunobase.core import models as core_models
 
 class CommentModel(core_models.StateModel, core_models.AuditModel,
                    comment_models.BaseCommentAbstractModel):
-    '''
-    Comments to be used throughout the Site
-    '''
+    """Comments to be used throughout the Site."""
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,
@@ -49,6 +60,8 @@ class CommentModel(core_models.StateModel, core_models.AuditModel,
     objects = managers.CommentManager()
 
     class Meta:
+        """Determine ordering of comments."""
+
         permissions = [
             ("can_moderate", "Can moderate comments"),
             ("view_comment", "View comment")
@@ -56,10 +69,14 @@ class CommentModel(core_models.StateModel, core_models.AuditModel,
         ordering = ('-order', '-publish_at',)
 
     def __unicode__(self):
+        """Return unicode object."""
+
         return u'%s' % self.comment
 
     @property
     def author(self):
+        """Return the author's username."""
+
         if self.user is None:
             return self.user_name
 
@@ -67,9 +84,8 @@ class CommentModel(core_models.StateModel, core_models.AuditModel,
 
 
 class CommentFlag(core_models.AuditModel):
-    '''
-    Records a flag on a comment.
-    '''
+    """Records a flag on a comment."""
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,
@@ -89,5 +105,6 @@ class CommentFlag(core_models.AuditModel):
         unique_together = [('user', 'comment', 'flag')]
 
     def __unicode__(self):
+        """Return a unicode object."""
         return u"%s flag of comment ID %s by %s" % \
             (self.flag, self.comment_id, self.user.get_username())

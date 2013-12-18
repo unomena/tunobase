@@ -1,8 +1,19 @@
-'''
+"""
+COMMENTING APP
+
+This module provides test cases for the commenting app.
+
+Classes:
+    CommentModelTestCase
+
+Functions:
+    n/a
+
 Created on 02 Dec 2013
 
 @author: euan
-'''
+
+"""
 from django.conf import settings
 from django.test import TestCase
 
@@ -10,6 +21,8 @@ from tunobase.commenting import models, constants
 from tunobase.core import constants as core_constants
 
 class CommentModelTestCase(TestCase):
+    """Initialise test cases."""
+
     comment = 'Comment Model Test Case Comment'
     comment_reply = 'Comment Model Test Case Comment Reply'
     comment_user_name = 'test'
@@ -19,10 +32,11 @@ class CommentModelTestCase(TestCase):
     flag = constants.FLAG_SUGGEST_REMOVAL
 
     def setUp(self):
-        '''
+        """
         Create the Comment Model, a Reply to the Comment Model and
         enough flags to mark the Comment Model as removed in the database
-        '''
+
+        """
         self.comment_object = models.CommentModel.objects.create(
             comment=self.comment,
             ip_address=self.ip_address,
@@ -45,10 +59,12 @@ class CommentModelTestCase(TestCase):
             )
 
     def test_comment_model(self):
-        '''
+        """
         Test that the Comment was created with the right comment, state,
-        ip_address, user_name, user_email, user_url and has at least one Reply
-        '''
+        ip_address, user_name, user_email, user_url and has at least
+        one Reply
+
+        """
         comment_object = models.CommentModel.objects.get(comment=self.comment)
         self.assertEqual(comment_object.comment, self.comment)
         self.assertEqual(comment_object.state, core_constants.STATE_PUBLISHED)
@@ -59,10 +75,11 @@ class CommentModelTestCase(TestCase):
         self.assertGreaterEqual(comment_object.replies.count(), 1)
 
     def test_comment_flags(self):
-        '''
+        """
         Test that when a Comment is flagged a certain amount of times, 
         it gets marked as removed
-        '''
+
+        """
         self.assertEqual(
                 self.comment_object.flags.count(),
                 settings.COMMENT_FLAGS_FOR_REMOVAL
