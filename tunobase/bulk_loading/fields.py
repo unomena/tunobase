@@ -1,8 +1,22 @@
-'''
+"""
+BULK UPLOADER APP
+
+This module provides the form interface for allowing users to upload
+various files.
+
+Classes:
+    AjaxBulkFileField
+    BulkUploadImage
+    MultiImageIDField
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 from io import BytesIO
 import sys
 
@@ -15,9 +29,20 @@ from django.utils.translation import ugettext_lazy as _
 from tunobase.bulk_loading import widgets, models
 
 class AjaxBulkFileField(forms.FileField):
+    """Upload numerous files."""
+
     widget = widgets.AjaxBulkFileMultiInput
 
     def to_python(self, data):
+        """Perform various validation steps on the uploaded file.
+
+        First check that a file was actually uploaded then check that
+        it does not exceed the maximum file size. Check that a filename
+        exists and finally that if a file was required, that a
+        file exists.
+
+        """
+
         for datum in data:
             if datum in self.empty_values:
                 return None
@@ -49,6 +74,12 @@ class AjaxBulkFileField(forms.FileField):
         return data
 
     def clean(self, data, initial=None):
+        """Neaten up the data received from the file upload form.
+
+        Raise a validation error if contradictory inputs were received.
+        Return cleaned_data afterwards.
+
+        """
         if data is None:
             return False
 
@@ -79,17 +110,26 @@ class AjaxBulkFileField(forms.FileField):
         return super(forms.FileField, self).clean(cleaned_data)
 
     def bound_data(self, data, initial):
+        """
+        There is a problem with the uploaded file,
+        return the original file.
+
+        """
         if data in (None, FILE_INPUT_CONTRADICTION):
             return initial
         return data
 
     def _has_changed(self, initial, data):
+        """Flag to confirm if data has changed."""
+
         if data is None:
             return False
         return True
 
 
 class AjaxBulkImageField(AjaxBulkFileField):
+    """Ensure only valid image formats are uploaded."""
+
     default_error_messages = {
         'invalid_image': _("Upload a valid image. The file you uploaded was\
                 either not an image or a corrupted image."),
@@ -137,15 +177,20 @@ class AjaxBulkImageField(AjaxBulkFileField):
 
 
 class MultiImageIDField(forms.Field):
+    """Accept uploaded images."""
+
     widget = forms.HiddenInput
 
     def widget_attrs(self, widget):
+        """Set up image_ids for styling of widget."""
+
         attrs = super(MultiImageIDField, self).widget_attrs(widget)
         attrs.update({'class': 'image_ids'})
         return attrs
 
     def to_python(self, value):
-        "Returns a Unicode object."
+        """Returns a Unicode object."""
+
         if value in self.empty_values:
             return None
         return models.BulkUploadImage.objects\

@@ -1,19 +1,40 @@
-'''
+"""
+BULK LOADING APP
+
+This module provides bulk update functionality to models.
+
+Classes:
+    BulkUpdater
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 
 class BulkUpdater(object):
+    """
+    Ensure data_key and model are set in order to begin bulk update.
+
+    """
     data_key = None
     model = None
 
     def __init__(self, data_to_upload):
+        """Initialise data_to_upload."""
         self.data_to_upload = data_to_upload
 
     def get_object(self, data):
+        """
+        Ensure data_key and model are set in order to
+        begin bulk update.
+
+        """
         if self.data_key is None:
             raise ImproperlyConfigured(
                 "Attribute 'data_key' is not set"
@@ -33,19 +54,24 @@ class BulkUpdater(object):
             return None
 
     def bulk_create_objects(self, object_list):
+        """Override method."""
+
         return NotImplemented
 
     def create_object(self, data):
+        """Override method."""
+
         return NotImplemented
 
     def update_object(self, obj, data, created):
+        """Override method."""
+
         return NotImplemented
 
     @transaction.atomic
     def save(self, create, update):
-        '''
-        Save uploaded objects
-        '''
+        """Save uploaded objects."""
+
         # If we're only creating objects, then bulk
         # insert them to optimize performance
         if create and not update:

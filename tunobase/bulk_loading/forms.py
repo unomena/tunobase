@@ -1,8 +1,21 @@
-'''
+"""
+BULK LOADING APP
+
+This module provides save functionality for uploaded files and images.
+
+Classes:
+    BulkUploadForm
+    BulkUploadValidatorForm
+    BulkImageUploadForm
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 import csv
 import hashlib
 
@@ -12,10 +25,11 @@ from django.core.exceptions import ImproperlyConfigured
 from tunobase.bulk_loading import models, fields
 
 class BulkUploadForm(forms.Form):
-    '''
-    Form accepting and validating CSV file, returning collection of validated
-    dictionaries to import.
-    '''
+    """
+    Form accepting and validating CSV file, returning collection of
+    validated dictionaries to import.
+
+    """
     duplicate_file_reimport = forms.BooleanField(
         required=False,
         widget=forms.HiddenInput()
@@ -25,6 +39,8 @@ class BulkUploadForm(forms.Form):
     upload_file = forms.FileField()
 
     def __init__(self, *args, **kwargs):
+        """Initialise variables."""
+
         self.validator_form = kwargs.pop('validator_form', None)
         self.unique_field_names = kwargs.pop('unique_field_names', [])
 
@@ -41,9 +57,8 @@ class BulkUploadForm(forms.Form):
         super(BulkUploadForm, self).__init__(*args, **kwargs)
 
     def _check_file_previously_uploaded(self):
-        '''
-        Check if the file has been previously uploaded
-        '''
+        """Check if the file has been previously uploaded."""
+
         self.uploaded_file = self.cleaned_data['upload_file']
         self.md5 = hashlib.md5(self.uploaded_file.read()).hexdigest()
         if not self.cleaned_data['duplicate_file_reimport']:
@@ -60,9 +75,8 @@ class BulkUploadForm(forms.Form):
                 pass
 
     def _process_uploaded_file(self):
-        '''
-        Process the uploaded file
-        '''
+        """Process the uploaded file."""
+
         self.uploaded_file.seek(0)
         reader = csv.reader(self.uploaded_file, delimiter=',')
         valid_rows = []
@@ -112,14 +126,15 @@ class BulkUploadForm(forms.Form):
         return valid_rows
 
     def clean_upload_file(self):
+        """Validate uploaded file."""
+
         self._check_file_previously_uploaded()
 
         return self._process_uploaded_file()
 
     def save(self, bulk_updater_class, *args, **kwargs):
-        '''
-        Save uploaded objects
-        '''
+        """Save uploaded objects."""
+
         create = self.cleaned_data['create']
         update = self.cleaned_data['update']
 
@@ -127,22 +142,30 @@ class BulkUploadForm(forms.Form):
         bulk_updater.save(create, update)
 
     def save_upload_data(self):
+        """Save uploaded file."""
+
         return models.BulkUploadData.objects.create(
             data=self.cleaned_data['upload_file']
         )
 
 
 class BulkUploadValidatorForm(forms.Form):
+    """Validate the uploaded form."""
 
     def __init__(self, *args, **kwargs):
+        """Initialise variables."""
         self.update = kwargs.pop('update', False)
         super(BulkUploadValidatorForm, self).__init__(*args, **kwargs)
 
 
 class BulkImageUploadForm(forms.Form):
+    """Validate the uploaded image."""
+
     images = fields.AjaxBulkImageField()
 
     def save(self):
+        """Save individually uploaded images."""
+
         bulk_upload_image_ids = []
         for image in self.cleaned_data['images']:
             bulk_upload_image = models.BulkUploadImage.objects.create(image=image)

@@ -1,8 +1,20 @@
-'''
+"""
+BULK LOAD APP
+
+This module provides an interface to bulk uploads using Celery.
+
+Classes:
+    n/a
+
+Functions:
+    clear_unused_bulk_uploaded_images
+    upload_data
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 from celery.decorators import task
 
 from django.conf import settings
@@ -11,9 +23,8 @@ from django.utils import timezone
 
 @task(ignore_result=True)
 def clear_unused_bulk_uploaded_images():
-    '''
-    Remove all bulk uploaded images longer than a day old
-    '''
+    """Remove all bulk uploaded images longer than a day old."""
+
     from tunobase.bulk_loading import models
 
     time_to_live = timezone.now() - timezone.timedelta(days=1)
@@ -23,9 +34,8 @@ def clear_unused_bulk_uploaded_images():
 
 @task(default_retry_delay=10 * 60)
 def upload_data(upload_data_pk, bulk_updater_class, create, update):
-    '''
-    Bulk upload data in a celery task
-    '''
+    """Bulk upload data in a celery task."""
+
     try:
         from tunobase.bulk_loading import models
 

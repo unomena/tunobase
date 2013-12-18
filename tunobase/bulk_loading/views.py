@@ -1,8 +1,22 @@
-'''
+"""
+BULK LOAD APP
+
+This module provides upload and download functionality of files.
+
+Classes:
+    BulkUploadTemplate
+    BulkUpload
+    BulkDownload
+    BulkImageUpload
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 import datetime
 import mimetypes
 
@@ -19,11 +33,15 @@ from tunobase.core import utils as core_utils
 
 class BulkUploadTemplate(console_mixins.ConsoleUserRequiredMixin,
         generic_views.View):
+    """Template for allowing file uploads."""
+
     filepath = None
     filename = None
     mimetype = None
 
     def get(self, request):
+        """Set file name and mimetype."""
+
         if self.filepath is None:
             raise ImproperlyConfigured(
                 "Attribute 'filepath' is not set"
@@ -44,6 +62,8 @@ class BulkUploadTemplate(console_mixins.ConsoleUserRequiredMixin,
 
 class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
         generic_views.FormView):
+    """Allow for multiple file uploads. """
+
     template_name = 'bulk_loading/bulk_upload.html'
     form_class = forms.BulkUploadForm
     validator_form_class = None
@@ -51,6 +71,8 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
     bulk_updater_class = None
 
     def get_form_kwargs(self):
+        """Get field names."""
+
         kwargs = super(BulkUpload, self).get_form_kwargs()
 
         kwargs.update({
@@ -61,6 +83,8 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
         return kwargs
 
     def form_valid(self, form):
+        """Validate form."""
+
         if self.bulk_updater_class is None:
             raise ImproperlyConfigured(
                 "Attribute 'bulk_updater_class' is not set"
@@ -92,9 +116,13 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
 
 
 class BulkDownload(console_mixins.ConsoleUserRequiredMixin, generic_views.ListView):
+    """Allow files to be downloaded."""
+
     filename = None
 
     def render_to_response(self, context, **kwargs):
+        """Render filename and file type to the browser."""
+
         if self.filename is None:
             raise ImproperlyConfigured(
                 "Attribute 'filename' is not set"
@@ -113,9 +141,13 @@ class BulkDownload(console_mixins.ConsoleUserRequiredMixin, generic_views.ListVi
 
 
 class BulkImageUpload(generic_views.View):
+    """Alow for image uploads."""
+
     form_class = None
 
     def post(self, request, *args, **kwargs):
+        """Submit file upload form here."""
+
         data = {
             'files': MultiValueDict({
                 'images': request.FILES.getlist('images[]')
@@ -129,6 +161,7 @@ class BulkImageUpload(generic_views.View):
             return self.form_invalid(form)
 
     def form_valid(self, form):
+        """Validate and save form."""
         image_ids = form.save()
 
         return core_utils.respond_with_json({
@@ -137,6 +170,8 @@ class BulkImageUpload(generic_views.View):
         })
 
     def form_invalid(self, form):
+        """Return to browser if unsuccessful."""
+
         return core_utils.respond_with_json({
             'success': False
         })
