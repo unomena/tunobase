@@ -1,3 +1,9 @@
+"""
+CONSOLE APP
+
+This module provides generic django URL routing.
+
+"""
 from django.conf.urls import patterns, url
 
 from tunobase.console import views
