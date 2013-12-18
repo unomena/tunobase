@@ -1,8 +1,19 @@
-'''
+"""
+CORE APP
+
+This module is used to additional functionality provided to the app.
+
+Classes:
+    AjaxMorePaginationMixin
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
@@ -16,12 +27,13 @@ from django.utils.decorators import method_decorator
 from tunobase.core import utils as core_utils
 
 class AjaxMorePaginationMixin(object):
-    '''
-    View mixin that returns JSON paginated data
-    '''
+    """View mixin that returns JSON paginated data."""
+
     partial_template_name = None
 
     def dispatch(self, request, *args, **kwargs):
+        """Handle request and return response."""
+
         if self.partial_template_name is None:
             raise ImproperlyConfigured(
                 "'AjaxMorePaginationMixin' requires "
@@ -66,12 +78,16 @@ class AjaxMorePaginationMixin(object):
 
 
 class DeterministicLoginRequiredMixin(object):
+    """Handle user login."""
+
     login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
     raise_exception = False  # Default whether to raise an exception to none
     redirect_field_name = REDIRECT_FIELD_NAME  # Set by django.contrib.auth
     deterministic_function = None
 
     def dispatch(self, request, *args, **kwargs):
+        """Handle request and return response."""
+
         if self.deterministic_function is None:
             raise ImproperlyConfigured(
                 "'DeterministicLoginRequiredMixin' requires "
@@ -92,12 +108,13 @@ class DeterministicLoginRequiredMixin(object):
 
 
 class LoginRequiredMixin(object):
-    '''
+    """
     View mixin which verifies that the user has authenticated.
 
     NOTE:
         This should be the left-most mixin of a view.
-    '''
+
+    """
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -106,9 +123,7 @@ class LoginRequiredMixin(object):
 
 
 class GroupRequiredMixin(object):
-    '''
-    Mixin allows you to require a user in certain Groups.
-    '''
+    """Mixin allows you to require a user in certain Groups."""
     login_url = settings.LOGIN_URL  # LOGIN_URL from project settings
     raise_exception = False  # Default whether to raise an exception to none
     redirect_field_name = REDIRECT_FIELD_NAME  # Set by django.contrib.auth
@@ -116,6 +131,8 @@ class GroupRequiredMixin(object):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        """Handle request and return response."""
+
         if self.groups_required == None:
             raise ImproperlyConfigured(
                 "'GroupRequiredMixin' requires "
@@ -389,9 +406,9 @@ class MultiplePermissionsRequiredMixin(object):
 
 
 class FilterMixin(object):
-    '''
+    """
     Mixin allows you to filter by keys in the GET request.
-    '''
+    """
     def get_queryset_filters(self):
         filters = {}
         for item in self.allowed_filters:

@@ -1,8 +1,23 @@
-'''
+"""
+CORE APP
+
+This module provides an interface to the app's managers.
+
+Classes:
+    CoreManager
+    CoreStateManager
+    CorePolymorphicManager
+    CorePolymorphicStateManager
+    DefaultImageManager
+
+Functions:
+    n/a
+
 Created on 25 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.db import models
 from django.utils import timezone
 
@@ -13,20 +28,29 @@ from tunobase.core import constants, query
 # Normal managers
 
 class CoreManager(models.Manager):
+    """Return relevant objects."""
 
     def get_queryset(self):
+        """Return objects."""
+
         return query.CoreQuerySet(self.model, using=self._db)
 
     def for_current_site(self):
+        """Return objects for the current site."""
+
         return self.get_queryset().for_current_site()
 
 
 class CoreStateManager(CoreManager):
+    """Return relevant objects depending on state."""
 
     def get_queryset(self):
+        """Return objects."""
         return query.CoreStateQuerySet(self.model, using=self._db)
 
     def publish_objects(self):
+        """Return only published objects."""
+
         queryset = self.permitted().filter(
             publish_at__lte=timezone.now()
         ).exclude(state=constants.STATE_PUBLISHED)
@@ -34,6 +58,8 @@ class CoreStateManager(CoreManager):
         queryset.update(state=constants.STATE_PUBLISHED)
 
     def permitted(self):
+        """Only return publised objects."""
+
         return self.get_queryset().permitted()
 
 

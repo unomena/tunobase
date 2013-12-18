@@ -1,8 +1,21 @@
-'''
+"""
+CORE APP
+
+This module provides an interface into nodes.
+
+Classes:
+    BreadcrumbNode
+    UrlBreadcrumbNode
+    SmartQueryStringNode
+
+Functions:
+    n/a
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.template import Node, Variable
 from django.utils.encoding import smart_unicode
 from django.template import VariableDoesNotExist
@@ -11,9 +24,8 @@ from tunobase.core import utils
 
 class BreadcrumbNode(Node):
     def __init__(self, vars):
-        '''
-        First var is title, second var is url context variable
-        '''
+        """First var is title, second var is url context variable."""
+
         self.vars = map(Variable,vars)
 
     def render(self, context):
@@ -43,11 +55,17 @@ class BreadcrumbNode(Node):
 
 
 class UrlBreadcrumbNode(Node):
+    """Display bread crumb links."""
+
     def __init__(self, title, url_node):
+        """Initialise variables."""
+
         self.title = Variable(title)
         self.url_node = url_node
 
     def render(self, context):
+        """Render bread crumb links."""
+
         title = self.title.var
 
         if title.find("'") == -1 and title.find('"') == -1:
@@ -65,7 +83,10 @@ class UrlBreadcrumbNode(Node):
 
 
 class SmartQueryStringNode(Node):
+    
     def __init__(self, addition_pairs):
+        """Initialise variables."""
+
         self.addition_pairs = []
         for key, value in addition_pairs:
             self.addition_pairs.append((Variable(key) if key \
