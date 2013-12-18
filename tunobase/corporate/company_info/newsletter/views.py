@@ -1,8 +1,21 @@
-'''
+"""
+NEWSLETTER APP
+
+This module provides all the views for newsletters.
+
+Classes:
+    NewsletterSubscribe
+    NewsletterUnsubscribe
+    NewsletterRecipient
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -13,8 +26,11 @@ from tunobase.core import utils as core_utils
 from tunobase.corporate.company_info.newsletter import models, utils
 
 class NewsletterSubscribe(generic_views.CreateView):
+    """Handle newsletter subscrptions."""
 
     def form_valid(self, form):
+        """Ensure form is valid and return response."""
+
         obj = form.save(self.request)
 
         return core_utils.respond_with_json({
@@ -25,8 +41,11 @@ class NewsletterSubscribe(generic_views.CreateView):
 
 
 class NewsletterUnsubscribe(generic_views.TemplateView):
+    """Handle newsletter unsubscriptions."""
 
     def get(self, request, *args, **kwargs):
+        """Retrieve uui and token to unsubscribe."""
+
         try:
             uid_int = base36_to_int(self.kwargs['uidb36'])
             newsletter_recipient = models.NewsletterRecipient\
@@ -48,8 +67,11 @@ class NewsletterUnsubscribe(generic_views.TemplateView):
 
 
 class EmailValidate(generic_views.View):
+    """Ensure email address is valid."""
 
     def get(self, request, *args, **kwargs):
+        """Compare email address against users model."""
+
         email = request.GET.get('email')
         User = get_user_model()
 

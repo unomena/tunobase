@@ -1,8 +1,19 @@
-'''
+"""
+NEWSLETTER APP
+
+This module provides a set of functions for emailing newsletters.
+
+Classes:
+    n/a
+
+Functions:
+    email_active_newsletter_recipients
+
 Created on 21 Oct 2013
 
 @author: michael
-'''
+
+"""
 from celery.decorators import task
 
 from tunobase.mailer import utils as mailer_utils
@@ -10,9 +21,10 @@ from tunobase.mailer import utils as mailer_utils
 @task(ignore_result=True)
 def email_active_newsletter_recipients(subject, html_content, text_content,
                                        newsletter_id=None):
-    '''
+    """
     Sends active newsletter recipients the Newsletter content
-    '''
+
+    """
     from tunobase.corporate.company_info.newsletter import models, utils
 
     active_newsletter_recipients = models.NewsletterRecipient\

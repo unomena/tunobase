@@ -1,3 +1,15 @@
+"""
+NEWSLETTER APP
+
+This module provides generic django URL routing.
+
+Classes:
+    n/a
+
+Functions:
+    n/a
+
+"""
 from django.conf.urls import patterns, url
 
 from tunobase.corporate.company_info.newsletter import views, forms

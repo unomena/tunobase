@@ -1,8 +1,22 @@
-'''
+"""
+NEWSLETTER APP
+
+This module describes how the newsletter models are stored.
+
+Classes:
+    RichNewsletterPart
+    PlainNewsletterPart
+    Newsletter
+    NewsletterRecipient
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -15,23 +29,30 @@ from ckeditor.fields import RichTextField
 from tunobase.corporate.company_info.newsletter import managers, signals
 
 class RichNewsletterPart(models.Model):
+    """Rich content field for newsletter."""
+
     content = RichTextField()
 
     def __unicode__(self):
+        """Returns a unicode object."""
+
         return u'%s' % self.content
 
 
 class PlainNewsletterPart(models.Model):
+    """Plain content field for newsletter."""
+
     content = models.TextField()
 
     def __unicode__(self):
+        """Returns a unicode object."""
+
         return u'%s' % self.content
 
 
 class Newsletter(models.Model):
-    '''
-    Newsletter to send to active recipients
-    '''
+    """Newsletter to send to active recipients."""
+
     subject = models.CharField(max_length=255)
 
     plain_header = models.ForeignKey(
@@ -69,10 +90,13 @@ class Newsletter(models.Model):
     objects = managers.NewsletterManager()
 
     def __unicode__(self):
+        """Returns a unicode object."""
+
         return u'%s' % self.subject
 
     def send(self):
-        # Fire off signal to be received by handlers
+        """Fire off signal to be received by handlers."""
+
         signals.newsletter_saved.send(
             sender=self.__class__,
             newsletter=self
@@ -81,6 +105,8 @@ class Newsletter(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
+        """Save newsletter in the database."""
+
         if self.site is None:
             self.site = Site.objects.get_current()
         super(Newsletter, self).save(*args, **kwargs)
@@ -91,10 +117,11 @@ class Newsletter(models.Model):
 
 
 class NewsletterRecipient(models.Model):
-    '''
+    """
     Newsletter recipients that have subscribed
     from the Site
-    '''
+
+    """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         related_name='newsletter_recipient',
@@ -116,9 +143,13 @@ class NewsletterRecipient(models.Model):
     active_recipients = managers.NewsletterRecipientManager()
 
     def __unicode__(self):
+        """Returns a unicode object."""
+
         return u'%s' % self.get_email()
 
     def get_greeting_name(self):
+        """Return user's name."""
+
         if self.user is not None:
             return self.user.first_name
 
@@ -128,16 +159,22 @@ class NewsletterRecipient(models.Model):
         return self.email
 
     def get_email(self):
+        """Return user's email."""
+
         if self.user is not None:
             return self.user.email
 
         return self.email
 
     def unsubscribe(self):
+        """Mark as unsubscribed."""
+
         self.is_active = False
         self.save()
 
     def save(self, *args, **kwargs):
+        """Save in database."""
+
         if not self.id and self.email:
             User = get_user_model()
             try:

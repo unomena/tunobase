@@ -1,8 +1,19 @@
-'''
+"""
+NEWSLETTER APP
+
+This module provides a task for sending off newsletters.
+
+Classes:
+    n/a
+
+Functions:
+    send_newsletter
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.dispatch import Signal
 from django.dispatch import receiver
 
@@ -14,6 +25,8 @@ newsletter_saved = Signal(providing_args=["sender", "newsletter"])
 
 @receiver(newsletter_saved)
 def send_newsletter(sender, **kwargs):
+    """Creation of the newsletter content for sending."""
+
     newsletter = kwargs.pop('newsletter', None)
 
     if newsletter is not None:
