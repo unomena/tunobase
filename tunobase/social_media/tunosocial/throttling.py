@@ -1,14 +1,31 @@
-'''
+"""
+TUNOASOCIAL APP
+
+This module provides throttling functionality for thos users
+posting too quickly.
+
+Classes:
+    n/a
+
+Functions:
+    check_throttle
+
 Created on 20 Nov 2013
 
 @author: michael
-'''
+
+"""
 from django.utils import timezone
 
 from tunobase.social_media.tunosocial import models
 
 def check_throttle(user, ip_address, like_period_lockout,
         num_likes_allowed_in_lockout):
+    """
+    Set a limit as to how many likes a user can make within
+    a certain time period.
+
+    """
     if user is not None:
         queryset = models.Like.objects.filter(
             user=user

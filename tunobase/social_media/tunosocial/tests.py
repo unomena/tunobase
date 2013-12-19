@@ -1,20 +1,33 @@
-'''
+"""
+TUNOSOCIAL APP
+
+This module provides a series of test cases for the
+tunosocial app.
+
+Classes:
+    LikeModelTestCase
+
+Functions:
+    n/a
+
 Created on 03 Dec 2013
 
 @author: michael
-'''
+
+"""
 from django.test import TestCase
 from django.utils import timezone
 
 from tunobase.social_media.tunosocial import models
 
 class LikeModelTestCase(TestCase):
+    """Set up the test cases."""
+
     ip_address = '127.0.0.1'
 
     def setUp(self):
-        '''
-        Create the Like Model
-        '''
+        """Create the Like Model."""
+
         models.Like.objects.create(
             ip_address=self.ip_address,
             content_type_id=1,
@@ -23,9 +36,8 @@ class LikeModelTestCase(TestCase):
         )
 
     def test_like_model(self):
-        '''
-        Test that the Like was created successfully
-        '''
+        """Test that the Like was created successfully."""
+
         like_object = models.Like.objects.get(pk=1)
         self.assertEqual(like_object.ip_address, self.ip_address)
         self.assertEqual(like_object.content_type_id, 1)

@@ -1,8 +1,22 @@
-'''
+"""
+TUNOSOCIAL APP
+
+This module provides an interface for users to interact with
+the tunosocial app.
+
+Classes:
+    AddLike
+    RemoveLike
+
+Functions:
+    _validate
+    _like
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -17,6 +31,8 @@ from tunobase.core import (
 from tunobase.social_media.tunosocial import models, exceptions, throttling
 
 def _validate(request, user, throttle_key, ip_address, action):
+    """Prevent users from liking the same thing twice."""
+
     already_liked = request.COOKIES.get(throttle_key, None)
     if user is None and already_liked is None and action == 'remove':
         raise exceptions.UnauthorizedLikingError(
@@ -54,6 +70,8 @@ def _validate(request, user, throttle_key, ip_address, action):
             )
 
 def _like(request, action):
+    """Record when the user has liked."""
+
     if request.user.is_authenticated():
         user = request.user
     else:
@@ -95,11 +113,16 @@ def _like(request, action):
 
 class AddLike(core_mixins.DeterministicLoginRequiredMixin,
         generic_views.View):
+    """Allow the user to like an object."""
 
     def deterministic_function(self):
+        """Determine is annonymous liking is allowed."""
+
         return settings.ANONYMOUS_LIKES_ALLOWED
 
     def get(self, request, *args, **kwargs):
+        """Get the likes for an object."""
+
         try:
             throttle_key = _like(request, 'add')
         except (exceptions.RapidLikingError,
@@ -113,6 +136,8 @@ class AddLike(core_mixins.DeterministicLoginRequiredMixin,
         return response
 
     def post(self, request, *args, **kwargs):
+        """Record what the user has liked."""
+
         try:
             throttle_key = _like(request, 'add')
         except (exceptions.RapidLikingError,
@@ -131,11 +156,16 @@ class AddLike(core_mixins.DeterministicLoginRequiredMixin,
 
 class RemoveLike(core_mixins.DeterministicLoginRequiredMixin,
         generic_views.View):
+    """Allow users to remove their likes."""
 
     def deterministic_function(self):
+        """Determine if annonymous liking is allowed."""
+
         return settings.ANONYMOUS_LIKES_ALLOWED
 
     def get(self, request, *args, **kwargs):
+        """Retrieve what the user has previously liked."""
+
         try:
             throttle_key = _like(request, 'remove')
         except (exceptions.RapidLikingError,
@@ -149,6 +179,8 @@ class RemoveLike(core_mixins.DeterministicLoginRequiredMixin,
         return response
 
     def post(self, request, *args, **kwargs):
+        """Record the user removing their like."""
+
         try:
             throttle_key = _like(request, 'remove')
         except (exceptions.RapidLikingError,

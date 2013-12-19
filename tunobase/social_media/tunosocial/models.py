@@ -1,8 +1,19 @@
-'''
+"""
+TUNOSOCIAL APP
+
+This module describes how the tunosocial app is laid out.
+
+Classes:
+    BaseLikeAbstractModel
+
+Functions:
+    n/a
+
 Created on 08 Nov 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
@@ -13,10 +24,11 @@ from django.db import models
 from tunobase.social_media.tunosocial import managers
 
 class BaseLikeAbstractModel(models.Model):
-    '''
+    """
     An abstract base class that any custom like models probably should
     subclass.
-    '''
+
+    """
     # Content-object field
     content_type = models.ForeignKey(
         ContentType,
@@ -44,6 +56,8 @@ class BaseLikeAbstractModel(models.Model):
 
 
 class Like(BaseLikeAbstractModel):
+    """Set up the Social like fields."""
+
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL, related_name='tunosocial_likes',
             blank=True, null=True
@@ -57,4 +71,6 @@ class Like(BaseLikeAbstractModel):
         unique_together = ('user', 'content_type', 'object_pk')
 
     def __unicode__(self):
+        """Return the user, content_type and object_pk."""
+
         return u'%s - %s %s' % (self.user, self.content_type, self.object_pk)
