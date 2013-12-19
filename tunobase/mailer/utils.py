@@ -1,8 +1,26 @@
-'''
+"""
+MAILER APP
+
+This module provides utility functions for use with the
+mailer app.
+
+Classes:
+    n/a
+
+Functions:
+    send_messages
+    render_content
+    create_message
+    save_outbound_emails
+    create_outbound_email
+    send_mail
+    track_mail
+
 Created on 22 Oct 2013
 
 @author: michael
-'''
+
+"""
 import logging
 
 from django.conf import settings
@@ -17,9 +35,8 @@ from tunobase.mailer import models
 logger = logging.getLogger('console')
 
 def send_messages(messages):
-    '''
-    Bulk send the message(s)
-    '''
+    """Bulk send the message(s)."""
+
     # Donot send any emails if they are disabled in the settings
     if settings.EMAIL_ENABLED:
         connection = get_connection()
@@ -31,9 +48,8 @@ def send_messages(messages):
 
 def render_content(subject, text_content, html_content=None,
                    context=None, apply_context_to_string=False):
-    '''
-    Render the content in the email
-    '''
+    """Render the content in the email."""
+
     if context is None:
         context = {}
     try:
@@ -64,9 +80,8 @@ def create_message(subject, text_content, to_addresses,
                    bcc_addresses=None, html_content=None, context=None,
                    attachments=None, user=None, apply_context_to_string=False
     ):
-    '''
-    Create and return the Email message to be sent
-    '''
+    """Create and return the Email message to be sent."""
+
     # Update context with site and STATIC_URL
     if context is None:
         context = {}
@@ -120,17 +135,15 @@ def create_message(subject, text_content, to_addresses,
     return msg, context
 
 def save_outbound_emails(outbound_emails):
-    '''
-    Bulk create Outbound Email tracking objects
-    '''
+    """Bulk create Outbound Email tracking objects."""
+
     if settings.EMAIL_ENABLED:
         models.OutboundEmail.objects.bulk_create(outbound_emails)
 
 def create_outbound_email(subject, to_addresses, html_content,
                           bcc_addresses=None, site=None, user=None):
-    '''
-    Create Outbound Email tracking object
-    '''
+    """Create Outbound Email tracking object."""
+
     return models.OutboundEmail(
         user=user,
         to_addresses='\n'.join(to_addresses),
@@ -143,9 +156,8 @@ def create_outbound_email(subject, to_addresses, html_content,
 
 def track_mail(subject, to_addresses, html_content,
                bcc_addresses=None, site=None, user=None):
-    '''
-    Track mails sent to the User by the Site
-    '''
+    """Track mails sent to the User by the Site."""
+
     if settings.EMAIL_ENABLED:
         outbound_email = create_outbound_email(
             subject,
@@ -161,11 +173,12 @@ def send_mail(subject, text_content, to_addresses,
               from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None,
               html_content=None, context=None, attachments=None, user=None,
               apply_context_to_string=False):
-    '''
+    """
     Sends an email containing both text(provided) and html(produced from
     povided template name and context) content as well as provided
     attachments to provided to_addresses from provided from_address
-    '''
+
+    """
     # Create the message
     message, context = create_message(
         subject,
