@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Age Gate | {% endblock %}
+{% block title %}{% trans "Age Gate" %} | {% endblock %}
 
 {% block content %}
 	<form id="frmAgeGateway" action="." method="post">{% csrf_token %}
-	    <h2>To enter the site please enter location and age.</h2>
-	    <label for="id_location">Location</label>
+        <h2>{% trans "To enter the site please enter location and age." %}</h2>
+        <label for="id_location">{% trans "Location" %}</label>
 	    {{ form.location }}{{ form.location.errors }}
 	    
 	    {{ form.date_of_birth }}{{ form.date_of_birth.errors }}
         
-	    {{ form.terms_accept }} &nbsp; By entering this website you agree to Unomena's terms
+        {{ form.terms_accept }} &nbsp; {% trans "By entering this website you agree to Unomena's terms" %}
 	    {{ form.terms_accept.errors }}
 	    
 	    {{ form.next }}
