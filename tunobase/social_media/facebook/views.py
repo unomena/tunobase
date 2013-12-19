@@ -1,8 +1,21 @@
-'''
+"""
+FACEBOOK APP
+
+This module provides an interface for the user to interact
+with the Facebook app.
+
+Classes:
+    PreLogin
+    LoginCallback
+
+Functions:
+    n/a
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.sites.models import Site
@@ -15,8 +28,11 @@ from django.views import generic as generic_views
 import facebook
 
 class PreLogin(generic_views.View):
+    """Set up URLs to login with."""
 
     def get(self, request, *args, **kwargs):
+        """Set up login url."""
+
         if not reverse('secure_login') in request.META['HTTP_REFERER']:
             request.session['facebook_login_redirect_url'] = \
                     request.META['HTTP_REFERER']
@@ -25,8 +41,11 @@ class PreLogin(generic_views.View):
 
 
 class LoginCallback(generic_views.View):
+    """Set up URLs to return to."""
 
     def get(self, request, *args, **kwargs):
+        """Set up success url."""
+
         redirect_url = settings.LOGIN_REDIRECT_URL
         if not 'error' in request.GET and \
            request.session['facebook_state'] == request.GET['state']:

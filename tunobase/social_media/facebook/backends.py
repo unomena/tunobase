@@ -1,8 +1,19 @@
-'''
+"""
+FACEBOOK APP
+
+This module authenticates against Facebook access tokens.
+
+Classes:
+    FacebookBackend
+
+Functions:
+    n/a
+
 Created on 09 Nov 2013
 
 @author: michael
-'''
+
+"""
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
@@ -13,14 +24,17 @@ import facebook
 from tunobase.social_media.facebook import models, utils
 
 class FacebookBackend(ModelBackend):
-    '''
-    Authenticate against a Facebook access token
-    '''
+    """Authenticate against a Facebook access token."""
 
     supports_inactive_user = False
 
     def authenticate(self, access_token=None,
             access_token_expiry_seconds=None):
+        """
+        If the users access token is valid, update their token
+        in the database.
+
+        """
         token_valid, user_id = utils.validate_access_token(access_token)
 
         if token_valid:
