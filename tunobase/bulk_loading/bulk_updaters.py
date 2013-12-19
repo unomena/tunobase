@@ -16,6 +16,7 @@ Created on 28 Oct 2013
 """
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
+from django.utils.translation import ugettext_lazy as _
 
 class BulkUpdater(object):
     """
@@ -37,12 +38,12 @@ class BulkUpdater(object):
         """
         if self.data_key is None:
             raise ImproperlyConfigured(
-                "Attribute 'data_key' is not set"
+                _("Attribute 'data_key' is not set")
             )
 
         if self.model is None:
             raise ImproperlyConfigured(
-                "Attribute 'model' is not set"
+                _("Attribute 'model' is not set")
             )
 
         try:

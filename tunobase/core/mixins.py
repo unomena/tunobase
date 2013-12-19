@@ -23,6 +23,7 @@ from django.core.paginator import Paginator
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 
 from tunobase.core import utils as core_utils
 
@@ -36,8 +37,8 @@ class AjaxMorePaginationMixin(object):
 
         if self.partial_template_name is None:
             raise ImproperlyConfigured(
-                "'AjaxMorePaginationMixin' requires "
-                "'partial_template_name' attribute to be set."
+                _("'AjaxMorePaginationMixin' requires "
+                "'partial_template_name' attribute to be set.")
             )
 
         page = request.GET.get('page', None)
@@ -90,8 +91,8 @@ class DeterministicLoginRequiredMixin(object):
 
         if self.deterministic_function is None:
             raise ImproperlyConfigured(
-                "'DeterministicLoginRequiredMixin' requires "
-                "'deterministic_function' attribute to be set."
+                _("'DeterministicLoginRequiredMixin' requires "
+                "'deterministic_function' attribute to be set.")
             )
 
         if not request.user.is_authenticated() \
@@ -135,8 +136,8 @@ class GroupRequiredMixin(object):
 
         if self.groups_required == None:
             raise ImproperlyConfigured(
-                "'GroupRequiredMixin' requires "
-                "'groups_required' attribute to be set."
+                _("'GroupRequiredMixin' requires "
+                "'groups_required' attribute to be set.")
             )
 
         if request.user.is_admin or request.user.groups\
@@ -193,8 +194,8 @@ class PermissionRequiredMixin(object):
         if self.permission_required == None or len(
             self.permission_required.split(".")) != 2:
             raise ImproperlyConfigured(
-                    "'PermissionRequiredMixin' requires "
-                    "'permission_required' attribute to be set."
+                    _("'PermissionRequiredMixin' requires "
+                    "'permission_required' attribute to be set.")
             )
 
         # Check to see if the request's user has the required permission.
@@ -248,8 +249,8 @@ class PermissionOrCreatorRequiredMixin(object):
         if self.permission_required == None or len(
             self.permission_required.split(".")) != 2:
             raise ImproperlyConfigured(
-                    "'PermissionOrCreatorRequiredMixin' requires "
-                    "'permission_required' attribute to be set."
+                    _("'PermissionOrCreatorRequiredMixin' requires "
+                    "'permission_required' attribute to be set.")
             )
 
         # Check to see if the request's user has the required permission.
@@ -375,8 +376,8 @@ class MultiplePermissionsRequiredMixin(object):
         """
         if self.permissions is None or not isinstance(self.permissions, dict):
             raise ImproperlyConfigured(
-                    "'PermissionsRequiredMixin' requires "
-                    "'permissions' attribute to be set to a dict."
+                    _("'PermissionsRequiredMixin' requires "
+                    "'permissions' attribute to be set to a dict.")
             )
 
     def _check_permissions_keys_set(self, perms_all=None, perms_any=None):
@@ -387,9 +388,9 @@ class MultiplePermissionsRequiredMixin(object):
         """
         if perms_all is None and perms_any is None:
             raise ImproperlyConfigured(
-                    "'PermissionsRequiredMixin' requires"
+                    _("'PermissionsRequiredMixin' requires"
                     "'permissions' attribute to be set to a dict and the "
-                    "'any' or 'all' key to be set."
+                    "'any' or 'all' key to be set.")
             )
 
     def _check_perms_keys(self, key=None, perms=None):
@@ -399,9 +400,9 @@ class MultiplePermissionsRequiredMixin(object):
         """
         if perms and not isinstance(perms, (list, tuple)):
             raise ImproperlyConfigured(
-                    "'MultiplePermissionsRequiredMixin' "
+                    _("'MultiplePermissionsRequiredMixin' "
                     "requires permissions dict '%s' value to be a list "
-                    "or tuple." % key
+                    "or tuple." % key)
             )
 
 

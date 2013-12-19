@@ -21,6 +21,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.translation import ugettext_lazy as _
 from django.views import generic as generic_views
 
 from tunobase.core import (
@@ -36,12 +37,12 @@ def _validate(request, user, throttle_key, ip_address, action):
     already_liked = request.COOKIES.get(throttle_key, None)
     if user is None and already_liked is None and action == 'remove':
         raise exceptions.UnauthorizedLikingError(
-            "This is not yours"
+            _("This is not yours")
         )
 
     if user is None and already_liked and action == 'add':
         raise exceptions.UnauthorizedLikingError(
-            "You already like this"
+            _("You already like this")
         )
 
     like_period_lockout = getattr(settings, 'LIKE_PERIOD_LOCKOUT', None)
@@ -65,8 +66,8 @@ def _validate(request, user, throttle_key, ip_address, action):
 
         if throttled:
             raise exceptions.RapidLikingError(
-                'You are liking too quickly. '
-                'Please wait before liking again'
+                _('You are liking too quickly. '
+                'Please wait before liking again')
             )
 
 def _like(request, action):

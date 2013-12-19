@@ -17,6 +17,7 @@ Created on 29 Oct 2013
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.utils.translation import ugettext_lazy as _
 
 from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.commenting import models, exceptions, throttling
@@ -68,8 +69,8 @@ class CommentForm(forms.Form):
 
             if throttled:
                 raise exceptions.RapidCommentingError(
-                    "You are commenting too quickly. "
-                    "Please wait before commenting again"
+                    _("You are commenting too quickly. "
+                    "Please wait before commenting again")
                 )
 
         if self.cleaned_data['anonymous']:

@@ -9,6 +9,7 @@ import types
 from django import http
 from django.template import Context, Template
 from django.utils.encoding import smart_unicode
+from django.utils.translation import ugettext_lazy as _
 
 def respond_with_json(response_dict):
     '''
@@ -53,8 +54,8 @@ def get_object_for_current_site_or_404(klass, *args, **kwargs):
         return queryset.for_current_site().get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         raise http.Http404(
-            'No %s matches the given query.' % queryset\
-                    .model._meta.object_name
+            _('No %s matches the given query.' % queryset\
+                    .model._meta.object_name)
         )
 
 def get_permitted_object_or_404(klass, *args, **kwargs):
@@ -67,8 +68,8 @@ def get_permitted_object_or_404(klass, *args, **kwargs):
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         raise http.Http404(
-            'No %s matches the given query.' % queryset\
-                    .model._meta.object_name
+            _('No %s matches the given query.' % queryset\
+                    .model._meta.object_name)
         )
 
 def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
@@ -82,8 +83,8 @@ def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
         return queryset.for_current_site().get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         raise http.Http404(
-            'No %s matches the given query.' % queryset\
-                    .model._meta.object_name
+            _('No %s matches the given query.' % queryset\
+                    .model._meta.object_name)
         )
 
 def create_crumb(title, url=None):

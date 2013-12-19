@@ -25,6 +25,7 @@ from django.contrib import messages
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDict
+from django.utils.translation import ugettext_lazy as _
 from django.views import generic as generic_views
 
 from tunobase.bulk_loading import forms, tasks
@@ -44,12 +45,12 @@ class BulkUploadTemplate(console_mixins.ConsoleUserRequiredMixin,
 
         if self.filepath is None:
             raise ImproperlyConfigured(
-                "Attribute 'filepath' is not set"
+                _("Attribute 'filepath' is not set")
             )
 
         if self.filename is None:
             raise ImproperlyConfigured(
-                "Attribute 'filename' is not set"
+                _("Attribute 'filename' is not set")
             )
 
         mimetype = self.mimetype or mimetypes.guess_type(self.filename)[0]
@@ -87,7 +88,7 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
 
         if self.bulk_updater_class is None:
             raise ImproperlyConfigured(
-                "Attribute 'bulk_updater_class' is not set"
+                _("Attribute 'bulk_updater_class' is not set")
             )
 
         if settings.USE_CELERY:
@@ -101,15 +102,15 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
 
             messages.success(
                 self.request,
-                "Your import will begin momentarily and you will be "
-                "notified via email once it is complete."
+                _("Your import will begin momentarily and you will be "
+                "notified via email once it is complete.")
             )
         else:
             form.save(self.bulk_updater_class)
 
             messages.success(
                 self.request,
-                "Thank you! Your import completed successfully."
+                _("Thank you! Your import completed successfully.")
             )
 
         return self.render_to_response(self.get_context_data(form=form))
@@ -125,7 +126,7 @@ class BulkDownload(console_mixins.ConsoleUserRequiredMixin, generic_views.ListVi
 
         if self.filename is None:
             raise ImproperlyConfigured(
-                "Attribute 'filename' is not set"
+                _("Attribute 'filename' is not set")
             )
 
         self.filename = self.filename % {'date': datetime.date.today()}

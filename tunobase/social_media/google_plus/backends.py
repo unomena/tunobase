@@ -19,6 +19,7 @@ import json
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from django.utils.translation import ugettext_lazy as _
 
 from flufl.password import generate
 
@@ -41,11 +42,11 @@ class GooglePlusBackend(ModelBackend):
 
             if not response_headers['status'] == '200':
                 raise Exception(
-                        'An error occurred with the Request to Google'
+                        _('An error occurred with the Request to Google')
                 )
 
             if not response_body['verified_email']:
-                raise Exception('Email address is not verified')
+                raise Exception(_('Email address is not verified'))
 
             try:
                 google_plus_user = models.GooglePlusUser.objects.get(

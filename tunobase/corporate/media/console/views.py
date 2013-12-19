@@ -90,6 +90,7 @@ class MediaCoverageDetail(AdminMixin, generic_views.DetailView):
 
 class MediaCoverageDelete(AdminMixin, core_views.MarkDeleteView):
     """Allow users with console access to delete media coverage obj."""
+
     permission_required = 'mediacoverage.delete_mediacoverage'
 
     def get_success_url(self):

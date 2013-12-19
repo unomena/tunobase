@@ -21,6 +21,7 @@ import hashlib
 
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext_lazy as _
 
 from tunobase.bulk_loading import models, fields
 
@@ -46,12 +47,12 @@ class BulkUploadForm(forms.Form):
 
         if self.validator_form is None:
             raise ImproperlyConfigured(
-                "kwargs 'validator_form' is required"
+                _("kwargs 'validator_form' is required")
             )
 
         if not isinstance(self.unique_field_names, (list, tuple)):
             raise ImproperlyConfigured(
-                "kwargs 'unique_field_names' is not iterable"
+                _("kwargs 'unique_field_names' is not iterable")
             )
 
         super(BulkUploadForm, self).__init__(*args, **kwargs)
@@ -66,10 +67,10 @@ class BulkUploadForm(forms.Form):
                 models.BulkUploadHash.objects.get(md5=self.md5)
                 self.data['duplicate_file_reimport'] = u'on'
                 raise forms.ValidationError(
-                    "%s appears to have been imported previously. If you "
-                    "want to re-import it please specify it again and "
-                    "click import. Note: this might cause data "
-                    "duplication." % self.uploaded_file.name
+                    _("%s appears to have been imported previously. If you "
+                        "want to re-import it please specify it again and "
+                        "click import. Note: this might cause data "
+                        "duplication." % self.uploaded_file.name)
                 )
             except models.BulkUploadHash.DoesNotExist:
                 pass
@@ -102,13 +103,13 @@ class BulkUploadForm(forms.Form):
                     if unique_field_data \
                             and unique_field_data in unique_fields:
                         raise forms.ValidationError(
-                            'Data "%s" appears multiple times in your '
+                            _('Data "%s" appears multiple times in your '
                             'CSV data. Please ensure data is unique.'
                             % ', '.join([
                                 data[unique_field_name] \
                                         for unique_field_name \
                                         in self.unique_field_names
-                            ])
+                            ]))
                         )
                     else:
                         unique_fields.append(unique_field_data)

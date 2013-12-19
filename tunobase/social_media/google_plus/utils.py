@@ -19,6 +19,7 @@ import sys
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 
 from oauth2client import util, clientsecrets
 from oauth2client.client import (
@@ -83,7 +84,7 @@ def flow_from_clientsecrets(scope, redirect_uri=None,
             raise
     else:
         raise UnknownClientSecretsFlowError(
-            'This OAuth 2.0 flow is unsupported: %r' % client_type
+            _('This OAuth 2.0 flow is unsupported: %r' % client_type)
         )
 
 FLOW = flow_from_clientsecrets(
