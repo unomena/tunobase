@@ -1,8 +1,19 @@
-'''
+"""
+TWITTER APP
+
+This module provides authentication with Twitter's tokens.
+
+Classes:
+    TwitterBackend
+
+Functions:
+    n/a
+
 Created on 09 Nov 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
@@ -14,14 +25,13 @@ from twython import Twython
 from tunobase.social_media.twitter import models
 
 class TwitterBackend(ModelBackend):
-    '''
-    Authenticate against a Facebook access token
-    '''
+    """Authenticate against a Facebook access token."""
 
     supports_inactive_user = False
 
     def authenticate(self, twitter_oauth_token=None,
             twitter_oauth_token_secret=None):
+        """Ensure authentication with Twitter's access tokens."""
         twitter = Twython(
             settings.TWITTER_APP_KEY,
             settings.TWITTER_APP_SECRET,

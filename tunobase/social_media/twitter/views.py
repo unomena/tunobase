@@ -1,8 +1,22 @@
-'''
+"""
+TWITTER APP
+
+This app provides an interface for users to interact with
+the twitter app.
+
+Classes:
+    PreLogin
+    LoginCallback
+    RequestEmail
+
+Functions:
+    n/a
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
@@ -17,8 +31,11 @@ from twython import Twython
 from tunobase.core import mixins as core_mixins
 
 class PreLogin(generic_views.View):
+    """Set up urls to login in with."""
 
     def get(self, request, *args, **kwargs):
+        """Set up urls to login in with."""
+
         twitter = Twython(
             settings.TWITTER_APP_KEY,
             settings.TWITTER_APP_SECRET
@@ -42,8 +59,18 @@ class PreLogin(generic_views.View):
 
 
 class LoginCallback(generic_views.View):
+    """
+    Manage users logging in and authenticating
+    via Twitter.
+
+    """
 
     def get(self, request, *args, **kwargs):
+        """
+        Manage users logging in and authenticating
+        via Twitter.
+
+        """
         oauth_verifier = request.GET['oauth_verifier']
 
         twitter = Twython(
@@ -81,11 +108,16 @@ class LoginCallback(generic_views.View):
 
 
 class RequestEmail(core_mixins.LoginRequiredMixin, generic_views.UpdateView):
+    """Allow users to update their email addresses."""
 
     def get_object(self):
+        """Return a user object."""
+
         return self.request.user
 
     def form_valid(self, form):
+        """Upon validation save form."""
+
         self.object = form.save()
 
         messages.success(self.request, 'Profile details updated.')
