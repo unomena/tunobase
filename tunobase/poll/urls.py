@@ -1,8 +1,13 @@
-'''
+"""
+POLL APP
+
+This module provides generic django URL routing.
+
 Created on 26 Mar 2013
 
 @author: michael
-'''
+
+"""
 from django.conf.urls import patterns, url
 
 from tunobase.poll import views, forms

@@ -1,13 +1,35 @@
-'''
+"""
+POLL APP
+
+This module returns the percentage votes each option on a poll
+has received.
+
+Classes:
+    PollAnswerManager
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 from tunobase.core import managers as core_managers
 
 class PollAnswerManager(core_managers.CoreStateManager):
+    """
+    Return percentage count the options of a poll
+    have had.
+
+    """
 
     def get_poll_percentages(self):
+        """
+        Return percentage count the options of a poll
+        have had.
+
+        """
         total_vote_counts = 0
         vote_count_averages = []
         poll_answers = self.permitted()

@@ -1,21 +1,33 @@
-'''
+"""
+POLL APP
+
+This module provides an interface into the poll and answer forms.
+
+Classes:
+    PollAnswerForm
+
+Functions:
+    n/a
+
 Created on 26 Mar 2013
 
 @author: michael
-'''
+
+"""
 from django import forms
 from django.contrib import messages
 from django.conf import settings
 
 class PollAnswerForm(forms.Form):
-    '''
-    Form for handling Poll answers
-    '''
+    """Form for handling Poll answers."""
+
     multiple_answers = forms.BooleanField(
             widget=forms.HiddenInput, required=False
     )
 
     def __init__(self, *args, **kwargs):
+        """Add poll to initialised variables."""
+
         self.poll = kwargs.pop('poll', None)
         self.multiple_answers = kwargs.pop('multiple_answers', None)
         super(PollAnswerForm, self).__init__(*args, **kwargs)
@@ -39,10 +51,17 @@ class PollAnswerForm(forms.Form):
             self.fields['multiple_answers'].initial = self.multiple_answers
 
     def increment_vote_count(self, answer):
+        """Incrememnt a vote on a poll."""
+
         answer.vote_count += 1
         answer.save()
 
     def save(self, request, cookie_name, pk):
+        """
+        Handle saving of a vote on a poll. Ensure the user
+        hasn't previously voted on the same poll.
+
+        """
         if request.user.is_authenticated():
             user = request.user
         else:
