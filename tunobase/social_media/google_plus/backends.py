@@ -1,8 +1,19 @@
-'''
+"""
+GOOGLE PLUS APP
+
+This module provides authentication against Google Plus' tokens.
+
+Classes:
+    GooglePlusBackend
+
+Functions:
+    n/a
+
 Created on 09 Nov 2013
 
 @author: michael
-'''
+
+"""
 import httplib2
 import json
 
@@ -14,13 +25,12 @@ from flufl.password import generate
 from tunobase.social_media.google_plus import models
 
 class GooglePlusBackend(ModelBackend):
-    '''
-    Authenticate against a Facebook access token
-    '''
+    """Authenticate against a Facebook access token."""
 
     supports_inactive_user = False
 
     def authenticate(self, credential=None):
+        """Authenticate against a Facebook access token."""
         if not credential.invalid:
             http = httplib2.Http()
             http = credential.authorize(http)

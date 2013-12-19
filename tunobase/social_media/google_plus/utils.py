@@ -1,8 +1,19 @@
-'''
+"""
+GOOGLE PLUS APP
+
+This module provides utility functions for the Google Plus app.
+
+Classes:
+    n/a
+
+Functions:
+    flow_from_clientsecrets
+
 Created on 09 Nov 2013
 
 @author: michael
-'''
+
+"""
 import sys
 
 from django.conf import settings
@@ -19,8 +30,7 @@ from oauth2client.client import (
 @util.positional(2)
 def flow_from_clientsecrets(scope, redirect_uri=None,
                             message=None, cache=None):
-    '''
-    Create a Flow from a clientsecrets file.
+    """Create a Flow from a clientsecrets file.
 
     Will create the right kind of Flow based on the contents of the
     clientsecrets file or will raise InvalidClientSecretsError for unknown
@@ -47,7 +57,8 @@ def flow_from_clientsecrets(scope, redirect_uri=None,
       Flow.
       clientsecrets.InvalidClientSecretsError if the clientsecrets file is
         invalid.
-    '''
+
+    """
     try:
         client_type, client_info = ("web", settings.GOOGLE_PLUS_CLIENT_INFO)
         if client_type in (clientsecrets.TYPE_WEB,
