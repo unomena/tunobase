@@ -1,19 +1,36 @@
-'''
+"""
+TAGGING APP
+
+This module is used to describe the forms used for the tagging app.
+
+Classes:
+    TagUpdateForm
+
+Functions:
+    n/a
+
 Created on 29 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django import forms
 from django.contrib.sites.models import Site
 
 from tunobase.tagging import models
 
 class TagUpdateForm(forms.Form):
+    """Save new tags in the database."""
+
     tag_content_type_id = forms.IntegerField()
     tag_object_pk = forms.CharField()
 
     def save(self, tags):
-        # coerce tags to a set to avoid duplicates
+        """
+        For each tag received in the POST method,
+        ensure the tag doesn't already exist and save.
+
+        """
         tags = set(tags)
         site = Site.objects.get_current()
         content_object_tags = []

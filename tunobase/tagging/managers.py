@@ -1,16 +1,32 @@
-'''
+"""
+TAGGING APP
+
+This module provides a series of managers to manage
+the tagging app.
+
+Classes:
+    ContentObjectTagManager
+    TagManager
+
+Functions:
+    n/a
+
 Created on 28 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from tunobase.core import managers as core_managers
 
 class ContentObjectTagManager(models.Manager):
+    """Retrieve various information about an objects tags."""
 
     def get_tags_for_object(self, obj, site=None):
+        """Fetch all the tags for an object."""
+
         return super(ContentObjectTagManager, self)\
                 .get_query_set()\
                 .select_related('tag')\
@@ -21,6 +37,8 @@ class ContentObjectTagManager(models.Manager):
                 )
 
     def get_unique_tags_for_object_type(self, app_label, model, site=None):
+        """Fetch all unique tags for an object."""
+
         tags = set()
         content_object_tags = super(ContentObjectTagManager, self)\
                 .get_query_set()\
@@ -37,6 +55,7 @@ class ContentObjectTagManager(models.Manager):
         return tags
 
     def get_tag_counts_for_object_type(self, app_label, model, site=None):
+        """Fetch the tag count."""
         tags = self.get_unique_tags_for_object_type(app_label, model, site)
         tag_counter_dict = {}
 
