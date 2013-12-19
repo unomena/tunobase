@@ -1,8 +1,19 @@
-'''
+"""
+EULA APP
+
+This module provides additional functionality to the EUAL app.
+
+Classes:
+    EULAAcceptedMixin
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -13,11 +24,18 @@ from django.utils.decorators import method_decorator
 from tunobase.eula import models, utils
 
 class EULAAcceptedMixin(object):
+    """Render EUAL to users."""
+
     eula_url = 'eula_sign'
     raise_exception = False
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        """
+        Confirm that the EULA has been agreed to by the user
+        and if not render EULA.
+
+        """
         self.eula = get_object_or_404(models.EULA).latest_version()
 
         # If the user has accepted the latest EULA

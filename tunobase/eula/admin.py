@@ -1,3 +1,17 @@
+"""
+EULA APP
+
+This module describes how the EULA model gets displayed
+in Django's admin.
+
+Classes:
+    EULAVersionInline
+    EULAAdmin
+
+Functions:
+    n/a
+
+"""
 from django.contrib import admin
 
 from tunobase.eula import models

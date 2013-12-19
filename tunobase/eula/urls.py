@@ -1,8 +1,13 @@
-'''
+"""
+EULA APP
+
+This module provides generic django URL routing.
+
 Created on 06 Mar 2013
 
 @author: michael
-'''
+
+"""
 from django.conf.urls import patterns, url
 
 from tunobase.eula import forms, views
