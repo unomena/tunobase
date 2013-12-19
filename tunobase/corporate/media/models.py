@@ -1,8 +1,22 @@
-'''
+"""
+MEDIA APP
+
+This module desribes the media model.
+
+Classes:
+    Article
+    PressRelease
+    MediaCoverage
+    Event
+
+Functions:
+    n/a
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 import datetime
 
 from django.db import models
@@ -12,25 +26,22 @@ from tunobase.core import models as core_models
 from tunobase.corporate.media import constants, managers
 
 class Article(core_models.ContentModel):
-    '''
-    Company's articles
-    '''
+    """Company's articles."""
+
     default_image_category = 'article'
 
 
 class PressRelease(core_models.ContentModel):
-    '''
-    Company's press releases
-    '''
+    """Company's press releases."""
+
     default_image_category = 'press_release'
 
     pdf = models.FileField(upload_to='press_releases', blank=True, null=True)
 
 
 class MediaCoverage(core_models.ContentModel):
-    '''
-    Media coverage about the company
-    '''
+    """Media coverage about the company."""
+
     default_image_category = 'media_coverage'
 
     pdf = models.FileField(upload_to='media_coverage', blank=True, null=True)
@@ -38,9 +49,8 @@ class MediaCoverage(core_models.ContentModel):
 
 
 class Event(core_models.ContentModel):
-    '''
-    Company event eg. Trade Show, Festival, Market
-    '''
+    """Company event eg. Trade Show, Festival, Market."""
+
     default_image_category = 'event'
 
     venue_name = models.CharField(max_length=255)
@@ -62,22 +72,35 @@ class Event(core_models.ContentModel):
 
     @property
     def is_in_past(self):
+        """Return flag if event occurred in the past."""
+
         return self.end < timezone.now()
 
     @property
     def is_present(self):
+        """Return flag if event is current."""
+
         return self.start <= timezone.now() <= self.end
 
     @property
     def is_in_future(self):
+        """Return flag if event is to occur in the future."""
+
         return self.start > timezone.now()
 
     @property
     def duration(self):
+        """Return an event's length."""
+
         return self.end - self.start
 
     @property
     def in_same_month(self):
+        """
+        Return flag if event starts and ends within
+        the same month.
+        
+        """
         if self.start.year == self.end.year \
                 and self.start.month == self.end.month:
             return True
@@ -85,11 +108,15 @@ class Event(core_models.ContentModel):
 
     @property
     def same_day(self):
+        """Return flag if event is only for a day."""
+
         if self.start == self.end:
             return True
 
     @property
     def next(self):
+        """Return when event will next occurr."""
+
         now = timezone.now()
         # if the first iteration of the event has not yet ended
         if now < self.end:
@@ -112,6 +139,8 @@ class Event(core_models.ContentModel):
 
     @property
     def last(self):
+        """Return when the last repeat of event is."""
+
         if self.repeat == 'does_not_repeat':
             return self.start
         else:
@@ -120,6 +149,11 @@ class Event(core_models.ContentModel):
             )
 
     def save(self, *args, **kwargs):
+        """
+        Upon saving, if end date is not set, set end date
+        to start date.
+
+        """
         if not self.end:
             self.end = self.start
 

@@ -1,8 +1,13 @@
-'''
+"""
+MEDIA APP
+
+This module lists the default settings for the media app.
+
 Created on 23 Oct 2013
 
 @author: michael
-'''
+
+"""
 EVENT_REPEAT_CHOICE_DOES_NOT_REPEAT = 0
 EVENT_REPEAT_CHOICE_DAILY = 1
 EVENT_REPEAT_CHOICE_WEEKDAYS = 2
