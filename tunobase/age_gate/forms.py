@@ -19,6 +19,7 @@ import datetime
 
 from django import forms
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from tunobase.core import widgets as core_widgets
 
@@ -48,7 +49,7 @@ class AgeGateForm(forms.Form):
 
         if not self.cleaned_data['terms_accept']:
             raise forms.ValidationError(
-                'You must accept the terms to continue'
+                _('You must accept the terms to continue')
             )
 
         return self.cleaned_data['terms_accept']
