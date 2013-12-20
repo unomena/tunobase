@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
-{% load core_widgets %}
+{% load core_widgets i18n %}
 
-{% block title %}Press Releases{% endblock %}
+{% block title %}{% trans "Press Releases" %}{% endblock %}
 
 {% block content %}
-	<h1>Press Releases</h1>
+    <h1>{% trans "Press Releases" %}</h1>
 	{% for object in object_list %}
 	    <h3>{{ object.title }}</h3>
 	    <p>{{ object.publish_at|date:'j F Y' }}</p>
 	    <p>
 	        {% if object.pdf %}
-	            <a href="{{ object.pdf.url }}" target="_blank" >Download PDF</a>
+                <a href="{{ object.pdf.url }}" target="_blank" >{% trans "Download PDF" %}</a>
 	        {% endif %}
-	        <a href="{% url 'media_press_release_detail' object.slug %}">Read More</a></p>
+            <a href="{% url 'media_press_release_detail' object.slug %}">{% trans "Read More" %}</a></p>
 	    </p>
 	{% empty %}
-	    <p>There are no Press Releases to list</p>
+        <p>{% trans "There are no Press Releases to list." %}</p>
 	{% endfor %}
 	{% pagination_widget page_obj %}
 {% endblock %}

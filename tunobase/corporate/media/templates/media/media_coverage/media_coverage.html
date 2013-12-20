@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% load core_widgets %}
+{% load core_widgets i18n %}
 
-{% block title %}Media Coverage{% endblock %}
+{% block title %}{% trans "Media Coverage" %}{% endblock %}
 
 {% block content %}
-	<h1>Media Coverage</h1>
+    <h1>{% trans "Media Coverage" %}</h1>
 	{% for object in object_list %}
 	    {% if object.image %}
 	        <div><a href="{{ object.external_link }}" target="_blank"><img src="{{ object.image.url }}" /></a></div>
@@ -13,14 +13,14 @@
 	    <p>{{ object.publish_at|date:'j F Y' }}</p>
 	    <p>
 		    {% if object.external_link %}
-		        <a href="{{ object.external_link }}" target="_blank">Learn More</a>
+                <a href="{{ object.external_link }}" target="_blank">{% trans "Learn More" %}</a>
 		    {% endif %}
 		    {% if object.pdf %}
-	            <a href="{{ object.pdf.url }}" target="_blank" >Download</a>
+                <a href="{{ object.pdf.url }}" target="_blank" >{% trans "Download" %}</a>
 	        {% endif %}
 		</p>
 	{% empty %}
-	    <p>There is no Media Coverage to list</p>
+        <p>{% trans "There is no Media Coverage to list." %}</p>
 	{% endfor %}
 	{% pagination_widget page_obj %}
 {% endblock %}

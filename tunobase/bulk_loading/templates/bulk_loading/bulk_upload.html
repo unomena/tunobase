@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Bulk Import | {% endblock %}
+{% block title %}{% trans "Bulk Import" %} | {% endblock %}
 
 {% block content %}
     <form id="frmBulkImport" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
         {% include 'includes/message_error_header.html' %}
-        <h2>Bulk Import</h2>
+        <h2>{% trans "Bulk Import" %}</h2>
         
         {% if csv_errors %}
-            <label for="id_create">CSV Errors</label>
+        <label for="id_create">{% trans "CSV Errors" %}</label>
             <br />
             {% for key, error in csv_errors.items %}
             <label for="id_create">{{ key }}</label>
@@ -19,11 +20,11 @@
             {% endfor %}
         {% endif %}
         {{ form.duplicate_file_reimport }}
-        <label for="id_create">Create</label>
+        <label for="id_create">{% trans "Create" %}</label>
         {{ form.create }}{{ form.create.errors }}
-        <label for="id_update">Update</label>
+        <label for="id_update">{% trans "Update" %}</label>
         {{ form.update }}{{ form.update.errors }}
-        <label for="id_upload_file">File to Upload</label>
+        <label for="id_upload_file">{% trans "File to Upload" %}</label>
         {{ form.upload_file }}{{ form.upload_file.errors }}
         
         <input type="submit" id="submit" value="Upload Data" />

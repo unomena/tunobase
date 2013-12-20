@@ -1,12 +1,14 @@
+{% load i18n %}
+
 <div class="commenting_comment">
 	<p>{{ comment.publish_at }}</p>
 	{% if user.is_authenticated %}
-	   <a class="report_comment" href="{% url 'report_comment' comment.pk %}">Report</a>
+  <a class="report_comment" href="{% url 'report_comment' comment.pk %}">{% trans "Report" %}</a>
 	{% endif %}
-	<strong>{{ comment.author }} commented:</strong>
+  <strong>{{ comment.author }} {% trans "commented" %}:</strong>
 	{% if not comment.is_removed %}
 		<p>{{ comment.comment }}</p>
 	{% else %}
-		<p><strong><i>This comment has been removed.</i></strong></p>
+  <p><strong><i>{% trans "This comment has been removed." %}</i></strong></p>
 	{% endif %}
 </div>

@@ -1,9 +1,10 @@
 {% extends 'console/base.html' %}
+{% load i18n %}
 
 {% block content %}
-    <h1>Confirm Delete?</h1>
+    <h1>{% trans "Confirm Delete?" %}</h1>
     <form id="frmConfirmDelete" action="{% block confirm_delete_url %}{% endblock %}" method="post" enctype="multipart/form-data">{% csrf_token %}
         <input type="submit" value="Confirm" />
-        <a href="{% block decline_delete_url %}{% endblock %}">Decline</a>
+        <a href="{% block decline_delete_url %}{% endblock %}">{% trans "Decline" %}</a>
     </form>
 {% endblock %}

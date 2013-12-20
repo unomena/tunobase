@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% load core_widgets %}
+{% load core_widgets i18n %}
 
-{% block title %}Events{% endblock %}
+{% block title %}{% trans "Events" %}{% endblock %}
 
 {% block content %}
-	<h1>Current Events</h1>
+    <h1>{% trans "Current Events" %}</h1>
 	{% for object in current_and_future_events %}
 	    {% if object.image %}
 	        <div><a href="{{ object.external_link }}" target="_blank"><img src="{{ object.image.url }}" /></a></div>
@@ -12,13 +12,13 @@
 	    <h3>{{ object.title|truncatechars:75 }}</h3>
 	    <p>{{ object.rich_content|safe }}</p>
 	    {% if object.external_link %}
-	        <p><a href="{{ object.external_link }}" target="_blank">Learn More</a></p>
+            <p><a href="{{ object.external_link }}" target="_blank">{% trans "Learn More" %}</a></p>
 	    {% endif %}
 	{% empty %}
-	    <p>There are no Current Events to list</p>
+        <p>{% trans "There are no Current Events to list." %}</p>
 	{% endfor %}
 	
-	<h1>Past Events</h1>
+    <h1>{% trans "Past Events" %}</h1>
 	{% for object in past_events %}
         {% if object.image %}
             <div><a href="{{ object.external_link }}" target="_blank"><img src="{{ object.image.url }}" /></a></div>
@@ -26,9 +26,9 @@
         <h3>{{ object.title|truncatechars:75 }}</h3>
         <p>{{ object.rich_content|safe }}</p>
         {% if object.external_link %}
-            <p><a href="{{ object.external_link }}" target="_blank">Learn More</a></p>
+            <p><a href="{{ object.external_link }}" target="_blank">{% trans "Learn More" %}</a></p>
         {% endif %}
     {% empty %}
-        <p>There are no Past Events to list</p>
+    <p>{% trans "There are no Past Events to list." %}</p>
     {% endfor %}
 {% endblock %}

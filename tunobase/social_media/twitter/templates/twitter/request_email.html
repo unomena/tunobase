@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
-    <h3>Please provide us with your email address</h3>
+    <h3>{% trans "Please provide us with your email address" %}</h3>
 	<form id="frmUpdateEmail" action="." method="POST">{% csrf_token %}
 	   {{ form.email }}{{ form.email.errors }}
 	   <input type="submit" value="Update" />

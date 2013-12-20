@@ -1,7 +1,8 @@
+{% load i18n %}
 <ul>
-    <li><a href="{% url 'console' %}">Index</a></li>
-    <li>Welcome, {{ user.display_name }}</li>
-    <li><a href="{% url 'secure_profile' %}">Profile</a>
-    <li><a href="{% url 'index' %}">Regular Site</a>
-    <li><a href="{% url 'auth_logout' %}">Logout</a>
+    <li><a href="{% url 'console' %}">{% trans "Index" %}</a></li>
+    <li>{% trans "Welcome" %}, {{ user.display_name }}</li>
+    <li><a href="{% url 'secure_profile' %}">{% trans "Profile" %}</a>
+    <li><a href="{% url 'index' %}">{% trans "Regular Site" %}</a>
+    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a>
 </ul>

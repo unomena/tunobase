@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Article &dash; {{ object.title }}{% endblock %}
+{% block title %}{% trans "Article" %} &dash; {{ object.title }}{% endblock %}
 
 {% block content %}
     <h1>{{ object.title }}</h1>

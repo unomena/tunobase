@@ -1,9 +1,11 @@
+{% load i18n %}
+
 {% if gallery %}
 	{% for image in gallery.images.permitted.for_current_site %}
 		<img src="{{ image.get_200x200_url }}" />
 	{% empty %}
-		<p>This gallery is empty</p>
+  <p>{% trans "This gallery is empty." %}</p>
 	{% endfor %}
 {% else %}
-	{% if user.is_admin %}<p style="color: red;">Please load a Gallery with slug &#39;{{ slug }}&#39; in the database</p>{% endif %}
+{% if user.is_admin %}<p style="color: red;">{% trans "Please load a Gallery with slug" %} &#39;{{ slug }}&#39; {% trans "in the database." %}</p>{% endif %}
 {% endif %}

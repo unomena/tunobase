@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load core_widgets tagging_widgets %}
+{% load core_widgets tagging_widgets i18n %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}{% trans "Blog" %}{% endblock %}
 
 {% block content %}
 	<h1>{{ object.title }}</h1>

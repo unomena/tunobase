@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Press Release &dash; {{ object.title }}{% endblock %}
+{% block title %}{% trans "Press Release" %} &dash; {{ object.title }}{% endblock %}
 
 {% block content %}
     <h1>{{ object.title }}</h1>

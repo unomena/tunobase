@@ -1,4 +1,4 @@
-{% load honeypot %}
+{% load honeypot i18n %}
 
 <form id="frmComment" action="{% url 'post_comment' %}" method="POST">{% csrf_token %}
     <input type="hidden" id="id_next" name="next" value="{{ next }}" />
@@ -7,7 +7,7 @@
     {% render_honeypot_field %}
     <textarea id="id_comment_box" name="comment_box" class="required" maxlength="50"></textarea>
     {% if user.is_authenticated %}
-        <input type="checkbox" id="id_anonymous" name="anonymous" /> Post Anonymously
+    <input type="checkbox" id="id_anonymous" name="anonymous" /> {% trans "Post Anonymously" %}
     {% endif %}
     <input type="submit" value="Comment" />
 </form>

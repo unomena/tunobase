@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
-{% load honeypot %}
+{% load honeypot i18n %}
 
-{% block title %}Contact Us | {% endblock %}
+{% block title %}{% trans "Contact Us" %} | {% endblock %}
 
 {% block content %}
 	<form id="frmContact" action="." method="POST">{% csrf_token %}
-		<h2>Contact Us</h2>
+        <h2>{% trans "Contact Us" %}</h2>
 		
-		<label for="id_name">Name</label>
+        <label for="id_name">{% trans "Name" %}</label>
         {{ form.name }}{{ form.name.errors }}
 		
-	    <label for="id_email">Email Address</label>
+        <label for="id_email">{% trans "Email Address" %}</label>
 	    {{ form.email }}{{ form.email.errors }}
-	    <label for="id_mobile">Mobile Number</label>
+        <label for="id_mobile">{% trans "Mobile Number" %}</label>
 	    {{ form.mobile_number }}{{ form.mobile_number.errors }}
 	    {% render_honeypot_field %}
-	    <label for="id_message">Message</label>
+        <label for="id_message">{% trans "Message" %}</label>
 	    {{ form.message }}{{ form.message.errors }}
 		{{ form.user }}{{ form.user.errors }}
 		

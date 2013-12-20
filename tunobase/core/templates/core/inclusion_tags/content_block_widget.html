@@ -1,14 +1,15 @@
+{% load i18n %}
 {% if content %}
 	<div data-last-content="{{ content.rich_content|safe }}" class="content_block {% if user.is_admin %}admin-content-block{% endif %}">
-		<div class="inner_alert_block hidden">You have changed the content of this block without saving. Please click the save button to save changes.</div>
+    <div class="inner_alert_block hidden">{% trans "You have changed the content of this block without saving. Please click the save button to save changes." %}</div>
 		<div class="inner_content_block {% if user.is_admin %}inner_admin_content_block{% endif %}" {% if user.is_admin %}contenteditable="true"{% endif %}>
 			{{ content.rich_content|safe }}
 		</div>
 		
 		{% if user.is_admin %}
-			<a data-slug="{{ content.slug }}" class="hidden btn" href="javascript:void(0);">Save</a>
+    <a data-slug="{{ content.slug }}" class="hidden btn" href="javascript:void(0);">{% trans "Save" %}</a>
 		{% endif %}
 	</div>
 {% else %}
-	{% if user.is_admin %}<p style="color: red;">Please load a Content Block with slug &#39;{{ slug }}&#39; in the database.</p>{% endif %}
+{% if user.is_admin %}<p style="color: red;">{% trans "Please load a Content Block with slug" %} &#39;{{ slug }}&#39; {% trans "in the database." %}</p>{% endif %}
 {% endif %}

@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 	<h1>EULA</h1>
-    <p>Please accept the following EULA before continuing</div>
+    <p>{% trans "Please accept the following EULA before continuing" %}</div>
     {% if not form.eula %}
-        <p>Please load the EULA in the Console</p>
+        <p>{% trans "Please load the EULA in the Console" %}</p>
     {% else %}
         <form id="frmSignEULA" action="." method="POST">{% csrf_token %}
             {{ form.next }}
             {{ form.eula.content|safe }}
-            <label for="id_accept">I Accept the EULA</label>
+            <label for="id_accept">{% trans "I Accept the EULA" %}</label>
             {{ form.accept }}{{ form.accept.errors }}
             <input type="submit" value="Submit" />
-            <a href="javascript: window.history.back();">Decline</a>
+            <a href="javascript: window.history.back();">{% trans "Decline" %}</a>
         </form>
     {% endif %}
 {% endblock %}

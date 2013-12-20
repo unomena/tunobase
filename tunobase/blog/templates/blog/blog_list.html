@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Blogs{% endblock %}
+{% block title %}{% trans "Blogs" %}{% endblock %}
 
 {% block content %}
-	<h1>Blogs</h1>
+    <h1>{% trans "Blogs" %}</h1>
     {% for object in object_list %}
         <h3><a href="{% url 'blog_detail' object.slug %}">{{ object.title }}</a></h3>
         <img src="{{ object.get_98x98_url }}" class="image_thumb" />
         {% comment %}{% tag_list object %}{% endcomment %}
     {% empty %}
-        <p>There are no blogs to display.</p>
+    <p>{% trans "There are no blogs to display." %}</p>
     {% endfor %}
 {% endblock %}
