@@ -136,4 +136,4 @@ class BlogFeed(Feed):
     def item_description(self, item):
         """Returns the content of each post."""
 
-        return strip_tags(item.content)
+        return strip_tags(item.rich_content)
