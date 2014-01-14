@@ -1,5 +1,5 @@
 """
-AGE GATE APP
+Age Gate App
 
 This module provides a form to determine that the user meets the
 required age gate.
@@ -23,6 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from tunobase.core import widgets as core_widgets
 
+
 class AgeGateForm(forms.Form):
     """
     Form for submitting the User's Age and
@@ -43,7 +44,6 @@ class AgeGateForm(forms.Form):
     terms_accept = forms.BooleanField(required=False)
     next = forms.CharField(widget=forms.HiddenInput, required=False)
 
-
     def clean_terms_accept(self):
         """Ensure that T & C 's have been selected before continuing."""
 
@@ -63,7 +63,7 @@ class AgeGateForm(forms.Form):
         age = settings\
                 .AGE_GATE_COUNTRY_LEGAL_AGES[self.cleaned_data['location']]
         country_date_of_birth_required = \
-            datetime.date.today() - datetime.timedelta(days=age*365)
+            datetime.date.today() - datetime.timedelta(days=age * 365)
 
         request.session['age_gate_passed'] = \
             self.cleaned_data['date_of_birth'] <=\

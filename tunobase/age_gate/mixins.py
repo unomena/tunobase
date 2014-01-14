@@ -1,16 +1,16 @@
 """
-AGE GATE APP
+Age Gate App
 
 This module provides dispatch functionality. If the user passes the
 age gate requirements, send them on to view the site's content. However,
 should they failed the age gate requirements, have the server return a
 forbidden response and disallow the user to view the site's content.
 
-Clases:
+Classes:
     AgeGateMixin
 
 Functions:
-    na/e
+    n/a
 
 Created on 23 Oct 2013
 
@@ -22,6 +22,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
 
 from tunobase.age_gate import utils
+
 
 class AgeGateMixin(object):
     """Mixin to check if the user is old enough to view the content."""
@@ -44,7 +45,7 @@ class AgeGateMixin(object):
                 raise PermissionDenied
             else:
                 return utils.redirect_to_age_gate(
-                    request.get_full_path(), 
+                    request.get_full_path(),
                     reverse_lazy(self.age_gate_url)
                 )
 

@@ -1,5 +1,5 @@
 '''
-AGE GATE APP
+Age Gate App
 
 Created on 25 Oct 2013
 

@@ -1,5 +1,5 @@
 """
-AGE GATE APP
+Age Gate App
 
 This module deals with age gate functionality. Direct the user to the
 age gate form upon initial request, if the form is valid save it in the
@@ -18,6 +18,7 @@ Created on 05 Mar 2013
 """
 from django.views import generic as generic_views
 from django.http import HttpResponseRedirect
+
 
 class AgeGate(generic_views.FormView):
     """

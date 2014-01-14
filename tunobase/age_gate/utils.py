@@ -1,5 +1,5 @@
 """
-AGE GATE APP
+Age Gate App
 
 This module is used within the age_gate.middleware module. It redirects
 the user to the home page should they meet the age gate requirements.
@@ -22,8 +22,9 @@ except ImportError:     # Python 2
 
 from django.http import HttpResponseRedirect, QueryDict
 
+
 def redirect_to_age_gate(next, age_gate_url=None,
-                      redirect_field_name='next'):
+                         redirect_field_name='next'):
     """
     Redirects the user to the login page, passing the given 'next' page
 

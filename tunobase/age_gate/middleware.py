@@ -1,10 +1,10 @@
 """
-AGE GATE APP
+Age Gate App
 
 This module provides redirect functionality should the user
 successfully pass the age gate requirement.
 
-Clases:
+Classes:
     AgeGateMiddleware
 
 Functions:
@@ -19,6 +19,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
 
 from tunobase.age_gate import utils
+
 
 class AgeGateMiddleware(object):
     """
@@ -38,7 +39,7 @@ class AgeGateMiddleware(object):
             age_gate_passed = request.session.get('age_gate_passed', False)
             if not age_gate_passed:
                 return utils.redirect_to_age_gate(
-                    request.get_full_path(), 
+                    request.get_full_path(),
                     reverse_lazy(age_gate_url)
                 )
 

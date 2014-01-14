@@ -1,5 +1,5 @@
 """
-AGE GATE APP
+Age Gate App
 
 This module provides generic django URL routing.
 
