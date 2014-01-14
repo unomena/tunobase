@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module provides an interface into retrieving comments
 and removing them where necessary.
@@ -23,8 +23,9 @@ from django.db import models
 from tunobase.commenting import query, constants
 from tunobase.core import managers as core_managers
 
+
 class CommentManager(core_managers.CoreStateManager,
-        comment_managers.CommentManager):
+                     comment_managers.CommentManager):
     """
     Comment Manager for retrieving the amount of comments
     for a given Content Object and removing flagged comments
@@ -58,7 +59,7 @@ class CommentManager(core_managers.CoreStateManager,
                 flag=constants.FLAG_SUGGEST_REMOVAL
             ).count()
             if num_removal_flags >= getattr(settings,
-                    'COMMENT_FLAGS_FOR_REMOVAL', 5):
+               'COMMENT_FLAGS_FOR_REMOVAL', 5):
                 comment.is_removed = True
                 comment.save()
 
@@ -70,8 +71,7 @@ class CommentFlagManager(models.Manager):
         """Create a flagged for removal object."""
 
         self.create(
-            user=user, 
+            user=user,
             comment_id=comment_id,
             flag=constants.FLAG_SUGGEST_REMOVAL
         )
-

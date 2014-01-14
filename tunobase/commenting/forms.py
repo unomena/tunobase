@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module provides the fields for the comment form.
 
@@ -21,6 +21,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from tunobase.core import utils as core_utils, throttling as core_throttling
 from tunobase.commenting import models, exceptions, throttling
+
 
 class CommentForm(forms.Form):
     """Set up the required fields for the comments form."""
@@ -89,7 +90,7 @@ class CommentForm(forms.Form):
         )
 
         core_throttling.add_to_throttle(
-                request, throttle_key, comment.publish_at
-            )
+            request, throttle_key, comment.publish_at
+        )
 
         return comment

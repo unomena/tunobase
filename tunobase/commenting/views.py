@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module provides an interface to flagging and fetching comments.
 
@@ -26,6 +26,7 @@ from django.views import generic as generic_views
 
 from tunobase.core import utils as core_utils, mixins as core_mixins
 from tunobase.commenting import models, exceptions
+
 
 class PostComment(core_mixins.DeterministicLoginRequiredMixin,
         generic_views.FormView):
@@ -77,7 +78,7 @@ class PostComment(core_mixins.DeterministicLoginRequiredMixin,
             return core_utils.respond_with_json({
                 'success': True,
                 'comment': render_to_string(
-                    self.template_name, 
+                    self.template_name,
                     RequestContext(self.request, {'comment': comment})
                 ),
                 'num_comments': num_comments
@@ -127,7 +128,8 @@ class ReportComment(core_mixins.LoginRequiredMixin, generic_views.View):
         return redirect(request.META['HTTP_REFERER'])
 
 
-class LoadMoreComments(core_mixins.AjaxMorePaginationMixin, generic_views.ListView):
+class LoadMoreComments(core_mixins.AjaxMorePaginationMixin,
+                       generic_views.ListView):
     """Display more comments."""
 
     def get_queryset(self):

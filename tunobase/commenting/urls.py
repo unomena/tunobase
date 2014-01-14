@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module provides generic django URL routing.
 

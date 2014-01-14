@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module lists the default settings for the commenting app.
 

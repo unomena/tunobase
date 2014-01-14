@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module retrieves all the comments for an object.
 
@@ -17,6 +17,7 @@ Created on 25 Oct 2013
 from django.contrib.sites.models import Site
 
 from tunobase.core import query as core_query
+
 
 class CommentQuerySet(core_query.CoreStateQuerySet):
     """Get all comments for particular object."""

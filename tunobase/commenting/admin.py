@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module determines how the comment model is displayed
 in Django's admin.
@@ -18,6 +18,7 @@ Created on 28 Oct 2013
 from django.contrib import admin
 
 from tunobase.commenting import models
+
 
 class CommentModelAdmin(admin.ModelAdmin):
     """How to display the comment model in Django's admin."""

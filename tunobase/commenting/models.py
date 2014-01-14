@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module sets up the comment models.
 
@@ -21,6 +21,7 @@ from django.db import models
 
 from tunobase.commenting import managers, constants
 from tunobase.core import models as core_models
+
 
 class CommentModel(core_models.StateModel, core_models.AuditModel,
                    comment_models.BaseCommentAbstractModel):

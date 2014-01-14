@@ -1,5 +1,5 @@
 """
-COMMENTING APP
+Commenting App
 
 This module provides test cases for the commenting app.
 
@@ -19,6 +19,7 @@ from django.test import TestCase
 
 from tunobase.commenting import models, constants
 from tunobase.core import constants as core_constants
+
 
 class CommentModelTestCase(TestCase):
     """Initialise test cases."""
@@ -52,7 +53,7 @@ class CommentModelTestCase(TestCase):
             content_type_id=1,
             site_id=1
         )
-        for i in range(settings.COMMENT_FLAGS_FOR_REMOVAL):
+        for _ in range(settings.COMMENT_FLAGS_FOR_REMOVAL):
             models.CommentFlag.objects.create(
                 comment=self.comment_object,
                 flag=self.flag
@@ -76,7 +77,7 @@ class CommentModelTestCase(TestCase):
 
     def test_comment_flags(self):
         """
-        Test that when a Comment is flagged a certain amount of times, 
+        Test that when a Comment is flagged a certain amount of times,
         it gets marked as removed
 
         """
