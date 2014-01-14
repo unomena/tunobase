@@ -32,6 +32,7 @@ from tunobase.bulk_loading import forms, tasks
 from tunobase.console import mixins as console_mixins
 from tunobase.core import utils as core_utils
 
+
 class BulkUploadTemplate(console_mixins.ConsoleUserRequiredMixin,
         generic_views.View):
     """Template for allowing file uploads."""
@@ -91,10 +92,10 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
                 _("Attribute 'bulk_updater_class' is not set")
             )
 
-        if settings.USE_CELERY:
+        if settings.CELERY_ALWAYS_EAGER:
             upload_data = form.save_upload_data()
             tasks.upload_data.delay(
-                upload_data.pk, 
+                upload_data.pk,
                 self.bulk_updater_class,
                 form.cleaned_data['create'],
                 form.cleaned_data['update']
@@ -116,7 +117,8 @@ class BulkUpload(console_mixins.ConsoleUserRequiredMixin,
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class BulkDownload(console_mixins.ConsoleUserRequiredMixin, generic_views.ListView):
+class BulkDownload(console_mixins.ConsoleUserRequiredMixin,
+                   generic_views.ListView):
     """Allow files to be downloaded."""
 
     filename = None
