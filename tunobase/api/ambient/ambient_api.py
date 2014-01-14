@@ -3,7 +3,6 @@ Created on 02 Dec 2011
 
 @author: euan
 '''
-import urllib
 import urllib2
 import xml.etree.ElementTree as ET
 
@@ -29,10 +28,10 @@ USER_AGENT = 'AM Python SMS API v' + unicode(VERSION)
 
 MSG_CODES = {
   # Success
-  '0'     : 'Message successfully submitted',
-  '1'     : 'Message successfully submitted, but contained recipient errors',
-  '2'     : 'Message successfully submitted, but contained duplicates and\
-          recipient errors',
+  '0': 'Message successfully submitted',
+  '1': 'Message successfully submitted, but contained recipient errors',
+  '2': 'Message successfully submitted, but contained duplicates and '
+       'recipient errors',
   '1000': 'Message successfully submitted, but contained duplicates',
   # Failure
   '1001': 'Invalid HTTP POST',
@@ -56,6 +55,7 @@ MSG_CODES = {
   '1019': 'Account deactivated'
   }
 
+
 def send_sms(msg, recipients, msg_id=None, reply_url=None):
     if msg is None or unicode(msg).strip() == '':
         raise AMSendError("msg cannot be blank")
@@ -63,28 +63,28 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
     if isinstance(recipients, (list, tuple)) and len(recipients) == 0:
         raise AMSendError("supply at least one recipient")
 
-    sms               = ET.Element("sms")
-    element         = ET.SubElement(sms, "api-key")
-    element.text        = unicode(API_KEY)
-    element        = ET.SubElement(sms, "password")
-    element.text        = unicode(API_PASSWORD)
-    recipients_element    = ET.SubElement(sms, "recipients")
-    element        = ET.SubElement(sms, "msg")
-    element.text        = unicode(msg).strip()
-    element        = ET.SubElement(sms, "concat")
-    element.text        = "1"
-    element        = ET.SubElement(sms, "allow_duplicates")
-    element.text        = unicode(ALLOW_DUPLICATES)
-    element        = ET.SubElement(sms, "allow_invalid_numbers")
-    element.text        = unicode(ALLOW_INVALID_NUMBERS)
+    sms = ET.Element("sms")
+    element = ET.SubElement(sms, "api-key")
+    element.text = unicode(API_KEY)
+    element = ET.SubElement(sms, "password")
+    element.text = unicode(API_PASSWORD)
+    recipients_element = ET.SubElement(sms, "recipients")
+    element = ET.SubElement(sms, "msg")
+    element.text = unicode(msg).strip()
+    element = ET.SubElement(sms, "concat")
+    element.text = "1"
+    element = ET.SubElement(sms, "allow_duplicates")
+    element.text = unicode(ALLOW_DUPLICATES)
+    element = ET.SubElement(sms, "allow_invalid_numbers")
+    element.text = unicode(ALLOW_INVALID_NUMBERS)
 
     if msg_id:
-        element        = ET.SubElement(sms, "message_id")
-        element.text    = unicode(msg_id)
+        element = ET.SubElement(sms, "message_id")
+        element.text = unicode(msg_id)
 
     if reply_url:
-        element        = ET.SubElement(sms, "reply_path")
-        element.text    = unicode(reply_url)
+        element = ET.SubElement(sms, "reply_path")
+        element.text = unicode(reply_url)
 
     # add msisdns to xml
     if isinstance(recipients, (list, tuple)):
@@ -100,18 +100,21 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
     #data = urllib.quote(ET.tostring(sms))
     data = ET.tostring(sms)
 
-    headers = { 'User-Agent' : USER_AGENT , 'Content-Type': 'text/xml'}
+    headers = {
+        'User-Agent': USER_AGENT,
+        'Content-Type': 'text/xml'
+    }
     # Send Msg27836805077
-    req      = urllib2.Request(SMS_API_URL, data, headers)
-    resp     = urllib2.urlopen(req)
+    req = urllib2.Request(SMS_API_URL, data, headers)
+    resp = urllib2.urlopen(req)
 
-    response = {'status':None, 'msg':None}
+    response = {'status': None, 'msg': None}
 
     dom = ET.fromstring(resp.read())
     msg_status = dom.find("status").text
 
     response['status'] = msg_status
-    response['msg']    = MSG_CODES[msg_status]
+    response['msg'] = MSG_CODES[msg_status]
 
     # Check for invalid numbers
     d = dom.find("invalid_numbers")
@@ -140,7 +143,7 @@ class AMSendError(Exception):
         return repr(self.value)
 
 # setup a basic test script
-if __name__ == '__main__' :
+if __name__ == '__main__':
     print send_sms(
             'Hello World! This is a Test Message & >< !@#$%^&*()',
             [27834002042]

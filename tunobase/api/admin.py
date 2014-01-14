@@ -1,5 +1,5 @@
 '''
-API APP
+API App
 Created on 23 Oct 2013
 
 @author: michael
@@ -7,6 +7,7 @@ Created on 23 Oct 2013
 from django.contrib import admin
 
 from tunobase.api import models
+
 
 class RequestAdmin(admin.ModelAdmin):
     """

@@ -9,6 +9,7 @@ from django.conf import settings
 
 import requests
 
+
 def send_sms(msg, recipients, msg_id=None, reply_url=None):
     for recipient in recipients:
         response = requests.put(
@@ -20,7 +21,5 @@ def send_sms(msg, recipients, msg_id=None, reply_url=None):
             }),
             verify=False
         )
-        
+
     return response.json()
-
-

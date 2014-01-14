@@ -1,5 +1,5 @@
 """
-API APP
+API App
 
 This module provides api functionality.
 
@@ -23,6 +23,7 @@ from django.utils import timezone
 
 from tunobase.api import constants
 from tunobase.core import fields as core_fields
+
 
 class Destination(models.Model):
     """The location to send API calls to."""
@@ -54,6 +55,7 @@ class Service(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.get_type_display()
+
 
 class Request(models.Model):
     """The API request data being sent."""
@@ -91,7 +93,7 @@ class Request(models.Model):
             self.completed_timestamp = timezone.now()
         else:
             if self.service.error_string and \
-                    self.service.error_string in self.response_data:
+               self.service.error_string in self.response_data:
                 self.status = constants.REQUEST_STATUS_ERROR
             else:
                 if self.send_count > self.service.max_retries:
