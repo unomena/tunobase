@@ -17,6 +17,7 @@ Created on 28 Oct 2013
 """
 from tunobase.core import managers as core_managers
 
+
 class PollAnswerManager(core_managers.CoreStateManager):
     """
     Return percentage count the options of a poll
@@ -40,10 +41,9 @@ class PollAnswerManager(core_managers.CoreStateManager):
         for poll_answer in poll_answers:
             try:
                 vote_count_averages.append(
-                    float('%0.2f' %
-                        (
-                            (poll_answer.vote_count / float(total_vote_counts))
-                            * 100
+                    float('%0.2f' % (
+                        (poll_answer.vote_count / float(total_vote_counts))
+                        * 100
                         )
                     )
                 )

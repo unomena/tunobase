@@ -18,6 +18,7 @@ from django import forms
 from django.contrib import messages
 from django.conf import settings
 
+
 class PollAnswerForm(forms.Form):
     """Form for handling Poll answers."""
 
@@ -29,29 +30,34 @@ class PollAnswerForm(forms.Form):
         """Add poll to initialised variables."""
 
         self.poll = kwargs.pop('poll', None)
-        self.multiple_answers = kwargs.pop('multiple_answers', None)
+        self.multiple_answers = kwargs.pop('multiple_answers', False)
+        self.randomize_answers = kwargs.pop('randomize_answers', False)
         super(PollAnswerForm, self).__init__(*args, **kwargs)
 
         if self.poll is not None:
+            queryset = self.poll.answers.permitted()
+            if self.randomize_answers:
+                queryset = queryset.order_by('?')
+
             if self.poll.multiple_choice:
                 self.fields['answers'] = forms.ModelMultipleChoiceField(
-                    queryset=self.poll.answers.permitted(),
+                    queryset=queryset,
                     widget=forms.CheckboxSelectMultiple
                 )
             else:
                 self.fields['answers'] = forms.ModelChoiceField(
-                    queryset=self.poll.answers.permitted(),
+                    queryset=queryset,
                     widget=forms.RadioSelect,
                     empty_label=None
                 )
 
             self.fields['answers'].widget.attrs.update({'class': 'required'})
 
-        if self.multiple_answers is not None:
+        if self.multiple_answers:
             self.fields['multiple_answers'].initial = self.multiple_answers
 
     def increment_vote_count(self, answer):
-        """Incrememnt a vote on a poll."""
+        """Increment a vote on a poll."""
 
         answer.vote_count += 1
         answer.save()
