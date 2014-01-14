@@ -1,5 +1,5 @@
 """
-BULK LOADING APP
+Bulk Loading App
 
 This module provides bulk update functionality to models.
 
@@ -17,6 +17,7 @@ Created on 28 Oct 2013
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
+
 
 class BulkUpdater(object):
     """

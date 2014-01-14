@@ -1,5 +1,5 @@
 """
-BULK UPLOADER APP
+Bulk Loading App
 
 This module provides the form interface for allowing users to upload
 various files.
@@ -28,6 +28,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from tunobase.bulk_loading import widgets, models
 
+
 class AjaxBulkFileField(forms.FileField):
     """Upload numerous files."""
 
@@ -53,14 +54,20 @@ class AjaxBulkFileField(forms.FileField):
                 file_size = datum.size
             except AttributeError:
                 raise ValidationError(
-                        self.error_messages['invalid'], code='invalid'
+                    self.error_messages['invalid'],
+                    code='invalid'
                 )
 
             if self.max_length is not None \
-                    and len(file_name) > self.max_length:
-                params =  {'max': self.max_length, 'length': len(file_name)}
+               and len(file_name) > self.max_length:
+                params = {
+                    'max': self.max_length,
+                    'length': len(file_name)
+                }
                 raise ValidationError(
-                        self.error_messages['max_length'], code='max_length', params=params
+                        self.error_messages['max_length'],
+                        code='max_length',
+                        params=params
                 )
             if not file_name:
                 raise ValidationError(
@@ -89,7 +96,8 @@ class AjaxBulkFileField(forms.FileField):
             # we raise a validation error
             if datum is FILE_INPUT_CONTRADICTION:
                 raise ValidationError(
-                        self.error_messages['contradiction'], code='contradiction'
+                    self.error_messages['contradiction'],
+                    code='contradiction'
                 )
             # False means the field value should be cleared;
             # further validation is not needed.

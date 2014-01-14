@@ -1,7 +1,7 @@
 """
-BULK LOAD APP
+Bulk Loading App
 
-This module ...
+This module stores bulk upload data.
 
 Classes:
     BulkUploadHash
@@ -22,6 +22,7 @@ from django.db import models
 
 from tunobase.bulk_loading import managers
 from tunobase.core import models as core_models, fields as core_fields
+
 
 class BulkUploadHash(models.Model):
     """

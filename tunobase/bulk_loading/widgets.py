@@ -1,5 +1,5 @@
 """
-BULK LOADING APP
+Bulk Loading App
 
 This module provides a widget interface to allow users to upload
 files.
@@ -18,6 +18,7 @@ Created on 28 Oct 2013
 """
 from django import forms
 from django.utils.datastructures import MultiValueDict, MergeDict
+
 
 class AjaxBulkFileInput(forms.ClearableFileInput):
     """

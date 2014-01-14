@@ -1,5 +1,5 @@
 """
-BULK LOAD APP
+Bulk Loading App
 
 This module fetches uploaded data and decodes it to json.
 
@@ -17,6 +17,7 @@ Created on 25 Oct 2013
 import json
 
 from django.db import models
+
 
 class BulkUploadDataManager(models.Manager):
     """Fetches uploaded data and decodes to json."""

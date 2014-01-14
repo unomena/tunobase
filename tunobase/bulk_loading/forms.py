@@ -1,5 +1,5 @@
 """
-BULK LOADING APP
+Bulk Loading App
 
 This module provides save functionality for uploaded files and images.
 
@@ -24,6 +24,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 
 from tunobase.bulk_loading import models, fields
+
 
 class BulkUploadForm(forms.Form):
     """
@@ -66,11 +67,11 @@ class BulkUploadForm(forms.Form):
             try:
                 models.BulkUploadHash.objects.get(md5=self.md5)
                 self.data['duplicate_file_reimport'] = u'on'
-                raise forms.ValidationError(
-                    _("%s appears to have been imported previously. If you "
-                        "want to re-import it please specify it again and "
-                        "click import. Note: this might cause data "
-                        "duplication." % self.uploaded_file.name)
+                raise forms.ValidationError(_(
+                    "%s appears to have been imported previously. If you "
+                    "want to re-import it please specify it again and "
+                    "click import. Note: this might cause data "
+                    "duplication." % self.uploaded_file.name)
                 )
             except models.BulkUploadHash.DoesNotExist:
                 pass
@@ -90,25 +91,25 @@ class BulkUploadForm(forms.Form):
                 for j, value in enumerate(row):
                     data[keys[j]] = value
                 csv_form = self.validator_form(
-                        data, update=self.cleaned_data['update']
+                    data, update=self.cleaned_data['update']
                 )
 
                 if csv_form.is_valid():
                     data = csv_form.cleaned_data
                     unique_field_data = ''.join([
                         data[unique_field_name] for unique_field_name \
-                                in self.unique_field_names
+                            in self.unique_field_names
                     ])
 
                     if unique_field_data \
-                            and unique_field_data in unique_fields:
+                       and unique_field_data in unique_fields:
                         raise forms.ValidationError(
                             _('Data "%s" appears multiple times in your '
                             'CSV data. Please ensure data is unique.'
                             % ', '.join([
                                 data[unique_field_name] \
-                                        for unique_field_name \
-                                        in self.unique_field_names
+                                    for unique_field_name \
+                                    in self.unique_field_names
                             ]))
                         )
                     else:
@@ -169,7 +170,9 @@ class BulkImageUploadForm(forms.Form):
 
         bulk_upload_image_ids = []
         for image in self.cleaned_data['images']:
-            bulk_upload_image = models.BulkUploadImage.objects.create(image=image)
+            bulk_upload_image = models.BulkUploadImage.objects.create(
+                image=image
+            )
             bulk_upload_image_ids.append(bulk_upload_image.uuid)
 
         return bulk_upload_image_ids

@@ -1,5 +1,5 @@
 """
-BULK LOADING APP
+Bulk Loading App
 
 This module registers the BulkUploadImage and BulkUploadData models
 in Django's admin.

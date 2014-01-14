@@ -1,5 +1,5 @@
 """
-BULK LOADING APP
+Bulk Loading App
 
 This module provides generic django URL routing.
 
