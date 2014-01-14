@@ -1,4 +1,6 @@
 """
+Blog App
+
 This module provides test functionality for the blog app.
 
 Classes:
@@ -18,6 +20,7 @@ from django.test import TestCase
 from tunobase.blog import models
 from tunobase.core import constants as core_constants
 
+
 class BlogModelTestCase(TestCase):
     """
     Provide the test cases to test the blog model.
@@ -36,7 +39,7 @@ class BlogModelTestCase(TestCase):
         self.blog = models.Blog.objects.create(title=self.title)
         models.BlogEntry.objects.create(
             title=self.entry_title,
-            blog=self.blog, 
+            blog=self.blog,
             authors_alternate=self.alternate_authors
         )
 

@@ -1,5 +1,5 @@
 """
-BLOG APP
+Blog App
 
 This module retrieves and displays the list and detailed view of
 blog posts.
@@ -36,8 +36,9 @@ from tunobase.core import (
 )
 from tunobase.tagging import models as tagging_models
 
+
 class BlogDetail(core_mixins.AjaxMorePaginationMixin,
-        core_views.ListWithDetailView):
+                 core_views.ListWithDetailView):
     """Return the detailed view of a blog post."""
 
     def get_object(self):
@@ -47,7 +48,7 @@ class BlogDetail(core_mixins.AjaxMorePaginationMixin,
 
         """
         return core_utils.get_permitted_object_or_404(
-            models.Blog, 
+            models.Blog,
             slug=self.kwargs['slug']
         )
 
@@ -72,8 +73,8 @@ class BlogDetail(core_mixins.AjaxMorePaginationMixin,
             blog_entries = []
             for content_object_tag in content_object_tags:
                 if content_object_tag.content_object.state in [
-                    core_constants.STATE_PUBLISHED,
-                    core_constants.STATE_STAGED
+                      core_constants.STATE_PUBLISHED,
+                      core_constants.STATE_STAGED
                    ]:
                     blog_entries.append(content_object_tag.content_object)
 

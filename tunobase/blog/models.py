@@ -1,4 +1,16 @@
 '''
+Blog App
+
+This module determines how to display the Blog app in Django's admin
+and lists other model functions.
+
+Classes:
+    Blog
+    BlogEntry
+
+Functions:
+    n/a
+
 Created on 25 Oct 2013
 
 @author: michael
@@ -8,6 +20,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from tunobase.core import models as core_models
+
 
 class Blog(core_models.ContentModel):
     '''
