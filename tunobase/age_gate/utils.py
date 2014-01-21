@@ -4,16 +4,6 @@ Age Gate App
 This module is used within the age_gate.middleware module. It redirects
 the user to the home page should they meet the age gate requirements.
 
-Classes:
-    n/a
-
-Functions:
-    redirect_to_age_gate - redirect to login page
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 try:
     from urllib.parse import urlparse, urlunparse

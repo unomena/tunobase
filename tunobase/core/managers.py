@@ -3,20 +3,6 @@ CORE APP
 
 This module provides an interface to the app's managers.
 
-Classes:
-    CoreManager
-    CoreStateManager
-    CorePolymorphicManager
-    CorePolymorphicStateManager
-    DefaultImageManager
-
-Functions:
-    n/a
-
-Created on 25 Oct 2013
-
-@author: michael
-
 """
 from django.db import models
 from django.utils import timezone

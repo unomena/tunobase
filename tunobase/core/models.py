@@ -1,7 +1,8 @@
 '''
-Created on 22 Oct 2013
+CORE APP
 
-@author: michael
+This module sets up the core models.
+
 '''
 from django.conf import settings
 from django.contrib.sites.models import Site

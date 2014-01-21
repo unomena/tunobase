@@ -6,16 +6,6 @@ age gate requirements, send them on to view the site's content. However,
 should they failed the age gate requirements, have the server return a
 forbidden response and disallow the user to view the site's content.
 
-Classes:
-    AgeGateMixin
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse_lazy

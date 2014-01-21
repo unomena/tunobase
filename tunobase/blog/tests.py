@@ -3,16 +3,6 @@ Blog App
 
 This module provides test functionality for the blog app.
 
-Classes:
-    BlogModelTestCase
-
-Functions:
-    n/a
-
-Created on 02 Dec 2013
-
-@author: euan
-
 """
 from django.template.defaultfilters import slugify
 from django.test import TestCase

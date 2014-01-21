@@ -3,16 +3,6 @@ Commenting App
 
 This module retrieves all the comments for an object.
 
-Classes:
-    CommentQuerySet
-
-Functions:
-    n/a
-
-Created on 25 Oct 2013
-
-@author: michael
-
 """
 from django.contrib.sites.models import Site
 

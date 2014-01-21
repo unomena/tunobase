@@ -1,7 +1,8 @@
 '''
-Created on 12 Nov 2013
+CORE APP
 
-@author: michael
+Base throttling methods
+
 '''
 from django.utils import timezone, dateparse
 

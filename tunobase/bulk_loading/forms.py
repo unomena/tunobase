@@ -3,18 +3,6 @@ Bulk Loading App
 
 This module provides save functionality for uploaded files and images.
 
-Classes:
-    BulkUploadForm
-    BulkUploadValidatorForm
-    BulkImageUploadForm
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 import csv
 import hashlib

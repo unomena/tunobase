@@ -3,18 +3,6 @@ CORE APP
 
 This module provides an interface into nodes.
 
-Classes:
-    BreadcrumbNode
-    UrlBreadcrumbNode
-    SmartQueryStringNode
-
-Functions:
-    n/a
-
-Created on 29 Oct 2013
-
-@author: michael
-
 """
 from django.template import Node, Variable
 from django.utils.encoding import smart_unicode

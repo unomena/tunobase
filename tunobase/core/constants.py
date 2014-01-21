@@ -1,7 +1,6 @@
 '''
-Created on 22 Oct 2013
+CORE APP
 
-@author: michael
 '''
 STATE_PUBLISHED = 0
 STATE_UNPUBLISHED = 1

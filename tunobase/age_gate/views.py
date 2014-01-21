@@ -5,16 +5,6 @@ This module deals with age gate functionality. Direct the user to the
 age gate form upon initial request, if the form is valid save it in the
 datebase and finally dispatch the user to the set success url.
 
-Classes:
-    AgeGate
-
-Functions:
-    n/a
-
-Created on 05 Mar 2013
-
-@author: michael
-
 """
 from django.views import generic as generic_views
 from django.http import HttpResponseRedirect

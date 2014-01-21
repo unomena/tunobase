@@ -3,16 +3,6 @@ Commenting App
 
 This module provides the fields for the comment form.
 
-Classes:
-    CommentForm
-
-Functions:
-    n/a
-
-Created on 29 Oct 2013
-
-@author: michael
-
 """
 from django import forms
 from django.conf import settings

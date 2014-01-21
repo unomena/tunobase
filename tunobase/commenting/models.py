@@ -3,17 +3,6 @@ Commenting App
 
 This module sets up the comment models.
 
-Classes:
-    CommentModel
-    CommentFlag
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.contrib.comments import models as comment_models

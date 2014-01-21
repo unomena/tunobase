@@ -3,18 +3,6 @@ Commenting App
 
 This module provides an interface to flagging and fetching comments.
 
-Classes:
-    PostComment
-    ReportComment
-    LoadMoreComments
-
-Functions:
-    n/a
-
-Created on 29 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.contrib import messages

@@ -1,7 +1,8 @@
 '''
-Created on 02 Dec 2013
+CORE APP
 
-@author: euan
+Tests for the core app.
+
 '''
 from django.template.defaultfilters import slugify
 from django.test import TestCase

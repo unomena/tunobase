@@ -3,16 +3,6 @@ Bulk Loading App
 
 This module fetches uploaded data and decodes it to json.
 
-Classes:
-    BulkUploadDataManager
-
-Functions:
-    n/a
-
-Created on 25 Oct 2013
-
-@author: michael
-
 """
 import json
 

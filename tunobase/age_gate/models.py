@@ -1,7 +1,0 @@
-'''
-Age Gate App
-
-Created on 25 Oct 2013
-
-@author: michael
-'''

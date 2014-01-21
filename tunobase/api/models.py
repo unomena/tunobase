@@ -3,18 +3,6 @@ API App
 
 This module provides api functionality.
 
-Classes:
-    Destination
-    Service
-    Request
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.contrib.sites.models import Site

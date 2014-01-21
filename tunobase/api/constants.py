@@ -3,10 +3,6 @@ API App
 
 This module lists the default settings for the API app.
 
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 REQUEST_STATUS_CREATED = 0
 REQUEST_STATUS_SUCCESS = 1

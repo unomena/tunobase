@@ -3,17 +3,6 @@ Bulk Loading App
 
 This module provides an interface to bulk uploads using Celery.
 
-Classes:
-    n/a
-
-Functions:
-    clear_unused_bulk_uploaded_images
-    upload_data
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from celery.decorators import task
 

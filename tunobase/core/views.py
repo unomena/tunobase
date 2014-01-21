@@ -1,7 +1,8 @@
 '''
-Created on 23 Oct 2013
+CORE APP
 
-@author: michael
+Core views.
+
 '''
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404

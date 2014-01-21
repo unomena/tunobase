@@ -1,7 +1,8 @@
 '''
-Created on 22 Oct 2013
+CORE APP
 
-@author: michael
+Core utilities.
+
 '''
 import json
 import types

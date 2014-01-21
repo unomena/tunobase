@@ -4,16 +4,6 @@ Commenting App
 This module determines how the comment model is displayed
 in Django's admin.
 
-Classes:
-    CommentModelAdmin
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django.contrib import admin
 

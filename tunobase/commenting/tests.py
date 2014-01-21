@@ -3,16 +3,6 @@ Commenting App
 
 This module provides test cases for the commenting app.
 
-Classes:
-    CommentModelTestCase
-
-Functions:
-    n/a
-
-Created on 02 Dec 2013
-
-@author: euan
-
 """
 from django.conf import settings
 from django.test import TestCase

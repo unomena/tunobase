@@ -1,7 +1,8 @@
 '''
-Created on 25 Oct 2013
+CORE APP
 
-@author: michael
+Defines custom queryset objects
+
 '''
 import random
 

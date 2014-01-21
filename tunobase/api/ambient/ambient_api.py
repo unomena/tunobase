@@ -1,7 +1,9 @@
 '''
-Created on 02 Dec 2011
+Ambient Mobile API
 
-@author: euan
+Connects to Ambient with an API key & password.
+Sends SMS.
+
 '''
 import urllib2
 import xml.etree.ElementTree as ET
