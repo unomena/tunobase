@@ -3,16 +3,6 @@ CORE APP
 
 This module provides a UUID field.
 
-Classes:
-    UUIDField
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 import uuid
 

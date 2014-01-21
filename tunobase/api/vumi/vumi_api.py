@@ -1,7 +1,9 @@
 '''
-Created on 24 Jun 2013
+VUMI API
 
-@author: euan
+Connects to VUMI with an API account key & access token.
+Sends SMS.
+
 '''
 import json
 

@@ -4,18 +4,6 @@ Bulk Loading App
 This module provides the form interface for allowing users to upload
 various files.
 
-Classes:
-    AjaxBulkFileField
-    BulkUploadImage
-    MultiImageIDField
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from io import BytesIO
 import sys

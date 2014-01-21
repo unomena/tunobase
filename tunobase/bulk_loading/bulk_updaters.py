@@ -3,16 +3,6 @@ Bulk Loading App
 
 This module provides bulk update functionality to models.
 
-Classes:
-    BulkUpdater
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction

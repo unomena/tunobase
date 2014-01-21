@@ -3,19 +3,6 @@ Bulk Loading App
 
 This module provides upload and download functionality of files.
 
-Classes:
-    BulkUploadTemplate
-    BulkUpload
-    BulkDownload
-    BulkImageUpload
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 import datetime
 import mimetypes

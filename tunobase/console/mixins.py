@@ -4,16 +4,6 @@ CONSOLE APP
 This module provides extra functionality to be used with the rest of
 the app.
 
-Classes:
-    ConsoleUserRequiredMixin
-
-Functions:
-    n/a
-
-Created on 25 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.core.exceptions import PermissionDenied

@@ -4,16 +4,6 @@ Age Gate App
 This module provides redirect functionality should the user
 successfully pass the age gate requirement.
 
-Classes:
-    AgeGateMiddleware
-
-Functions:
-    n/a
-
-Created on 08 Nov 2013
-
-@author: michael
-
 """
 from django.core.urlresolvers import reverse_lazy
 from django.conf import settings

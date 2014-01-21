@@ -4,16 +4,6 @@ CORE APP
 This module determines the way the core app displays in
 Django's admin.
 
-Classes:
-    SiteListAdminMixin
-
-Functions:
-    n/a
-
-Created on 22 Oct 2013
-
-@author: michael
-
 """
 from django.contrib import admin
 

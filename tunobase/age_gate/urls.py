@@ -3,10 +3,6 @@ Age Gate App
 
 This module provides generic django URL routing.
 
-Created on 05 Mar 2013
-
-@author: michael
-
 """
 from django.conf.urls import patterns, url
 

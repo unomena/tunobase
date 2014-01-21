@@ -3,16 +3,6 @@ Commenting App
 
 This module prevent users from commenting overzealously.
 
-Classes:
-    n/a
-
-Functions:
-    check_throttle
-
-Created on 20 Nov 2013
-
-@author: michael
-
 """
 from django.utils import timezone
 

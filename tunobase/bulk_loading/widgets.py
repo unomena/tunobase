@@ -4,17 +4,6 @@ Bulk Loading App
 This module provides a widget interface to allow users to upload
 files.
 
-Classes:
-    AjaxBulkFileInput
-    AjaxBulkFileMultiInput
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django import forms
 from django.utils.datastructures import MultiValueDict, MergeDict

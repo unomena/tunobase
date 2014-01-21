@@ -1,7 +1,8 @@
 '''
-Created on 21 Oct 2013
+CORE APP
 
-@author: michael
+Celery tasks
+
 '''
 from celery.decorators import task
 

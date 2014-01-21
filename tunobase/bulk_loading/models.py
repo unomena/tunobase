@@ -3,18 +3,6 @@ Bulk Loading App
 
 This module stores bulk upload data.
 
-Classes:
-    BulkUploadHash
-    BulkUploadData
-    BulkUploadImage
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 import json
 

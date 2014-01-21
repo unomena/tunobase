@@ -4,17 +4,6 @@ Commenting App
 This module provides an interface into retrieving comments
 and removing them where necessary.
 
-Classes:
-    CommentManager
-    CommentFlagManager
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.contrib.comments import managers as comment_managers

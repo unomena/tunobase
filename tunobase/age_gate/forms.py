@@ -4,16 +4,6 @@ Age Gate App
 This module provides a form to determine that the user meets the
 required age gate.
 
-Classes:
-    AgeGateForm
-
-Functions:
-    n/a
-
-Created on 27 Mar 2013
-
-@author: michael
-
 """
 import datetime
 

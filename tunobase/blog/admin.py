@@ -4,16 +4,6 @@ Blog App
 This module determines how to display the Blog app in Django's admin
 and lists other model functions.
 
-Classes:
-    BlogEntryAdmin
-
-Functions:
-    n/a
-
-Created on 22 Oct 2013
-
-@author: michael
-
 """
 from django.contrib import admin
 

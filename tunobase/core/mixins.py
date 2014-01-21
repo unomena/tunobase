@@ -3,16 +3,6 @@ CORE APP
 
 This module is used to additional functionality provided to the app.
 
-Classes:
-    AjaxMorePaginationMixin
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME

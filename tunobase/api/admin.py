@@ -1,8 +1,6 @@
 '''
 API App
-Created on 23 Oct 2013
 
-@author: michael
 '''
 from django.contrib import admin
 

@@ -4,20 +4,6 @@ Blog App
 This module retrieves and displays the list and detailed view of
 blog posts.
 
-Classes:
-    BlogDetail
-    SingleBlogDetail
-    BlogList
-    BlogEntryDetail
-    BlogFeed
-
-Functions:
-    n/a
-
-Created on 29 Oct 2013
-
-@author: michael
-
 """
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
