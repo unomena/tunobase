@@ -22,3 +22,4 @@ settings_local.py
 *.sh~d
 /build/
 /dist/
+/.settings
