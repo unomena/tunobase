@@ -2,10 +2,10 @@
 <table>
 	{% for result in object_list %}
 		<tr>
-			<td>Answer {{ forloop.counter }}</td>
+			<td>{{ result.0 }}</td>
 			<td>
-				<div style="background-color: blue; width: {{ result }};" />
-				<p>{{ result }}</p>
+				<div style="background-color: blue; width: {{ result.1 }};" />
+				<p>{{ result.1 }}</p>
 			</td>
 		</tr>
 	{% endfor %}
