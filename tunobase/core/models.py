@@ -6,6 +6,7 @@ This module sets up the core models.
 '''
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils import timezone
