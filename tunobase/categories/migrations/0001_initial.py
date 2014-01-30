@@ -11,7 +11,8 @@ class Migration(SchemaMigration):
         # Adding model 'Category'
         db.create_table(u'categories_category', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=32, db_index=True)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=255)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'], null=True, blank=True)),
         ))
@@ -48,7 +49,8 @@ class Migration(SchemaMigration):
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']", 'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '32', 'db_index': 'True'})
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'})
         },
         u'categories.contentobjectcategory': {
             'Meta': {'object_name': 'ContentObjectCategory'},
