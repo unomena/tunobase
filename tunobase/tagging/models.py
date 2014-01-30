@@ -3,18 +3,6 @@ TAGGING APP
 
 This module describes the tagging app's data layer.
 
-Classes:
-    BaseTagAbstractModel
-    Tag
-    ContentObjectTag
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -22,6 +10,7 @@ from django.contrib.sites.models import Site
 from django.core import urlresolvers
 from django.db import models
 
+from tunobase.core.models import SlugModel
 from tunobase.tagging import managers
 
 class BaseTagAbstractModel(models.Model):
@@ -56,10 +45,9 @@ class BaseTagAbstractModel(models.Model):
         )
 
 
-class Tag(models.Model):
+class Tag(SlugModel):
     """Unique tags on the Site."""
 
-    title = models.CharField(max_length=32, db_index=True)
     description = models.TextField(null=True, blank=True)
     site = models.ForeignKey(Site, blank=True, null=True)
 

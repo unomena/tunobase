@@ -4,17 +4,6 @@ TAGGING APP
 This module provides a series of managers to manage
 the tagging app.
 
-Classes:
-    ContentObjectTagManager
-    TagManager
-
-Functions:
-    n/a
-
-Created on 28 Oct 2013
-
-@author: michael
-
 """
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
