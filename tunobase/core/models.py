@@ -153,7 +153,7 @@ class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel):
         return u'%s - %s' % (self.title, self.sites.all())
 
 
-class ContentModel(PolymorphicModel, BaseContentModel):
+class PolymorphicContentModel(PolymorphicModel, BaseContentModel):
     '''
     All Content on the Site must derive from this Model
     '''
@@ -161,6 +161,26 @@ class ContentModel(PolymorphicModel, BaseContentModel):
 
     class Meta:
         ordering = ['order', '-publish_at']
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.title, self.sites.all())
+
+
+class ContentModel(BaseContentModel):
+    '''
+    All Content on the Site must derive from this Model
+    '''
+    leaf_content_type = models.ForeignKey(ContentType, editable=False, null=True)
+
+    class Meta:
+        ordering = ['order', '-publish_at']
+    
+    def as_leaf_class(self):
+        return self.leaf_content_type.model_class().objects.get(id=self.id)
+
+    def save(self, *args, **kwargs):
+        self.leaf_content_type = ContentType.objects.get_for_model(self.__class__) if not self.leaf_content_type else self.leaf_content_type
+        return super(BaseModel, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.sites.all())
