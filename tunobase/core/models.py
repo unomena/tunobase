@@ -181,7 +181,7 @@ class ContentModel(BaseContentModel):
 
     def save(self, *args, **kwargs):
         self.leaf_content_type = ContentType.objects.get_for_model(self.__class__) if not self.leaf_content_type else self.leaf_content_type
-        return super(BaseModel, self).save(*args, **kwargs)
+        return super(ContentModel, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.sites.all())
