@@ -19,8 +19,8 @@ Created on 25 Oct 2013
 from tunobase.core import managers as core_managers
 from tunobase.corporate.media import query
 
-class EventManager(core_managers.CorePolymorphicStateManager):
-    """
+class EventManager(core_managers.CoreStateManager):
+    """s
     Provide methods to be able to access events posted at
     certain times easier.
 
@@ -28,7 +28,6 @@ class EventManager(core_managers.CorePolymorphicStateManager):
 
     def get_queryset(self):
         """Return event object."""
-
         return query.EventQuerySet(self.model, using=self._db)
 
     def current_and_future_events(self):

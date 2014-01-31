@@ -11,7 +11,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
-from polymorphic import PolymorphicModel
+# from polymorphic import PolymorphicModel
 
 from photologue.models import ImageModel as PhotologueImageModel
 
@@ -154,17 +154,17 @@ class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel):
         return u'%s - %s' % (self.title, self.sites.all())
 
 
-class PolymorphicContentModel(PolymorphicModel, BaseContentModel):
-    '''
-    All Content on the Site must derive from this Model
-    '''
-    objects = managers.CorePolymorphicStateManager()
-
-    class Meta:
-        ordering = ['order', '-publish_at']
-
-    def __unicode__(self):
-        return u'%s - %s' % (self.title, self.sites.all())
+# class PolymorphicContentModel(PolymorphicModel, BaseContentModel):
+#     '''
+#     All Content on the Site must derive from this Model
+#     '''
+#     objects = managers.CorePolymorphicStateManager()
+# 
+#     class Meta:
+#         ordering = ['order', '-publish_at']
+# 
+#     def __unicode__(self):
+#         return u'%s - %s' % (self.title, self.sites.all())
 
 
 class ContentModel(BaseContentModel):

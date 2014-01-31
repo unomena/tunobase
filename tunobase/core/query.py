@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db.models.query import QuerySet
 
-from polymorphic import PolymorphicQuerySet
+# from polymorphic import PolymorphicQuerySet
 
 from tunobase.core import constants
 
@@ -31,21 +31,21 @@ class CoreStateQuerySet(CoreQuerySet):
         queryset = self.filter(
             state__in=constants.PERMITTED_STATE
         )
-
+ 
         # exclude objects in staging state if not in staging mode 
         # (settings.STAGING = False)
         if not getattr(settings, 'STAGING', False):
             queryset = queryset.exclude(state=constants.STATE_STAGED)
-
+ 
         return queryset
 
 
-class CorePolymorphicQuerySet(PolymorphicQuerySet, CoreQuerySet):
-    pass
-
-
-class CorePolymorphicStateQuerySet(PolymorphicQuerySet, CoreStateQuerySet):
-    pass
+# class CorePolymorphicQuerySet(PolymorphicQuerySet, CoreQuerySet):
+#     pass
+# 
+# 
+# class CorePolymorphicStateQuerySet(PolymorphicQuerySet, CoreStateQuerySet):
+#     pass
 
 
 class DefaultImageQuerySet(CoreStateQuerySet):

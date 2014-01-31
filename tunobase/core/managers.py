@@ -7,7 +7,7 @@ This module provides an interface to the app's managers.
 from django.db import models
 from django.utils import timezone
 
-from polymorphic import PolymorphicManager
+# from polymorphic import PolymorphicManager
 
 from tunobase.core import constants, query
 
@@ -49,18 +49,18 @@ class CoreStateManager(CoreManager):
         return self.get_queryset().permitted()
 
 
-# Polymorphic Managers
-
-class CorePolymorphicManager(PolymorphicManager, CoreManager):
-
-    def get_queryset(self):
-        return query.CorePolymorphicQuerySet(self.model, using=self._db)
-
-
-class CorePolymorphicStateManager(CorePolymorphicManager, CoreStateManager):
-
-    def get_queryset(self):
-        return query.CorePolymorphicStateQuerySet(self.model, using=self._db)
+# # Polymorphic Managers
+# 
+# class CorePolymorphicManager(PolymorphicManager, CoreManager):
+# 
+#     def get_queryset(self):
+#         return query.CorePolymorphicQuerySet(self.model, using=self._db)
+# 
+# 
+# class CorePolymorphicStateManager(CorePolymorphicManager, CoreStateManager):
+# 
+#     def get_queryset(self):
+#         return query.CorePolymorphicStateQuerySet(self.model, using=self._db)
 
 
 # Other Managers

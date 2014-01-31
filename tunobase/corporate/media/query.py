@@ -20,7 +20,7 @@ from django.utils import timezone
 
 from tunobase.core import query as core_query
 
-class EventQuerySet(core_query.CorePolymorphicStateQuerySet):
+class EventQuerySet(core_query.CoreStateQuerySet):
     """Provide a set of queries relating to events."""
 
     def current_and_future_events(self):
