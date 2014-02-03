@@ -3,21 +3,6 @@ MEDIA APP
 
 This module provides an interface for users to interact with events.
 
-Classes:
-    Articles
-    ArticleDetail
-    PressReleases
-    PressReleaseDetail
-    MediaCoverage
-    Events
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 from django.views import generic as generic_views
 
@@ -79,18 +64,14 @@ class Events(generic_views.TemplateView):
 
         context = super(Events, self).get_context_data(**kwargs)
 
+        events = models.Event.objects.permitted().for_current_site()
+
         context.update({
-            'current_and_future_events': models.Event.objects\
-                    .permitted()\
-                    .current_and_future_events()\
-                    .for_current_site(),
-            'past_events': models.Event.objects\
-                    .permitted()\
-                    .past_events()\
-                    .for_current_site(),
-            'object_list': models.Event.objects\
-                    .permitted()\
-                    .for_current_site()
+            'current_and_future_events': events.current_and_future_events()\
+                .order_by('start'),
+            'past_events': events.past_events(),
+            'object_list': events
+                    
         })
 
         return context

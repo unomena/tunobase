@@ -3,19 +3,6 @@ MEDIA APP
 
 This module desribes the media model.
 
-Classes:
-    Article
-    PressRelease
-    MediaCoverage
-    Event
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 import datetime
 
