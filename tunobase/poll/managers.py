@@ -41,9 +41,12 @@ class PollAnswerManager(core_managers.CoreStateManager):
         for poll_answer in poll_answers:
             try:
                 vote_count_averages.append(
-                    float('%0.2f' % (
-                        (poll_answer.vote_count / float(total_vote_counts))
-                        * 100
+                    (
+                        poll_answer, 
+                        float('%0.2f' % (
+                            (poll_answer.vote_count / float(total_vote_counts))
+                            * 100
+                            )
                         )
                     )
                 )
