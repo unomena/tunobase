@@ -10,6 +10,9 @@ setup(
     license='BSD',
     url='http://git.unomena.net/unomena/tunobase',
     packages = find_packages(),
+    dependency_links = [
+        'http://github.com/unomena/django-ckeditor-new/tarball/3.6.2.2#egg=django-ckeditor-3.6.2.2'
+    ],
     install_requires = [
         'South',
         'django-polymorphic',
