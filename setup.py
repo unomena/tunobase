@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tunobase',
-    version='1.0.8',
+    version='1.0.9',
     description='Unomena Base Django Application',
     long_description = open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read(),
     author='Unomena',
@@ -10,6 +10,10 @@ setup(
     license='BSD',
     url='http://git.unomena.net/unomena/tunobase',
     packages = find_packages(),
+    dependency_links = [
+        'http://github.com/unomena/django-photologue/tarball/2.8.praekelt#egg=django-photologue-2.8.praekelt',
+        'http://github.com/unomena/django-ckeditor-new/tarball/3.6.2.2#egg=django-ckeditor-3.6.2.2'
+    ],
     install_requires = [
         'South',
         'django-polymorphic',
