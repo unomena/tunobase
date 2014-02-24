@@ -14,6 +14,8 @@ Created on 26 Mar 2013
 @author: michael
 
 """
+import collections
+
 from django import forms
 from django.contrib import messages
 from django.conf import settings
@@ -87,7 +89,7 @@ class PollAnswerForm(forms.Form):
             messages.error(request, 'You have already voted in this poll.')
         else:
             answers = self.cleaned_data['answers']
-            if isinstance(answers, (list, tuple)):
+            if isinstance(answers, collections.Iterable):
                 for answer in answers:
                     self.increment_vote_count(answer)
             else:
