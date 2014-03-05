@@ -1,5 +1,5 @@
 """
-CONTACT APP
+Contact App
 
 This module provides the various views for the contact form.
 
@@ -16,6 +16,7 @@ Created on 23 Oct 2013
 """
 from django.views import generic as generic_views
 from django.core.urlresolvers import reverse
+
 
 class Contact(generic_views.CreateView):
     """Set up the contact form."""

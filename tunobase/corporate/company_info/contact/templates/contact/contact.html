@@ -12,12 +12,11 @@
 		
         <label for="id_email">{% trans "Email Address" %}</label>
 	    {{ form.email }}{{ form.email.errors }}
-        <label for="id_mobile">{% trans "Mobile Number" %}</label>
+        <label for="id_mobile_number">{% trans "Mobile Number" %}</label>
 	    {{ form.mobile_number }}{{ form.mobile_number.errors }}
 	    {% render_honeypot_field %}
         <label for="id_message">{% trans "Message" %}</label>
 	    {{ form.message }}{{ form.message.errors }}
-		{{ form.user }}{{ form.user.errors }}
 		
 		<input type="submit" id="submit" value="Send Message" />
 	</form>
