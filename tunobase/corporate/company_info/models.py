@@ -3,18 +3,6 @@ COMPANY INFO APP
 
 This module provides the model layout for the database.
 
-Classes:
-    Vacancy
-    CompanyMemberPosition
-    CompanyMember
-
-Functions:
-    n/a
-
-Created on 23 Oct 2013
-
-@author: michael
-
 """
 from django.db import models
 from django.contrib.sites.models import Site
@@ -37,9 +25,7 @@ class CompanyMemberPosition(core_models.StateModel, core_models.SlugModel):
     order = models.PositiveIntegerField(default=0, db_index=True)
 
     def __unicode__(self):
-        """Return a unicode object."""
-
-        return u'%s' % self.title
+        return u'%s - %s' % (self.title, self.sites.all())
 
     class Meta:
         ordering = ['order', '-publish_at']
