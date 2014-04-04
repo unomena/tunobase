@@ -16,7 +16,7 @@ class UUIDField(models.CharField):
 
         kwargs['max_length'] = kwargs.get('max_length', 64 )
         kwargs['blank'] = True
-		self.hex = kwargs.pop('hex', False)
+        self.hex = kwargs.pop('hex', False)
         models.CharField.__init__(self, *args, **kwargs)
 
     def pre_save(self, model_instance, add):
