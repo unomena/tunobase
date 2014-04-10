@@ -20,5 +20,6 @@ class Command(BaseCommand):
             'Test message',
             'Test message',
             [email_address],
-            settings.DEFAULT_FROM_EMAIL
+            settings.DEFAULT_FROM_EMAIL,
+            html_content='Test Message'
         )
