@@ -33,7 +33,7 @@ class BlogDetail(core_mixins.AjaxMorePaginationMixin,
         should the post not exist.
 
         """
-        return core_utils.get_permitted_object_or_404(
+        return core_utils.get_permitted_object_for_current_site_or_404(
             models.Blog,
             slug=self.kwargs['slug']
         )
@@ -48,7 +48,7 @@ class BlogDetail(core_mixins.AjaxMorePaginationMixin,
 
         if 'tag' in self.request.GET:
             site = Site.objects.get_current()
-            content_object_tags = tagging_models.ContentObjectTag.objects\
+            content_object_tags = tagging_models.ContentObjectTag.objects \
                 .select_related('content_object').filter(
                     tag__title__iexact=self.request.GET['tag'],
                     content_type=ContentType.objects\
@@ -66,7 +66,8 @@ class BlogDetail(core_mixins.AjaxMorePaginationMixin,
 
             return blog_entries
 
-        return models.BlogEntry.objects.permitted().filter(blog=self.object)
+        return models.BlogEntry.objects.permitted().for_current_site() \
+            .filter(blog=self.object)
 
 
 class SingleBlogDetail(BlogDetail):
@@ -75,7 +76,7 @@ class SingleBlogDetail(BlogDetail):
     def get_object(self):
         """Returns a single blog object."""
 
-        blogs = models.Blog.objects.permitted()
+        blogs = models.Blog.objects.permitted().for_current_site()
         if blogs:
             return blogs[0]
 
@@ -88,7 +89,7 @@ class BlogList(generic_views.ListView):
     def get_queryset(self):
         """Return all blog objects that are published."""
 
-        return models.Blog.objects.permitted()
+        return models.Blog.objects.permitted().for_current_site()
 
 
 class BlogEntryDetail(generic_views.DetailView):
@@ -97,7 +98,7 @@ class BlogEntryDetail(generic_views.DetailView):
     def get_object(self):
         """Retrieve a blog post or throw a Not Found error."""
 
-        return core_utils.get_permitted_object_or_404(
+        return core_utils.get_permitted_object_for_current_site_or_404(
             models.BlogEntry,
             slug=self.kwargs['slug']
         )
@@ -113,7 +114,7 @@ class BlogFeed(Feed):
     def items(self):
         """Returns all blog entries."""
 
-        return models.BlogEntry.objects.permitted()
+        return models.BlogEntry.objects.permitted().for_current_site()
 
     def item_title(self, item):
         """Returns the titles of each post."""
