@@ -12,6 +12,7 @@ from django.utils import timezone
 from tunobase.core import models as core_models
 from tunobase.corporate.media import constants, managers
 
+
 class Article(core_models.ContentModel):
     """Company's articles."""
 
@@ -87,7 +88,6 @@ class Event(core_models.ContentModel):
         """
         Return flag if event starts and ends within
         the same month.
-        
         """
         if self.start.year == self.end.year \
                 and self.start.month == self.end.month:
