@@ -8,14 +8,19 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 from tunobase.core import models as core_models
 from tunobase.corporate.media import constants, managers
+
 
 class Article(core_models.ContentModel):
     """Company's articles."""
 
     default_image_category = 'article'
+
+    def get_absolute_url(self):
+        return reverse('media_article_detail', args=[self.slug])
 
 
 class PressRelease(core_models.ContentModel):
@@ -25,6 +30,9 @@ class PressRelease(core_models.ContentModel):
 
     pdf = models.FileField(upload_to='press_releases', blank=True, null=True)
 
+    def get_absolute_url(self):
+        return reverse('media_press_release_detail', args=[self.slug])
+
 
 class MediaCoverage(core_models.ContentModel):
     """Media coverage about the company."""
@@ -33,6 +41,9 @@ class MediaCoverage(core_models.ContentModel):
 
     pdf = models.FileField(upload_to='media_coverage', blank=True, null=True)
     external_link = models.URLField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return self.external_link
 
 
 class Event(core_models.ContentModel):
@@ -57,6 +68,9 @@ class Event(core_models.ContentModel):
 
     class Meta:
         ordering = ['order', '-start']
+
+    def get_absolute_url(self):
+        return self.external_link
 
     @property
     def is_in_past(self):
@@ -87,7 +101,6 @@ class Event(core_models.ContentModel):
         """
         Return flag if event starts and ends within
         the same month.
-        
         """
         if self.start.year == self.end.year \
                 and self.start.month == self.end.month:
