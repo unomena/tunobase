@@ -133,7 +133,17 @@ class ImageModel(PhotologueImageModel):
         super(ImageModel, self).save(*args, **kwargs)
 
 
-class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel):
+class SEOModel(models.Model):
+    '''
+    A mixin Model for website seo
+    '''
+    meta_description = models.TextField(null=True, blank=True)
+    meta_keywords = models.TextField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel, SEOModel):
     '''
     Base Content Model
     '''
