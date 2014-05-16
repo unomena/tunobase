@@ -203,6 +203,12 @@ class ContentBlock(ContentModel):
     just a block of content is needed.
     '''
 
+class ContentBlockSet(ContentModel):
+    '''
+    Containing Model for Content Blocks
+    '''
+    content_blocks = models.ManyToManyField(ContentBlock, related_name='content_block_sets')
+
 
 class DefaultImage(PhotologueImageModel, StateModel):
     '''
