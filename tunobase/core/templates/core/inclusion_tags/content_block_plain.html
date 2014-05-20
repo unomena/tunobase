@@ -1,0 +1,6 @@
+{% load i18n %}
+{% if content %}
+      {{ content.plain_content }}
+{% else %}
+{% if user.is_admin %}<p style="color: red;">{% trans "Please load a Content Block with slug" %} &#39;{{ slug }}&#39; {% trans "in the database." %}</p>{% endif %}
+{% endif %}

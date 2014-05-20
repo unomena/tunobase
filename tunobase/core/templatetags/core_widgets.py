@@ -48,12 +48,27 @@ def content_block_widget(context, slug):
         content = models.ContentBlock.objects.permitted().for_current_site().get(slug=slug)
     except models.ContentBlock.DoesNotExist:
         content = None
-    
+
+    context.update({
+        'content': content,
+        'slug': slug,
+    })
+
+    return context
+
+@register.inclusion_tag('core/inclusion_tags/content_block_plain.html', takes_context=True)
+def content_block_plain(context, slug):
+    context = copy(context)
+    try:
+        content = models.ContentBlock.objects.permitted().for_current_site().get(slug=slug)
+    except models.ContentBlock.DoesNotExist:
+        content = None
+
     context.update({
         'content': content,
         'slug': slug
     })
-    
+
     return context
 
 @register.inclusion_tag('core/inclusion_tags/gallery_widget.html', takes_context=True)
