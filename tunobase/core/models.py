@@ -202,6 +202,7 @@ class ContentBlock(ContentModel):
     Used for portlets placed throughout the Site where
     just a block of content is needed.
     '''
+    alternative_title = models.CharField(max_length=255)
 
 class ContentBlockSet(ContentModel):
     '''
