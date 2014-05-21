@@ -197,18 +197,24 @@ class ContentModel(BaseContentModel):
         return u'%s - %s' % (self.title, self.sites.all())
 
 
+class ContentBlockSet(ContentModel):
+    '''
+    Containing Model for Content Blocks
+    '''
+
+
 class ContentBlock(ContentModel):
     '''
     Used for portlets placed throughout the Site where
     just a block of content is needed.
     '''
     alternative_title = models.CharField(max_length=255)
-
-class ContentBlockSet(ContentModel):
-    '''
-    Containing Model for Content Blocks
-    '''
-    content_blocks = models.ManyToManyField(ContentBlock, related_name='content_block_sets')
+    content_block_parent = models.ForeignKey(
+        ContentBlockSet,
+        related_name='content_blocks',
+        blank=True,
+        null=True
+    )
 
 
 class DefaultImage(PhotologueImageModel, StateModel):
