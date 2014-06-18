@@ -43,6 +43,7 @@ def email_contact_message(contact_message_id):
             html_content='email/html/contact_message.html',
             text_content='email/txt/contact_message.txt',
             context=ctx_dict,
+            from_address=contact_message.email or settings.CONTACT_MESSAGE_TO_EMAIL,
             to_addresses=[settings.CONTACT_MESSAGE_TO_EMAIL,],
             user=user
         )
