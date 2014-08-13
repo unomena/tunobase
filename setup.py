@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tunobase',
-    version='1.1.8',
+    version='1.1.8a',
     description='Unomena Base Django Application',
     long_description = open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read(),
     author='Unomena',
@@ -21,8 +21,8 @@ setup(
         'django-photologue==2.8.praekelt',
         'django-preferences',
         'python-memcached',
-        'celery==3.0.23',
-        'django-celery==3.0.23',
+        'celery==3.0.15',
+        'django-celery==3.0.11',
         'django-honeypot',
         'Pillow',
         'facebook-sdk==0.4.0',
