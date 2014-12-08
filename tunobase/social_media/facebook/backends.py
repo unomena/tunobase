@@ -56,7 +56,7 @@ class FacebookBackend(ModelBackend):
                 user, created = get_user_model().objects.get_or_create(
                     email=api_data['email'],
                     defaults={
-                        'username': api_data['username'],
+                        'username': api_data['email'],
                         'is_regular_user': False,
                         'is_active': True,
                         'first_name': api_data['first_name'],
