@@ -4,6 +4,8 @@ CORE APP
 This module sets up the core models.
 
 '''
+from unidecode import unidecode
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
@@ -60,7 +62,7 @@ class SlugModel(models.Model):
 
     def save(self, *args, **kwargs):
         params = {
-            'slug': slugify(self.title),
+            'slug': slugify(unidecode(self.title)),
         }
         i = 1
 
