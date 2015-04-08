@@ -61,26 +61,27 @@ class SlugModel(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        params = {
-            'slug': slugify(unidecode(self.title)),
-        }
-        i = 1
+        if not hasattr(self, 'override_slug_save'):
+            params = {
+                'slug': slugify(unidecode(self.title)),
+            }
+            i = 1
 
-        if hasattr(self, 'site'):
-            params['site'] = self.site
-        elif hasattr(self, 'sites'):
-            params['sites'] = self.sites.all()
+            if hasattr(self, 'site'):
+                params['site'] = self.site
+            elif hasattr(self, 'sites'):
+                params['sites'] = self.sites.all()
 
-        # Check if the same slug of this type exists
-        # and increment the index until a unique slug
-        # is found
-        while self.__class__.objects.filter(**params)\
-                .exclude(pk=self.pk)\
-                .exists():
-            params['slug'] = '%s-%s' % (params['slug'], i)
-            i += 1
+            # Check if the same slug of this type exists
+            # and increment the index until a unique slug
+            # is found
+            while self.__class__.objects.filter(**params)\
+                    .exclude(pk=self.pk)\
+                    .exists():
+                params['slug'] = '%s-%s' % (params['slug'], i)
+                i += 1
 
-        self.slug = params['slug']
+            self.slug = params['slug']
 
         super(SlugModel, self).save(*args, **kwargs)
 

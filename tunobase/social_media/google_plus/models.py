@@ -24,10 +24,10 @@ class GooglePlusUser(models.Model):
             settings.AUTH_USER_MODEL, related_name='google_plus_user'
     )
     google_user_id = models.CharField(max_length=255)
-    access_token = models.CharField(max_length=255)
-    refresh_token = models.CharField(max_length=255, blank=True, null=True)
-    id_token = models.CharField(max_length=255)
-    token_response = models.CharField(max_length=255)
+    access_token = models.TextField()
+    refresh_token = models.TextField(blank=True, null=True)
+    id_token = models.TextField()
+    token_response = models.TextField()
     access_token_expiry_timestamp = models.DateTimeField()
 
     def __unicode__(self):
