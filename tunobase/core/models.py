@@ -12,6 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils import timezone
+from django.contrib.contenttypes import generic
 
 # from polymorphic import PolymorphicModel
 
@@ -20,6 +21,7 @@ from photologue.models import ImageModel as PhotologueImageModel
 from ckeditor.fields import RichTextField
 
 from tunobase.core import constants, managers
+
 
 class StateModel(models.Model):
     '''
@@ -59,31 +61,6 @@ class SlugModel(models.Model):
 
     class Meta:
         abstract = True
-
-    def save(self, *args, **kwargs):
-        if not hasattr(self, 'override_slug_save'):
-            params = {
-                'slug': slugify(unidecode(self.title)),
-            }
-            i = 1
-
-            if hasattr(self, 'site'):
-                params['site'] = self.site
-            elif hasattr(self, 'sites'):
-                params['sites'] = self.sites.all()
-
-            # Check if the same slug of this type exists
-            # and increment the index until a unique slug
-            # is found
-            while self.__class__.objects.filter(**params)\
-                    .exclude(pk=self.pk)\
-                    .exists():
-                params['slug'] = '%s-%s' % (params['slug'], i)
-                i += 1
-
-            self.slug = params['slug']
-
-        super(SlugModel, self).save(*args, **kwargs)
 
 
 class AuditModel(models.Model):
@@ -146,6 +123,7 @@ class SEOModel(models.Model):
     class Meta:
         abstract = True
 
+
 class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel, SEOModel):
     '''
     Base Content Model
@@ -188,7 +166,7 @@ class ContentModel(BaseContentModel):
 
     class Meta:
         ordering = ['order', '-publish_at']
-    
+
     def as_leaf_class(self):
         return self.leaf_content_type.model_class().objects.get(id=self.id)
 
@@ -334,3 +312,25 @@ class Gallery(ContentModel):
 
     def __unicode__(self):
         return u'%s' % self.title
+
+
+class VersionSeries(models.Model):
+    slug = models.SlugField(max_length=255)
+    staged_slug = models.SlugField(max_length=255, blank=True, null=True)
+
+    def __unicode__(self):
+        return u'%s' % self.slug
+
+
+class Version(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    series = models.ForeignKey(VersionSeries, related_name='versions')
+    number = models.PositiveIntegerField()
+    state = models.PositiveSmallIntegerField(
+        choices=constants.STATE_CHOICES
+    )
+
+    def __unicode__(self):
+        return u'%s' % self.series

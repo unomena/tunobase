@@ -11,6 +11,8 @@ from django import http
 from django.template import Context, Template
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+
 
 def respond_with_json(response_dict):
     '''
@@ -21,6 +23,7 @@ def respond_with_json(response_dict):
     response['mimetype'] = 'application/javascript'
     response['Access-Control-Allow-Origin'] = '*'
     return response
+
 
 def get_choice_value(choice_display, choices):
     '''
@@ -34,6 +37,7 @@ def get_choice_value(choice_display, choices):
 
     return None
 
+
 def get_client_ip(request):
     '''
     Retrieve the client's IP Address from a given HttpRequest
@@ -44,6 +48,7 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
 
 def get_object_for_current_site_or_404(klass, *args, **kwargs):
     '''
@@ -59,6 +64,7 @@ def get_object_for_current_site_or_404(klass, *args, **kwargs):
                     .model._meta.object_name)
         )
 
+
 def get_permitted_object_or_404(klass, *args, **kwargs):
     '''
     Retrieve an object from a Django model only if
@@ -72,6 +78,7 @@ def get_permitted_object_or_404(klass, *args, **kwargs):
             _('No %s matches the given query.' % queryset\
                     .model._meta.object_name)
         )
+
 
 def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
     '''
@@ -88,6 +95,7 @@ def get_permitted_object_for_current_site_or_404(klass, *args, **kwargs):
                     .model._meta.object_name)
         )
 
+
 def create_crumb(title, url=None):
     '''
     Helper function to create breadcrumb HTML
@@ -100,6 +108,7 @@ def create_crumb(title, url=None):
 
     return crumb
 
+
 def render_string_to_string(string, context):
     '''
     Renders a string with context
@@ -107,6 +116,7 @@ def render_string_to_string(string, context):
     template = Template(string)
     context = Context(context)
     return template.render(context)
+
 
 def ensure_unicode(the_string):
     '''
@@ -118,11 +128,12 @@ def ensure_unicode(the_string):
 
     return smart_unicode(the_string)
 
+
 def not_null_str(obj):
     '''
     Ensures that the returned string is not null
     '''
-    if obj == None:
+    if obj is None:
         return ''
     else:
         return ensure_unicode(obj)
