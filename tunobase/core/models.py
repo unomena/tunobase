@@ -62,6 +62,12 @@ class SlugModel(models.Model):
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        if not hasattr(self, 'override_slug_save') and not self.slug:
+            self.slug = slugify(unidecode(self.title))
+
+        super(SlugModel, self).save(*args, **kwargs)
+
 
 class AuditModel(models.Model):
     '''
