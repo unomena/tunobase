@@ -17,6 +17,10 @@ class Blog(core_models.ContentModel):
     Blogs the Site has
     '''
 
+    class Meta:
+        verbose_name = 'Blog Category'
+        verbose_name_plural = 'Blog Categories'
+
 
 class BlogEntry(core_models.ContentModel):
     '''
