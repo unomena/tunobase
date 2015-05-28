@@ -22,7 +22,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
 
-from ckeditor.fields import RichTextField
+from redactor.fields import RedactorTextField
 
 from tunobase.core import models as core_models
 from tunobase.eula import managers
@@ -48,11 +48,12 @@ class EULA(models.Model):
 
         return u'%s - %s' % (self.title, self.sites.all())
 
+
 class EULAVersion(core_models.StateModel, core_models.AuditModel):
     """Store various EULA versions."""
 
     eula = models.ForeignKey(EULA, related_name='instances')
-    content = RichTextField()
+    content = RedactorTextField()
     version = models.CharField(max_length=255)
 
     objects = managers.EULAVersionManager()
@@ -67,6 +68,7 @@ class EULAVersion(core_models.StateModel, core_models.AuditModel):
 
         return u'%s Version %s' % (self.eula, self.version)
 
+
 class UserEULA(models.Model):
     """Link the user to the EULA they accepted."""
 
@@ -75,7 +77,7 @@ class UserEULA(models.Model):
 
     ip_address = models.IPAddressField()
     signed_at = models.DateTimeField(auto_now_add=True)
-    eula_content_copy = RichTextField()
+    eula_content_copy = RedactorTextField()
     content_type = models.ForeignKey(
         ContentType,
         related_name="content_type_set_for_%(class)s",

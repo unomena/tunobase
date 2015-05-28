@@ -18,7 +18,7 @@ from django.contrib.contenttypes import generic
 
 from photologue.models import ImageModel as PhotologueImageModel
 
-from ckeditor.fields import RichTextField
+from redactor.fields import RedactorTextField
 
 from tunobase.core import constants, managers
 
@@ -135,7 +135,7 @@ class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel, SEOModel):
     Base Content Model
     '''
     plain_content = models.TextField(blank=True, null=True)
-    rich_content = RichTextField(blank=True, null=True)
+    rich_content = RedactorTextField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
 
@@ -246,7 +246,7 @@ class HTMLBanner(Banner):
     HTML Banner for Site sliders
     '''
     plain_content = models.TextField(blank=True, null=True)
-    rich_content = RichTextField(blank=True, null=True)
+    rich_content = RedactorTextField(blank=True, null=True)
 
 
 class BannerSet(StateModel):

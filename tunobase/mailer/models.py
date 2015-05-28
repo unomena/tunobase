@@ -18,7 +18,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.sites.models import Site
 
-from ckeditor.fields import RichTextField
+from redactor.fields import RedactorTextField
+
 
 class OutboundEmail(models.Model):
     """Tracks emails sent to Users by the system."""
@@ -32,7 +33,7 @@ class OutboundEmail(models.Model):
     to_addresses = models.TextField()
     bcc_addresses = models.TextField(blank=True, null=True)
     subject = models.CharField(max_length=250)
-    message = RichTextField()
+    message = RedactorTextField()
     sent_timestamp = models.DateTimeField(auto_now_add=True)
     site = models.ForeignKey(Site)
 

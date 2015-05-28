@@ -23,15 +23,16 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
- 
-from ckeditor.fields import RichTextField
- 
+
+from redactor.fields import RedactorTextField
+
 from tunobase.corporate.company_info.newsletter import managers, signals
+
 
 class RichNewsletterPart(models.Model):
     """Rich content field for newsletter."""
 
-    content = RichTextField()
+    content = RedactorTextField()
 
     def __unicode__(self):
         """Returns a unicode object."""
@@ -74,7 +75,7 @@ class Newsletter(models.Model):
         blank=True,
         null=True
     )
-    rich_content = RichTextField(blank=True, null=True)
+    rich_content = RedactorTextField(blank=True, null=True)
     rich_footer = models.ForeignKey(
         RichNewsletterPart,
         related_name='newsletter_footers',
