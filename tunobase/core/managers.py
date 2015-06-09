@@ -17,6 +17,22 @@ from tunobase.core import constants, query
 # Normal managers
 
 
+class VersionManager(models.Manager):
+
+    def publish_objects(self):
+        """Return only published objects."""
+
+        queryset = self.exclude(state=constants.STATE_PUBLISHED)
+        to_publish_ids = []
+        for obj in queryset:
+            if obj.content_object.publish_at <= timezone.now():
+                to_publish_ids.append(obj.pk)
+                obj.content_object.state = constants.STATE_PUBLISHED
+                obj.content_object.save()
+        update_queryset = self.filter(pk__in=to_publish_ids)
+        update_queryset.update(state=constants.STATE_PUBLISHED)
+
+
 class CoreManager(models.Manager):
     """Return relevant objects."""
 

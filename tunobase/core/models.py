@@ -337,6 +337,7 @@ class Version(models.Model):
     state = models.PositiveSmallIntegerField(
         choices=constants.STATE_CHOICES
     )
+    objects = managers.VersionManager()
 
     def __unicode__(self):
         return u'%s' % self.series
