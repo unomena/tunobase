@@ -25,7 +25,10 @@ class VersionManager(models.Manager):
         queryset = self.exclude(state=constants.STATE_PUBLISHED)
         to_publish_ids = []
         for obj in queryset:
-            if obj.content_object.publish_at <= timezone.now():
+            published_obj = obj.series.versions.filter(
+                state=constants.STATE_PUBLISHED
+            ).exists()
+            if not published_obj and obj.content_object.publish_at <= timezone.now():
                 to_publish_ids.append(obj.pk)
                 obj.content_object.state = constants.STATE_PUBLISHED
                 obj.content_object.save()
