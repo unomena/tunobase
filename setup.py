@@ -29,7 +29,7 @@ setup(
         'twython==3.1.0',
         'google-api-python-client==1.2',
         'flufl.password==1.2.1',
-        'requests==2.0.0',
+        'requests',
     ],
     tests_require=[
         'django-setuptest>=0.1.2',
