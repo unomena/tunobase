@@ -204,6 +204,69 @@ class ContentBlock(ContentModel):
     )
 
 
+class Template(models.Model):
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='template_images_template')
+    path = models.CharField(max_length=255)
+    num_contents = models.PositiveSmallIntegerField(default=0)
+    num_images = models.PositiveSmallIntegerField(default=0)
+
+    def __unicode__(self):
+        return u'%s' % self.name
+
+
+class TemplatePage(StateModel):
+    url = models.CharField(max_length=100, unique=True, db_index=True)
+    template = models.ForeignKey(
+        Template,
+        related_name='content_templates'
+    )
+    content_1 = RedactorTextField(blank=True, null=True)
+    content_2 = RedactorTextField(blank=True, null=True)
+    content_3 = RedactorTextField(blank=True, null=True)
+    content_4 = RedactorTextField(blank=True, null=True)
+    content_5 = RedactorTextField(blank=True, null=True)
+    content_6 = RedactorTextField(blank=True, null=True)
+    content_7 = RedactorTextField(blank=True, null=True)
+    content_8 = RedactorTextField(blank=True, null=True)
+    content_9 = RedactorTextField(blank=True, null=True)
+    content_10 = RedactorTextField(blank=True, null=True)
+
+    image_1 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_2 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_3 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_4 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_5 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_6 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_7 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_8 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_9 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+    image_10 = models.ImageField(
+        upload_to='template_images', blank=True, null=True
+    )
+
+    def __unicode__(self):
+        return u'%s' % self.url
+
+
 class DefaultImage(PhotologueImageModel, StateModel):
     '''
     A model to store default images for content types.

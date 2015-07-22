@@ -9,8 +9,19 @@ from django.shortcuts import get_object_or_404
 from django.views import generic as generic_views
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.translation import ugettext as _
+from django.contrib.sites.models import get_current_site
+from django.conf import settings
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+    HttpResponsePermanentRedirect
+)
+from django.shortcuts import render_to_response
+from django.template import loader, RequestContext
 
 from tunobase.core import models, utils, mixins
+
 
 class ListWithDetailView(generic_views.ListView, SingleObjectMixin):
 
@@ -64,3 +75,38 @@ class ContentBlockUpdate(mixins.AdminRequiredMixin, generic_views.View):
         content_block.save()
 
         return utils.respond_with_json({'success': True})
+
+
+def template_page(request, url):
+    """
+    Public interface to the flat page view.
+    Models: `flatpages.flatpages`
+    Templates: Uses the template defined by the ``template_name`` field,
+        or :template:`flatpages/default.html` if template_name is not defined.
+    Context:
+        flatpage
+            `flatpages.flatpages` object
+    """
+    if not url.startswith('/'):
+        url = '/' + url
+    site_id = get_current_site(request).id
+    try:
+        f = utils.get_permitted_object_or_404(
+            models.TemplatePage,
+            url__exact=url
+        )
+    except Http404:
+        if not url.endswith('/') and settings.APPEND_SLASH:
+            url += '/'
+            f = utils.get_permitted_object_or_404(
+                models.TemplatePage,
+                url__exact=url
+            )
+            return HttpResponsePermanentRedirect('%s/' % request.path)
+        else:
+            raise
+    return render_to_response(
+        f.template.path,
+        {'object': f},
+        context_instance=RequestContext(request)
+    )
