@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tunobase',
-    version='1.1.31',
+    version='1.1.32',
     description='Unomena Base Django Application',
     long_description = open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read(),
     author='Unomena',
@@ -26,7 +26,7 @@ setup(
         'django-honeypot',
         'Pillow',
         'facebook-sdk==0.4.0',
-        'twython==3.1.0',
+        'twython==3.3.0',
         'google-api-python-client==1.2',
         'flufl.password==1.2.1',
         'requests>=2.7.0',
