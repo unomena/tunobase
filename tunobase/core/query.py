@@ -76,9 +76,12 @@ class CoreStateQuerySet(CoreQuerySet):
     def permitted(self):
         from tunobase.core.models import Version
         model_type = ContentType.objects.get_for_model(self.model)
+        states = [self.SITE_STATE]
+        if self.SITE_STATE == constants.STATE_STAGED:
+            states = constants.PERMITTED_STATE
         model_pks = Version.objects.filter(
             content_type__pk=model_type.id,
-            state=self.SITE_STATE
+            state__in=states
         ).values_list('object_id', flat=True)
         return self.filter(pk__in=model_pks).exclude(
             state=constants.STATE_DELETED
