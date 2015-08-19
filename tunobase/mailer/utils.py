@@ -21,6 +21,7 @@ Created on 22 Oct 2013
 @author: michael
 
 """
+import os
 import logging
 
 from django.conf import settings
@@ -130,7 +131,7 @@ def create_message(subject, text_content, to_addresses,
     if attachments is not None:
         for attachment in attachments:
             if attachment:
-                msg.attach(attachment.name, attachment.read())
+                msg.attach(os.path.basename(attachment.name), attachment.read())
 
     return msg, context
 
