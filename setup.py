@@ -27,7 +27,7 @@ setup(
         'Pillow',
         'facebook-sdk==0.4.0',
         'twython>=3.1.0',
-        'google-api-python-client==1.2',
+        'google-api-python-client>=1.2',
         'flufl.password==1.2.1',
         'requests',
         'unidecode',
