@@ -78,8 +78,9 @@ def render_content(subject, text_content, html_content=None,
 
 def create_message(subject, text_content, to_addresses,
                    from_address=settings.DEFAULT_FROM_EMAIL,
-                   bcc_addresses=None, html_content=None, context=None,
-                   attachments=None, user=None, apply_context_to_string=False
+                   bcc_addresses=None, cc_addresses=None, html_content=None,
+                   context=None, attachments=None, user=None,
+                   apply_context_to_string=False
     ):
     """Create and return the Email message to be sent."""
 
@@ -120,7 +121,8 @@ def create_message(subject, text_content, to_addresses,
         text_content,
         from_address,
         to_addresses,
-        bcc_addresses
+        bcc_addresses,
+        cc=cc_addresses,
     )
 
     # Attach HTML content
@@ -172,8 +174,8 @@ def track_mail(subject, to_addresses, html_content,
 
 def send_mail(subject, text_content, to_addresses,
               from_address=settings.DEFAULT_FROM_EMAIL, bcc_addresses=None,
-              html_content=None, context=None, attachments=None, user=None,
-              apply_context_to_string=False):
+              cc_addresses=None, html_content=None, context=None,
+              attachments=None, user=None, apply_context_to_string=False):
     """
     Sends an email containing both text(provided) and html(produced from
     povided template name and context) content as well as provided
@@ -187,6 +189,7 @@ def send_mail(subject, text_content, to_addresses,
         to_addresses,
         from_address,
         bcc_addresses,
+        cc_addresses,
         html_content,
         context,
         attachments,
