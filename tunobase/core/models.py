@@ -138,7 +138,7 @@ class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel, SEOModel):
     rich_content = RedactorTextField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
     sites = models.ManyToManyField(Site, blank=True, null=True)
-    is_featured = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
 
     default_image_category = 'content'
 
