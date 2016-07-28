@@ -146,7 +146,7 @@ class BaseContentModel(ImageModel, StateModel, SlugModel, AuditModel, SEOModel):
 
     class Meta:
         abstract = True
-        ordering = ['order', '-publish_at']
+        ordering = ['-publish_at',]
 
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.sites.all())
@@ -172,7 +172,7 @@ class ContentModel(BaseContentModel):
     leaf_content_type = models.ForeignKey(ContentType, editable=False, null=True)
 
     class Meta:
-        ordering = ['order', '-publish_at']
+        ordering = ['-publish_at',]
 
     def as_leaf_class(self):
         return self.leaf_content_type.model_class().objects.get(id=self.id)
